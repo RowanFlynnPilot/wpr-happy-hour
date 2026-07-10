@@ -202,6 +202,10 @@ a:focus-visible {
   margin-top: 2px;
 }
 
+.card-address a {
+  color: var(--teal-dark);
+}
+
 /* Specials */
 .special {
   border-top: 1px dashed var(--line);
@@ -297,6 +301,16 @@ a:focus-visible {
 .sponsor-open {
   color: var(--teal-dark);
   border-bottom: 1px dashed var(--teal);
+}
+
+.sponsor-name {
+  color: var(--teal-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a.sponsor-name:hover {
+  text-decoration: underline;
 }
 
 @media (prefers-reduced-motion: reduce) {

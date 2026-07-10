@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Embed test — Happy Hour Finder</title>
+    <style>
+      body { margin: 0; font-family: sans-serif; background: #ddd; }
+      .frame-note { padding: 8px 12px; font-size: 13px; }
+      iframe { display: block; width: 100%; border: 0; background: #fff; }
+    </style>
+  </head>
+  <body>
+    <p class="frame-note">
+      Parent-page stand-in — the iframe below should grow/shrink to fit its content.
+      Reported height: <span id="h">none yet</span>
+    </p>
+    <iframe id="wpr-hh" src="./" height="300" title="Happy Hour Finder — Wausau Pilot &amp; Review"></iframe>
+    <script>
+      // Same listener the WordPress embed uses (see README), origin-checked.
+      window.addEventListener('message', (e) => {
+        if (e.origin !== location.origin) return;
+        if (e.data && e.data.type === 'wpr-hh-height') {
+          document.getElementById('wpr-hh').height = e.data.height;
+          document.getElementById('h').textContent = e.data.height + 'px';
+        }
+      });
+    </script>
+  </body>
+</html>

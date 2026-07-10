@@ -10,8 +10,10 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 
 ## Architecture invariants
 - `src/data/bars.json` is the single source of truth. Schema is enforced by
-  `validate()` in App.jsx — it throws at load. Keep it that way: schema changes
-  update the validator in the same commit, no silent fallbacks, no defaults.
+  `validate()` in src/data/validate.js — the app throws at load, and CI runs
+  the same validator (`npm run check`) before every deploy. Keep it that way:
+  schema changes update the validator in the same commit, no silent fallbacks,
+  no defaults.
 - Bar contact info NEVER goes in bars.json (it lives in a separate Notion CRM).
 - Tiers are exactly "free" | "featured". No third tier without explicit ask.
 - Time logic: start inclusive, end exclusive, no cross-midnight windows,

@@ -1,58 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
 import data from './data/bars.json';
+// Schema lives in validate.js — shared with scripts/check-data.mjs so CI
+// rejects bad data before it can deploy. The app still throws at load.
+import { DAY_KEYS, toMinutes, validate } from './data/validate.js';
 
-/* ------------------------------------------------------------------ */
-/* Schema validation — fail fast at load, not silently at render time */
-/* ------------------------------------------------------------------ */
-
-const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DAY_LABELS = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
-const TYPES = ['drinks', 'food', 'both'];
-const TIERS = ['free', 'featured'];
-const HM = /^([01]\d|2[0-3]):[0-5]\d$/;
+const WEEK_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
-function validate(json) {
-  if (!Array.isArray(json.bars) || json.bars.length === 0) {
-    throw new Error('bars.json: "bars" must be a non-empty array');
+// ["mon","tue","wed","thu","fri"] → "Mon–Fri"; non-consecutive runs join with ' · '
+function fmtDays(days) {
+  const idx = days.map((d) => WEEK_ORDER.indexOf(d)).sort((a, b) => a - b);
+  const runs = [];
+  for (const i of idx) {
+    const last = runs[runs.length - 1];
+    if (last && i === last[1] + 1) last[1] = i;
+    else runs.push([i, i]);
   }
-  const seen = new Set();
-  for (const bar of json.bars) {
-    for (const field of ['id', 'name', 'city', 'address', 'tier', 'specials']) {
-      if (bar[field] === undefined) throw new Error(`bars.json: bar "${bar.id ?? bar.name}" missing "${field}"`);
-    }
-    if (seen.has(bar.id)) throw new Error(`bars.json: duplicate id "${bar.id}"`);
-    seen.add(bar.id);
-    if (!TIERS.includes(bar.tier)) throw new Error(`bars.json: bar "${bar.id}" has invalid tier "${bar.tier}"`);
-    if (!Array.isArray(bar.specials) || bar.specials.length === 0) {
-      throw new Error(`bars.json: bar "${bar.id}" must have at least one special`);
-    }
-    for (const s of bar.specials) {
-      if (!Array.isArray(s.days) || s.days.length === 0 || s.days.some((d) => !DAY_KEYS.includes(d))) {
-        throw new Error(`bars.json: bar "${bar.id}" has a special with invalid days`);
-      }
-      if (!HM.test(s.start) || !HM.test(s.end)) {
-        throw new Error(`bars.json: bar "${bar.id}" has a special with invalid start/end (use 24h HH:MM)`);
-      }
-      if (toMinutes(s.start) >= toMinutes(s.end)) {
-        throw new Error(`bars.json: bar "${bar.id}" special must end after it starts (no cross-midnight windows)`);
-      }
-      if (!TYPES.includes(s.type)) throw new Error(`bars.json: bar "${bar.id}" special has invalid type "${s.type}"`);
-      if (!Array.isArray(s.items) || s.items.length === 0) {
-        throw new Error(`bars.json: bar "${bar.id}" special must list at least one item`);
-      }
-    }
-  }
-  return json;
+  return runs
+    .map(([a, b]) => (a === b ? DAY_LABELS[WEEK_ORDER[a]] : `${DAY_LABELS[WEEK_ORDER[a]]}–${DAY_LABELS[WEEK_ORDER[b]]}`))
+    .join(' · ');
 }
 
 /* ---------------- */
 /* Time utilities   */
 /* ---------------- */
-
-function toMinutes(hm) {
-  const [h, m] = hm.split(':').map(Number);
-  return h * 60 + m;
-}
 
 function fmtTime(hm) {
   const [h, m] = hm.split(':').map(Number);
@@ -82,6 +53,14 @@ function minutesUntil(hm, date) {
 const DATA = validate(data);
 const CITIES = [...new Set(DATA.bars.map((b) => b.city))].sort();
 
+// Deep links: ?view=fri&city=Weston&type=food — read once at load, no router.
+// Unlike curated data, params arrive from outside (article links, embeds), so
+// invalid values fall back to defaults instead of throwing.
+const PARAMS = new URLSearchParams(window.location.search);
+const INITIAL_VIEW = ['now', ...DAY_KEYS].includes(PARAMS.get('view')) ? PARAMS.get('view') : 'now';
+const INITIAL_CITY = CITIES.includes(PARAMS.get('city')) ? PARAMS.get('city') : 'all';
+const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.get('type') : 'all';
+
 /* ---------------- */
 /* Components       */
 /* ---------------- */
@@ -107,7 +86,7 @@ function SpecialRow({ special, now, showDays }) {
     <div className="special">
       <div className="special-meta">
         {showDays && (
-          <span className="special-days mono">{special.days.map((d) => DAY_LABELS[d]).join(' · ')}</span>
+          <span className="special-days mono">{fmtDays(special.days)}</span>
         )}
         <span className="special-time mono">
           {fmtTime(special.start)}–{fmtTime(special.end)}
@@ -122,6 +101,10 @@ function SpecialRow({ special, now, showDays }) {
     </div>
   );
 }
+
+// Derived from public address only — contact info stays in the Notion CRM
+const mapsUrl = (bar) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bar.name}, ${bar.address}, ${bar.city} WI`)}`;
 
 function BarCard({ bar, specials, now, showDays }) {
   return (
@@ -142,6 +125,14 @@ function BarCard({ bar, specials, now, showDays }) {
         </h3>
         <p className="card-address">
           {bar.address} · {bar.city}
+          {bar.tier === 'featured' && (
+            <>
+              {' · '}
+              <a href={mapsUrl(bar)} target="_blank" rel="noopener noreferrer">
+                Directions
+              </a>
+            </>
+          )}
         </p>
       </header>
       {specials.map((s, i) => (
@@ -155,18 +146,34 @@ function BarCard({ bar, specials, now, showDays }) {
 /* App              */
 /* ---------------- */
 
-const featuredFirst = (a, b) =>
-  a.tier === b.tier ? a.name.localeCompare(b.name) : a.tier === 'featured' ? -1 : 1;
+const tierRank = (bar) => (bar.tier === 'featured' ? 0 : 1);
+const featuredFirst = (a, b) => tierRank(a) - tierRank(b) || a.name.localeCompare(b.name);
+// Time-ordered lists sort on the earliest qualifying special, regardless of data order
+const earliestStart = (specials) => Math.min(...specials.map((s) => toMinutes(s.start)));
 
 export default function App() {
   const [now, setNow] = useState(() => new Date());
-  const [view, setView] = useState('now'); // 'now' | one of DAY_KEYS
-  const [city, setCity] = useState('all');
-  const [type, setType] = useState('all'); // 'all' | 'drinks' | 'food'
+  const [view, setView] = useState(INITIAL_VIEW); // 'now' | one of DAY_KEYS
+  const [city, setCity] = useState(INITIAL_CITY);
+  const [type, setType] = useState(INITIAL_TYPE); // 'all' | 'drinks' | 'food'
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(tick);
+  }, []);
+
+  // Embedded in the WordPress iframe: report content height so the parent can
+  // size the frame. Parent listener lives in the README snippet; manual test
+  // harness at public/embed-test.html. Height is not sensitive, so '*' is fine —
+  // the parent side is what must origin-check.
+  useEffect(() => {
+    if (window.parent === window) return; // standalone page, nothing to report
+    const post = () =>
+      window.parent.postMessage({ type: 'wpr-hh-height', height: document.body.scrollHeight }, '*');
+    const ro = new ResizeObserver(post);
+    ro.observe(document.body);
+    post();
+    return () => ro.disconnect();
   }, []);
 
   const typeMatch = (s) => type === 'all' || s.type === type || s.type === 'both';
@@ -176,7 +183,7 @@ export default function App() {
   );
 
   // Now view: bars grouped by whether any qualifying special is active this minute
-  const { pouring, laterToday } = useMemo(() => {
+  const { pouring, laterToday, nextPour } = useMemo(() => {
     const pouring = [];
     const laterToday = [];
     for (const bar of cityBars) {
@@ -189,10 +196,25 @@ export default function App() {
     pouring.sort((a, b) => featuredFirst(a.bar, b.bar));
     laterToday.sort(
       (a, b) =>
-        featuredFirst(a.bar, b.bar) ||
-        toMinutes(a.specials[0].start) - toMinutes(b.specials[0].start)
+        tierRank(a.bar) - tierRank(b.bar) ||
+        earliestStart(a.specials) - earliestStart(b.specials) ||
+        a.bar.name.localeCompare(b.bar.name)
     );
-    return { pouring, laterToday };
+    // Quiet night: tease the next upcoming pour (same filters) instead of a dead end
+    let nextPour = null;
+    if (pouring.length === 0 && laterToday.length === 0) {
+      for (let offset = 1; offset <= 7 && nextPour === null; offset++) {
+        const dayKey = DAY_KEYS[(now.getDay() + offset) % 7];
+        for (const bar of cityBars) {
+          for (const s of bar.specials) {
+            if (typeMatch(s) && s.days.includes(dayKey) && (!nextPour || toMinutes(s.start) < toMinutes(nextPour.start))) {
+              nextPour = { offset, dayKey, start: s.start };
+            }
+          }
+        }
+      }
+    }
+    return { pouring, laterToday, nextPour };
   }, [cityBars, now, type]);
 
   // Day view: every bar with a qualifying special on the chosen day
@@ -206,8 +228,9 @@ export default function App() {
       .filter((e) => e.specials.length > 0)
       .sort(
         (a, b) =>
-          featuredFirst(a.bar, b.bar) ||
-          toMinutes(a.specials[0].start) - toMinutes(b.specials[0].start)
+          tierRank(a.bar) - tierRank(b.bar) ||
+          earliestStart(a.specials) - earliestStart(b.specials) ||
+          a.bar.name.localeCompare(b.bar.name)
       );
   }, [cityBars, view, type]);
 
@@ -238,20 +261,18 @@ export default function App() {
       </header>
 
       <nav className="controls">
-        <div className="day-picker" role="tablist" aria-label="Pick a day">
+        <div className="day-picker" role="group" aria-label="Pick a day">
           <button
-            role="tab"
-            aria-selected={view === 'now'}
+            aria-pressed={view === 'now'}
             className={`day-btn${view === 'now' ? ' active' : ''}`}
             onClick={() => setView('now')}
           >
             Now
           </button>
-          {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((d) => (
+          {WEEK_ORDER.map((d) => (
             <button
               key={d}
-              role="tab"
-              aria-selected={view === d}
+              aria-pressed={view === d}
               className={`day-btn${view === d ? ' active' : ''}`}
               onClick={() => setView(d)}
             >
@@ -299,7 +320,12 @@ export default function App() {
             </section>
           )}
           {pouring.length === 0 && laterToday.length === 0 && (
-            <p className="empty">Quiet out there today. Pick a day above to plan ahead.</p>
+            <p className="empty">
+              Quiet out there right now.
+              {nextPour
+                ? ` Next happy hour: ${nextPour.offset === 1 ? 'tomorrow' : weekdayLabel(nextPour.dayKey)} at ${fmtTime(nextPour.start)}.`
+                : ' Pick a day above to plan ahead.'}
+            </p>
           )}
         </>
       ) : (
@@ -307,7 +333,7 @@ export default function App() {
           {dayList.length > 0 ? (
             <div className="grid">
               {dayList.map(({ bar, specials }) => (
-                <BarCard key={bar.id} bar={bar} specials={specials} now={null} showDays={false} />
+                <BarCard key={bar.id} bar={bar} specials={specials} now={null} showDays={true} />
               ))}
             </div>
           ) : (
@@ -318,14 +344,25 @@ export default function App() {
 
       <footer className="footer">
         <p className="sponsor-slot">
-          Happy Hour Finder, presented by <span className="sponsor-open">your business here</span>
+          Happy Hour Finder, presented by{' '}
+          {DATA.sponsor ? (
+            DATA.sponsor.url ? (
+              <a className="sponsor-name" href={DATA.sponsor.url} target="_blank" rel="noopener noreferrer">
+                {DATA.sponsor.name}
+              </a>
+            ) : (
+              <span className="sponsor-name">{DATA.sponsor.name}</span>
+            )
+          ) : (
+            <span className="sponsor-open">your business here</span>
+          )}
         </p>
         <p>
           A <strong>Wausau Pilot &amp; Review</strong> community tool · Specials verified with each bar ·
           Last updated <span className="mono">{DATA.updated}</span>
         </p>
         <p>
-          Own a bar? <a href="https://wausaupilotandreview.com/contact/">Claim or update your listing</a> — basic
+          Own a bar? <a href="https://wausaupilotandreview.com/contact/" target="_top">Claim or update your listing</a> — basic
           listings are free.
         </p>
       </footer>
