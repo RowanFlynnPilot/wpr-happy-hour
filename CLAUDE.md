@@ -15,7 +15,13 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   schema changes update the validator in the same commit, no silent fallbacks,
   no defaults.
 - Bar contact info NEVER goes in bars.json (it lives in a separate Notion CRM).
-- Tiers are exactly "free" | "featured". No third tier without explicit ask.
+- Tiers are exactly "partner" | "featured" — every listing is a paid placement,
+  there is no free tier (owner decision, July 2026). Billing and sales live with
+  Chris Weber offline; no payment code in the tool. No third tier without
+  explicit ask.
+- verifiedOn is null until Chris confirms specials by phone; never invent a date.
+- Analytics is exactly one Plausible script tag in index.html — no other
+  external scripts.
 - Time logic: start inclusive, end exclusive, no cross-midnight windows,
   visitor's local browser time. Do not introduce timezone libraries.
 - Single component file (App.jsx) is intentional at this size. Split only

@@ -4,7 +4,7 @@
 
 export const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const TYPES = ['drinks', 'food', 'both'];
-const TIERS = ['free', 'featured'];
+const TIERS = ['partner', 'featured'];
 const HM = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export function toMinutes(hm) {
@@ -29,7 +29,7 @@ export function validate(json) {
   }
   const seen = new Set();
   for (const bar of json.bars) {
-    for (const field of ['id', 'name', 'city', 'address', 'website', 'tier', 'photo', 'specials']) {
+    for (const field of ['id', 'name', 'city', 'address', 'website', 'tier', 'verifiedOn', 'photo', 'specials']) {
       if (bar[field] === undefined) throw new Error(`bars.json: bar "${bar.id ?? bar.name}" missing "${field}"`);
     }
     if (seen.has(bar.id)) throw new Error(`bars.json: duplicate id "${bar.id}"`);
@@ -39,6 +39,9 @@ export function validate(json) {
     }
     if (bar.photo !== null && typeof bar.photo !== 'string') {
       throw new Error(`bars.json: bar "${bar.id}" "photo" must be a URL string or null`);
+    }
+    if (bar.verifiedOn !== null && !(typeof bar.verifiedOn === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(bar.verifiedOn))) {
+      throw new Error(`bars.json: bar "${bar.id}" "verifiedOn" must be YYYY-MM-DD or null (null until confirmed by phone)`);
     }
     if (!TIERS.includes(bar.tier)) throw new Error(`bars.json: bar "${bar.id}" has invalid tier "${bar.tier}"`);
     if (!Array.isArray(bar.specials) || bar.specials.length === 0) {

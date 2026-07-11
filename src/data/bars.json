@@ -9,6 +9,7 @@
       "address": "Downtown Wausau",
       "website": "",
       "tier": "featured",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -26,7 +27,8 @@
       "city": "Wausau",
       "address": "408 3rd St, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -51,7 +53,8 @@
       "city": "Wausau",
       "address": "612 Washington St, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -69,7 +72,8 @@
       "city": "Wausau",
       "address": "901 E Thomas St, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -87,7 +91,8 @@
       "city": "Schofield",
       "address": "3425 Schofield Ave, Schofield",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -105,7 +110,8 @@
       "city": "Weston",
       "address": "5902 Schofield Ave, Weston",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -123,7 +129,8 @@
       "city": "Wausau",
       "address": "2200 Stewart Ave, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -141,7 +148,8 @@
       "city": "Wausau",
       "address": "325 N 4th St, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -159,7 +167,8 @@
       "city": "Wausau",
       "address": "713 Grant St, Wausau",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {
@@ -177,7 +186,8 @@
       "city": "Rothschild",
       "address": "1001 Imperial Ave, Rothschild",
       "website": "",
-      "tier": "free",
+      "tier": "partner",
+      "verifiedOn": null,
       "photo": null,
       "specials": [
         {

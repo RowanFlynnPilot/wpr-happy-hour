@@ -157,6 +157,11 @@ a:focus-visible {
   border: 2px solid var(--teal);
 }
 
+/* ?bar= deep-link target — subtle wash, distinct from the featured border */
+.card-linked {
+  background: var(--teal-tint);
+}
+
 .featured-badge {
   position: absolute;
   top: -10px;
@@ -268,6 +273,18 @@ a:focus-visible {
   font-weight: 700;
 }
 
+.card-verified {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  font-size: 11px;
+  color: var(--teal-dark);
+}
+
+.card-verified.pending {
+  color: var(--ink-soft);
+}
+
 /* Empty + footer */
 .empty {
   text-align: center;
@@ -301,6 +318,10 @@ a:focus-visible {
 .sponsor-open {
   color: var(--teal-dark);
   border-bottom: 1px dashed var(--teal);
+}
+
+a.sponsor-open {
+  text-decoration: none;
 }
 
 .sponsor-name {

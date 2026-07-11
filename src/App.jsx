@@ -53,11 +53,30 @@ function minutesUntil(hm, date) {
 const DATA = validate(data);
 const CITIES = [...new Set(DATA.bars.map((b) => b.city))].sort();
 
-// Deep links: ?view=fri&city=Weston&type=food — read once at load, no router.
-// Unlike curated data, params arrive from outside (article links, embeds), so
-// invalid values fall back to defaults instead of throwing.
+// Deep links: ?view=fri&city=Weston&type=food&bar=red-eye-brewing — read once at
+// load, no router. Unlike curated data, params arrive from outside (article
+// links, embeds, bars' own socials), so invalid values fall back to defaults
+// instead of throwing.
 const PARAMS = new URLSearchParams(window.location.search);
-const INITIAL_VIEW = ['now', ...DAY_KEYS].includes(PARAMS.get('view')) ? PARAMS.get('view') : 'now';
+const INITIAL_BAR = DATA.bars.some((b) => b.id === PARAMS.get('bar')) ? PARAMS.get('bar') : null;
+const INITIAL_VIEW = ['now', ...DAY_KEYS].includes(PARAMS.get('view'))
+  ? PARAMS.get('view')
+  : INITIAL_BAR
+    ? viewForBar(INITIAL_BAR)
+    : 'now';
+
+// ?bar= without ?view=: land on a view where that bar is actually visible — today
+// if it has a special today (the day view still shows a special that already
+// ended; the Now view would not), else the next day it appears.
+function viewForBar(barId) {
+  const { specials } = DATA.bars.find((b) => b.id === barId);
+  const todayIdx = WEEK_ORDER.indexOf(DAY_KEYS[new Date().getDay()]);
+  for (let off = 0; off < 7; off++) {
+    const day = WEEK_ORDER[(todayIdx + off) % 7];
+    if (specials.some((s) => s.days.includes(day))) return day;
+  }
+  return 'now'; // unreachable — the validator guarantees ≥1 special with ≥1 day
+}
 const INITIAL_CITY = CITIES.includes(PARAMS.get('city')) ? PARAMS.get('city') : 'all';
 const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.get('type') : 'all';
 
@@ -106,9 +125,23 @@ function SpecialRow({ special, now, showDays }) {
 const mapsUrl = (bar) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bar.name}, ${bar.address}, ${bar.city} WI`)}`;
 
+// Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool
+const CONTACT_LISTING = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing';
+const CONTACT_SPONSOR = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20sponsorship';
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// "2026-07-11" → "Jul 2026" — month precision so the badge doesn't read stale by Friday
+function fmtVerified(ymd) {
+  const [y, m] = ymd.split('-').map(Number);
+  return `${MONTHS[m - 1]} ${y}`;
+}
+
 function BarCard({ bar, specials, now, showDays }) {
   return (
-    <article className={`card${bar.tier === 'featured' ? ' card-featured' : ''}`}>
+    <article
+      id={`bar-${bar.id}`}
+      className={`card${bar.tier === 'featured' ? ' card-featured' : ''}${bar.id === INITIAL_BAR ? ' card-linked' : ''}`}
+    >
       {bar.tier === 'featured' && <div className="featured-badge">Featured</div>}
       {bar.tier === 'featured' && bar.photo && (
         <img className="card-photo" src={bar.photo} alt={bar.name} loading="lazy" />
@@ -138,6 +171,9 @@ function BarCard({ bar, specials, now, showDays }) {
       {specials.map((s, i) => (
         <SpecialRow key={i} special={s} now={now} showDays={showDays} />
       ))}
+      <p className={`card-verified mono${bar.verifiedOn ? '' : ' pending'}`}>
+        {bar.verifiedOn ? `✓ Verified ${fmtVerified(bar.verifiedOn)}` : 'Details being confirmed'}
+      </p>
     </article>
   );
 }
@@ -174,6 +210,13 @@ export default function App() {
     ro.observe(document.body);
     post();
     return () => ro.disconnect();
+  }, []);
+
+  // ?bar= deep link: INITIAL_VIEW guarantees the card is in the first paint
+  // (unless the link also carries a conflicting city/type — then this no-ops).
+  useEffect(() => {
+    if (!INITIAL_BAR) return;
+    document.getElementById(`bar-${INITIAL_BAR}`)?.scrollIntoView({ block: 'start' });
   }, []);
 
   const typeMatch = (s) => type === 'all' || s.type === type || s.type === 'both';
@@ -257,7 +300,7 @@ export default function App() {
             `${weekdayLabel(view)} happy hours`
           )}
         </h1>
-        <p className="hero-sub">Verified specials at bars across the Wausau area</p>
+        <p className="hero-sub">Happy hour specials at partner bars across the Wausau area</p>
       </header>
 
       <nav className="controls">
@@ -337,7 +380,10 @@ export default function App() {
               ))}
             </div>
           ) : (
-            <p className="empty">No specials listed for {weekdayLabel(view)} yet.</p>
+            <p className="empty">
+              No specials listed for {weekdayLabel(view)} yet.{' '}
+              <a href={CONTACT_LISTING}>Run one? Get it listed.</a>
+            </p>
           )}
         </section>
       )}
@@ -354,16 +400,17 @@ export default function App() {
               <span className="sponsor-name">{DATA.sponsor.name}</span>
             )
           ) : (
-            <span className="sponsor-open">your business here</span>
+            <a className="sponsor-open" href={CONTACT_SPONSOR}>
+              your business here
+            </a>
           )}
         </p>
         <p>
-          A <strong>Wausau Pilot &amp; Review</strong> community tool · Specials verified with each bar ·
-          Last updated <span className="mono">{DATA.updated}</span>
+          A <strong>Wausau Pilot &amp; Review</strong> community tool · Partner listings are paid
+          placements · Last updated <span className="mono">{DATA.updated}</span>
         </p>
         <p>
-          Own a bar? <a href="https://wausaupilotandreview.com/contact/" target="_top">Claim or update your listing</a> — basic
-          listings are free.
+          Run a bar or restaurant? <a href={CONTACT_LISTING}>Email Chris Weber to get listed</a>.
         </p>
       </footer>
     </div>
