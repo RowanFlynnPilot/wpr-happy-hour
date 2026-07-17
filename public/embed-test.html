@@ -16,6 +16,9 @@
     </p>
     <iframe id="wpr-hh" src="./" height="300" title="Happy Hour Finder — Wausau Pilot &amp; Review"></iframe>
     <script>
+      // Mirror the WP snippet: forward this page's query string into the app so
+      // deep links (?view=fri, ?bar=...) can be tested through the iframe.
+      if (location.search) document.getElementById('wpr-hh').src = './' + location.search;
       // Same listener the WordPress embed uses (see README), origin-checked.
       window.addEventListener('message', (e) => {
         if (e.origin !== location.origin) return;

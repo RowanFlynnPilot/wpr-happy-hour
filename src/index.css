@@ -8,7 +8,7 @@
   --ink-soft: #5a6b66;
   --card: #ffffff;
   --line: #e3ddd0;
-  --amber: #b07d2b;
+  --amber: #8a6119; /* darkened 2026-07-16 for WCAG AA on --amber-tint (4.7:1) */
   --amber-tint: #f6edda;
 }
 

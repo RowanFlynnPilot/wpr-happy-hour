@@ -293,6 +293,11 @@ export default function App() {
                 <span className="hero-count mono">{pouring.length}</span> happy hour
                 {pouring.length === 1 ? ' is' : 's are'} pouring right now
               </>
+            ) : laterToday.length > 0 ? (
+              <>
+                <span className="hero-count mono">{laterToday.length}</span> happy hour
+                {laterToday.length === 1 ? '' : 's'} starting later today
+              </>
             ) : (
               'Nothing pouring at the moment'
             )

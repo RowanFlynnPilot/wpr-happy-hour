@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Partner Rate Card — Happy Hour Finder · Wausau Pilot &amp; Review</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* WPR design system (mirrors src/index.css tokens) */
+      :root {
+        --teal: #3a867c;
+        --teal-dark: #2c6a62;
+        --teal-tint: #e4efec;
+        --cream: #f6f2e9;
+        --ink: #22302c;
+        --ink-soft: #5a6b66;
+        --card: #ffffff;
+        --line: #e3ddd0;
+        --amber: #8a6119;
+        --amber-tint: #f6edda;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        background: var(--cream);
+        color: var(--ink);
+        font-family: 'Public Sans', system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      .mono { font-family: 'JetBrains Mono', monospace; }
+      .page { max-width: 880px; margin: 0 auto; padding: 32px 20px 56px; }
+      .draft {
+        background: var(--amber-tint);
+        color: var(--amber);
+        border: 1px dashed var(--amber);
+        border-radius: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        padding: 8px 14px;
+        margin-bottom: 28px;
+        text-align: center;
+      }
+      .kicker {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--teal-dark);
+      }
+      h1 {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(30px, 5vw, 44px);
+        line-height: 1.12;
+        margin: 6px 0 14px;
+      }
+      .lede { color: var(--ink-soft); max-width: 60ch; }
+      .lede a { color: var(--teal-dark); }
+      h2 {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--teal-dark);
+        margin: 40px 0 14px;
+      }
+      .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+      .tier {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+        position: relative;
+      }
+      .tier.featured { border: 2px solid var(--teal); }
+      .tier-badge {
+        position: absolute;
+        top: -11px;
+        right: 14px;
+        background: var(--teal);
+        color: #fff;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 2px 10px;
+        border-radius: 999px;
+      }
+      .tier h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; }
+      .price {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--teal-dark);
+        margin: 8px 0 2px;
+      }
+      .price small { font-size: 13px; font-weight: 400; color: var(--ink-soft); }
+      .tier ul { padding-left: 18px; margin-top: 10px; font-size: 14.5px; }
+      .tier li { margin: 5px 0; }
+      .includes {
+        background: var(--teal-tint);
+        border-radius: 12px;
+        padding: 20px 22px;
+      }
+      .includes ul { padding-left: 18px; }
+      .includes li { margin: 6px 0; }
+      .founding {
+        border-left: 4px solid var(--teal);
+        background: var(--card);
+        border-radius: 0 12px 12px 0;
+        padding: 16px 20px;
+        margin-top: 14px;
+      }
+      .contact {
+        margin-top: 44px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+      .contact a { color: var(--teal-dark); font-weight: 600; }
+      .fine { color: var(--ink-soft); font-size: 13px; margin-top: 8px; }
+      @media print {
+        body { background: #fff; }
+        .page { padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <p class="draft">DRAFT — set real prices and delete this ribbon before sharing</p>
+
+      <p class="kicker">Wausau Pilot &amp; Review</p>
+      <h1>Happy Hour Finder — Partner Rate Card</h1>
+      <p class="lede">
+        The <a href="./">Happy Hour Finder</a> is a live, time-aware guide to drink and food
+        specials across the Wausau area, embedded on wausaupilotandreview.com. Readers see
+        what's pouring <em>right now</em> — and every listing is a verified partner placement,
+        confirmed with you by phone.
+      </p>
+
+      <h2>Placements</h2>
+      <div class="tiers">
+        <div class="tier">
+          <h3>Partner listing</h3>
+          <p class="price">$–– <small>/ month</small></p>
+          <ul>
+            <li>Your specials, live by day and hour</li>
+            <li>"Pouring now" status the moment your happy hour starts</li>
+            <li>Verified-by-phone badge on your card</li>
+            <li>Your own shareable link for socials &amp; table tents</li>
+          </ul>
+        </div>
+        <div class="tier featured">
+          <span class="tier-badge">Featured</span>
+          <h3>Featured listing</h3>
+          <p class="price">$–– <small>/ month</small></p>
+          <ul>
+            <li>Everything in Partner</li>
+            <li>Pinned to the top of every list</li>
+            <li>Photo on your card + accent border &amp; badge</li>
+            <li>One-tap Directions link</li>
+          </ul>
+        </div>
+        <div class="tier">
+          <h3>Presenting sponsor</h3>
+          <p class="price">$–– <small>/ month</small></p>
+          <ul>
+            <li>"Happy Hour Finder, presented by <em>you</em>" on every view</li>
+            <li>Exactly one slot — exclusive</li>
+            <li>Linked to your site</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2>Every placement includes</h2>
+      <div class="includes">
+        <ul>
+          <li><strong>Accuracy, guaranteed.</strong> We confirm your specials with you by phone and stamp the card with its verification date.</li>
+          <li><strong>Real numbers.</strong> Monthly reporting on views and clicks from privacy-friendly analytics.</li>
+          <li><strong>Updates any time.</strong> Specials change? One email and the listing is updated.</li>
+          <li><strong>Simple billing.</strong> Invoiced directly by Wausau Pilot &amp; Review. <span class="mono">[terms TBD]</span></li>
+        </ul>
+      </div>
+
+      <div class="founding">
+        <strong>Founding partner offer:</strong> the first bars to join lock in their launch
+        rate and are credited as founding partners. <span class="mono">[Details TBD]</span>
+      </div>
+
+      <p class="contact">
+        Ready to get listed? Contact <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing">Chris Weber</a><br />
+        weber.chris@wausaupilotandreview.com
+        <span class="fine"><br />Wausau Pilot &amp; Review is a nonprofit newsroom — partner placements support free local journalism.</span>
+      </p>
+    </div>
+  </body>
+</html>

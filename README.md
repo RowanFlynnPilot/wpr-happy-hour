@@ -43,7 +43,8 @@ load, and `npm run check` runs the same validator in CI before every deploy):
 
 - `tier` is `"partner"` or `"featured"` — every listing is a paid placement; there is no
   free tier. Featured gets the badge, accent border, pinned sort, a Directions link
-  (derived from the address), and an optional `photo` URL.
+  (derived from the address), and an optional `photo` URL. A `photo` on a partner-tier
+  bar fails validation — the photo is a featured perk.
 - `verifiedOn` is `null` until the specials are confirmed with the bar by phone, then the
   `YYYY-MM-DD` of that call. Renders as "✓ Verified <Mon Year>" on the card (null shows
   "Details being confirmed"); `npm run check` warns on unverified or >90-day-old listings.
@@ -78,6 +79,11 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
         style="width:100%;border:0;" height="900" loading="lazy"
         title="Happy Hour Finder — Wausau Pilot & Review"></iframe>
 <script>
+  // Forward article deep links (?view=fri, ?bar=..., ?city=..., ?type=...) into
+  // the app — without this, links to the WP page can't pre-select anything.
+  if (window.location.search) {
+    document.getElementById('wpr-hh').src += window.location.search;
+  }
   window.addEventListener('message', function (e) {
     if (e.origin !== 'https://rowanflynnpilot.github.io') return;
     if (e.data && e.data.type === 'wpr-hh-height') {
@@ -86,6 +92,14 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
   });
 </script>
 ```
+
+## Sales assets
+
+- `public/partners.html` — the rate card Chris shares or prints to PDF:
+  https://rowanflynnpilot.github.io/wpr-happy-hour/partners.html. Prices are "$––"
+  placeholders until set; remove the DRAFT ribbon in the same edit. Not linked
+  from the reader UI.
+- `LAUNCH.md` — the ordered launch checklist.
 
 ## Analytics
 

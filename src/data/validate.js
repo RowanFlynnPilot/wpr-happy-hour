@@ -40,6 +40,9 @@ export function validate(json) {
     if (bar.photo !== null && typeof bar.photo !== 'string') {
       throw new Error(`bars.json: bar "${bar.id}" "photo" must be a URL string or null`);
     }
+    if (bar.tier !== 'featured' && bar.photo !== null) {
+      throw new Error(`bars.json: bar "${bar.id}" has a photo but tier "${bar.tier}" — photos are a featured-tier perk`);
+    }
     if (bar.verifiedOn !== null && !(typeof bar.verifiedOn === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(bar.verifiedOn))) {
       throw new Error(`bars.json: bar "${bar.id}" "verifiedOn" must be YYYY-MM-DD or null (null until confirmed by phone)`);
     }
