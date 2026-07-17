@@ -128,6 +128,7 @@ const mapsUrl = (bar) =>
 // Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool
 const CONTACT_LISTING = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing';
 const CONTACT_SPONSOR = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20sponsorship';
+const CONTACT_CORRECTION = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20correction';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // "2026-07-11" → "Jul 2026" — month precision so the badge doesn't read stale by Friday
@@ -415,7 +416,8 @@ export default function App() {
           placements · Last updated <span className="mono">{DATA.updated}</span>
         </p>
         <p>
-          Run a bar or restaurant? <a href={CONTACT_LISTING}>Email Chris Weber to get listed</a>.
+          Run a bar or restaurant? <a href={CONTACT_LISTING}>Email Chris Weber to get listed</a> ·{' '}
+          <a href={CONTACT_CORRECTION}>Spot an error? Tell us</a>
         </p>
       </footer>
     </div>
