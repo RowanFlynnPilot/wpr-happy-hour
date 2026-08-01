@@ -546,6 +546,717 @@
           "items": ["PLACEHOLDER — happy hour being confirmed"]
         }
       ]
+    },
+    {
+      "id": "the-garage",
+      "name": "The Garage",
+      "city": "Rib Mountain",
+      "address": "152501 Morning Glory Ln, Rib Mountain",
+      "website": "https://www.thegaragewausau.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon"],
+          "start": "11:00",
+          "end": "21:00",
+          "type": "drinks",
+          "items": ["All-day Monday happy hour — pricing being confirmed"]
+        },
+        {
+          "days": ["tue", "wed", "thu"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["Happy hour — pricing being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "brews-brothers",
+      "name": "Brews Brothers Pub",
+      "city": "Weston",
+      "address": "4107 Barbican Ave, Weston",
+      "website": "https://www.brewsbrothersweston.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["sun", "mon", "tue", "wed", "thu"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["$4 standard pours"]
+        }
+      ]
+    },
+    {
+      "id": "trailside",
+      "name": "Trailside Sports Bar & Grill",
+      "city": "Weston",
+      "address": "8101 Schofield Ave, Weston",
+      "website": "https://trail-side-bar-and-grill.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["thu", "fri", "sat"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — reported: brisket Thu · fish fry Fri · prime rib Sat (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "mountain-view",
+      "name": "Mountain View Bar & Grill",
+      "city": "Rib Mountain",
+      "address": "227201 Hummingbird Rd, Rib Mountain",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "campus-pub",
+      "name": "Campus Pub",
+      "city": "Wausau",
+      "address": "1110 W Campus Dr, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — reported: 2-for-1 Double Bubble Mon–Thu (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "emerald-night-club",
+      "name": "Emerald Night Club",
+      "city": "Wausau",
+      "address": "320 Washington St, Wausau",
+      "website": "https://emeraldnightclub.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri", "sat"],
+          "start": "17:00",
+          "end": "20:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "speakeasy",
+      "name": "Speakeasy",
+      "city": "Schofield",
+      "address": "5505 Business Hwy 51, Schofield",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "bob-and-randys",
+      "name": "Bob & Randy's Bar",
+      "city": "Wausau",
+      "address": "1515 N 6th St, Wausau",
+      "website": "https://bobandrandys.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — daily specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "chatterbox",
+      "name": "The Chatterbox Bar",
+      "city": "Wausau",
+      "address": "102 S 2nd Ave, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "glass-hat",
+      "name": "Glass Hat",
+      "city": "Wausau",
+      "address": "1203 N 3rd St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["thu", "fri"],
+          "start": "18:00",
+          "end": "20:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed under new management"]
+        }
+      ]
+    },
+    {
+      "id": "cop-shoppe",
+      "name": "Cop Shoppe Pub",
+      "city": "Wausau",
+      "address": "701 Washington St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "thu", "sat", "sun"],
+          "start": "13:00",
+          "end": "21:00",
+          "type": "both",
+          "items": ["PLACEHOLDER — reported: Tue taco bar · Sun bloody mary bar · $5 smashburgers Thu/Sat (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "mosinee-brewing",
+      "name": "Mosinee Brewing Company",
+      "city": "Mosinee",
+      "address": "401 4th St, Mosinee",
+      "website": "https://mosineebrewing.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed", "thu", "fri"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "pinewood-supper-club",
+      "name": "Pinewood Supper Club",
+      "city": "Mosinee",
+      "address": "147801 Half Moon Lake Dr, Mosinee",
+      "website": "https://thepinewood.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry & prime rib being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "51-bar-and-grill",
+      "name": "51 Bar & Grill",
+      "city": "Kronenwetter",
+      "address": "1718 Old Hwy 51, Kronenwetter",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "wed", "fri"],
+          "start": "11:00",
+          "end": "21:00",
+          "type": "both",
+          "items": ["PLACEHOLDER — reported: $1.75 mugs & wings Mon · free pool Wed · fish fry Fri (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "office-bar",
+      "name": "The Office Bar",
+      "city": "Schofield",
+      "address": "662 Grand Ave, Schofield",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "loppnows",
+      "name": "Loppnow's Bar",
+      "city": "Wausau",
+      "address": "1502 N 3rd St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "country-aire",
+      "name": "Country Aire Bar & Restaurant",
+      "city": "Stratford",
+      "address": "118600 County Rd P, Stratford",
+      "website": "https://thecountryaire.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue"],
+          "start": "10:00",
+          "end": "23:59",
+          "type": "food",
+          "items": ["Chicken George — fried chicken tenders, 2 or 3 pc"]
+        },
+        {
+          "days": ["wed"],
+          "start": "10:00",
+          "end": "23:59",
+          "type": "food",
+          "items": ["Taco salads — half or full"]
+        },
+        {
+          "days": ["thu"],
+          "start": "11:00",
+          "end": "13:30",
+          "type": "food",
+          "items": ["All-you-can-eat Build-a-Lunch buffet"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:30",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Friday fish fry — Atlantic cod, 2 or 3 pc"]
+        },
+        {
+          "days": ["sat"],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Prime rib — Queen 10oz / King 16oz"]
+        }
+      ]
+    },
+    {
+      "id": "mill-yard",
+      "name": "The Mill Yard",
+      "city": "Brokaw",
+      "address": "238532 County Rd W, Brokaw",
+      "website": "https://themillyardwi.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["Happy hour 3–6 — days & pricing being confirmed"]
+        },
+        {
+          "days": ["tue"],
+          "start": "11:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["Taco Tuesday"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Friday fish fry — details being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "landmark-bar",
+      "name": "Landmark Bar",
+      "city": "Athens",
+      "address": "117 Alfred St, Athens",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — daily specials being confirmed"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "charlies-bar",
+      "name": "Charlie's Bar",
+      "city": "Marathon City",
+      "address": "144746 County Rd N, Marathon City",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — happy hour being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "weiks-pub",
+      "name": "Weiks Pub & Grill",
+      "city": "Edgar",
+      "address": "231745 County Rd S, Edgar",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed"],
+          "start": "11:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Wednesday fish wrap special (confirming)"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "cellar-sports-bar",
+      "name": "The Cellar Sports Bar & Grill",
+      "city": "Stratford",
+      "address": "305 N 3rd Ave, Stratford",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday haddock fish fry (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "just-4-one",
+      "name": "Just 4 One Bar and Grill",
+      "city": "Stratford",
+      "address": "213720 State Hwy 97, Stratford",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry: haddock, perch or shrimp (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "red-retriever",
+      "name": "The Red Retriever Bar & Grill",
+      "city": "Hatley",
+      "address": "215523 N Shore Dr, Hatley",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:30",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "hatley-hangout",
+      "name": "Hatley Hangout",
+      "city": "Hatley",
+      "address": "208 Clark St, Hatley",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "hillside-pub",
+      "name": "Hillside Pub",
+      "city": "Ringle",
+      "address": "167585 County Rd N, Ringle",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed (newly reopened)"]
+        }
+      ]
+    },
+    {
+      "id": "ballyhoos",
+      "name": "Ballyhoos Sports Bar & Grill",
+      "city": "Merrill",
+      "address": "124 N Prospect St, Merrill",
+      "website": "https://merrillballyhoos.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu"],
+          "start": "11:00",
+          "end": "16:00",
+          "type": "food",
+          "items": ["$10 lunch baskets — six daily picks"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Friday fish fry — beer-battered haddock, walleye, shrimp"]
+        },
+        {
+          "days": ["sat"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Prime rib Saturday — with potato & salad bar"]
+        }
+      ]
+    },
+    {
+      "id": "sawmill-brewing",
+      "name": "Sawmill Brewing Company",
+      "city": "Merrill",
+      "address": "1110 E 10th St, Merrill",
+      "website": "https://sawmillbrewing.net/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "les-and-jims",
+      "name": "Les & Jim's Lincoln Lanes",
+      "city": "Merrill",
+      "address": "1208 N Center Ave, Merrill",
+      "website": "https://lesandjims.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — daily drink specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "pub-1638",
+      "name": "Pub 1638",
+      "city": "Merrill",
+      "address": "601 Johnson St, Merrill",
+      "website": "http://www.pub1638.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "salvos",
+      "name": "Salvo's Pizzeria & Pub",
+      "city": "Merrill",
+      "address": "201 E Second St, Merrill",
+      "website": "https://salvospizzeriaandpub.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "thu", "fri"],
+          "start": "16:00",
+          "end": "19:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "club-64",
+      "name": "Kathy & Cal's Club 64",
+      "city": "Merrill",
+      "address": "2405 W Main St, Merrill",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:30",
+          "end": "20:30",
+          "type": "food",
+          "items": ["PLACEHOLDER — Friday perch & cod fish fry (confirming)"]
+        }
+      ]
+    },
+    {
+      "id": "the-dugout",
+      "name": "The Dugout",
+      "city": "Merrill",
+      "address": "N2472 County Rd K, Merrill",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — reported: shrimp tacos & fish fry Fri (confirming)"]
+        }
+      ]
     }
   ]
 }
