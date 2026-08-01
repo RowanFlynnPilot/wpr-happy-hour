@@ -139,6 +139,168 @@
       ]
     },
     {
+      "id": "wausau-on-water",
+      "name": "WOW — Wausau on Water",
+      "city": "Wausau",
+      "address": "1300 N River Dr, Wausau",
+      "website": "https://www.play-wow.net/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "both",
+          "items": [
+            "$2.50 domestic pints · $3.50 craft pints",
+            "$3 rail mixers · $4 house wines",
+            "$5 select appetizers (dine-in only)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wausau-mine-co",
+      "name": "Wausau Mine Company",
+      "city": "Wausau",
+      "address": "3904 W Stewart Ave, Wausau",
+      "website": "https://wausaumine.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": ["BOGO margaritas — all day"]
+        },
+        {
+          "days": ["tue"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": ["Talls for the price of smalls — all day"]
+        },
+        {
+          "days": ["wed"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": ["$3 domestic taps — all day"]
+        },
+        {
+          "days": ["thu"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": ["$3.50 rail old fashioneds — all day"]
+        },
+        {
+          "days": ["fri"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "both",
+          "items": ["Bartender's choice drink special", "Fish fry — deep-fried cod from $10.99"]
+        },
+        {
+          "days": ["sat"],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": ["$4 bloody marys — all day"]
+        }
+      ]
+    },
+    {
+      "id": "richards",
+      "name": "Richard's Restaurant & Bar",
+      "city": "Wausau",
+      "address": "5305 N 32nd Ave, Wausau",
+      "website": "https://richards-restaurant.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue"],
+          "start": "16:00",
+          "end": "17:30",
+          "type": "food",
+          "items": ["Early bird — half broasted chicken"]
+        },
+        {
+          "days": ["wed", "fri"],
+          "start": "16:00",
+          "end": "17:30",
+          "type": "food",
+          "items": ["Early bird — 1-pc fish fry, breaded or beer-battered"]
+        },
+        {
+          "days": ["thu"],
+          "start": "16:00",
+          "end": "17:30",
+          "type": "food",
+          "items": ["Early bird — wing & rib buffet"]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Full Friday fish fry — haddock, walleye, shrimp, poorman's lobster & more"]
+        },
+        {
+          "days": ["sat"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Cut-to-order prime rib"]
+        }
+      ]
+    },
+    {
+      "id": "glass-and-grain",
+      "name": "Glass & Grain House",
+      "city": "Wausau",
+      "address": "1702 N 6th St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "olivas-gullivers",
+      "name": "Oliva's at Gulliver's Landing",
+      "city": "Rib Mountain",
+      "address": "151791 Gadwall Ln, Rib Mountain",
+      "website": "https://www.olivasgullivers.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
       "id": "hiawatha-bar",
       "name": "The Hiawatha Social",
       "city": "Wausau",
@@ -154,6 +316,234 @@
           "end": "18:00",
           "type": "drinks",
           "items": ["PLACEHOLDER — specials being confirmed with the new owners"]
+        }
+      ]
+    },
+    {
+      "id": "the-bar-wausau",
+      "name": "The Bar of Wausau",
+      "city": "Rothschild",
+      "address": "10302 Market St, Rothschild",
+      "website": "https://www.meetatthebar.com/wausau.html",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "14:30",
+          "end": "17:30",
+          "type": "drinks",
+          "items": ["$3 domestic pints & bottles", "$1.50 off drinks"]
+        },
+        {
+          "days": ["mon", "tue"],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "food",
+          "items": ["80¢ traditional wings — all day"]
+        },
+        {
+          "days": ["wed", "sun"],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "food",
+          "items": ["80¢ boneless wings — all day"]
+        },
+        {
+          "days": ["thu"],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "food",
+          "items": ["$12 14-inch two-topping pizza"]
+        }
+      ]
+    },
+    {
+      "id": "palms-supper-club",
+      "name": "The Palms Supper Club",
+      "city": "Weston",
+      "address": "5912 Business Hwy 51, Weston",
+      "website": "https://thepalmswausau.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "both",
+          "items": [
+            "Wine Down Wednesday — $5 off any wine bottle",
+            "Prime rib from 4 PM — 12oz $42 · 15oz $48, until sold out"
+          ]
+        },
+        {
+          "days": ["fri"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Friday fish menu — beer-battered cod from $15, walleye, perch, snow crab"]
+        },
+        {
+          "days": ["sat"],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["Prime rib from 4 PM — 12oz $42 · 15oz $48, until sold out"]
+        }
+      ]
+    },
+    {
+      "id": "hoehns-huddle",
+      "name": "Hoehn's Huddle Sports Bar & Grill",
+      "city": "Schofield",
+      "address": "840 Grand Ave, Schofield",
+      "website": "https://hoehnshuddlebarandgrill.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+          "start": "11:00",
+          "end": "21:00",
+          "type": "food",
+          "items": ["PLACEHOLDER — daily themes being confirmed (AYCE wings, fish fry, prime rib)"]
+        }
+      ]
+    },
+    {
+      "id": "uncommon-pints",
+      "name": "Uncommon Pints",
+      "city": "Rothschild",
+      "address": "27 Brown Blvd, Rothschild",
+      "website": "https://uncommonpints.ourmenu.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "arrow-sports-club",
+      "name": "Arrow Sports Club",
+      "city": "Weston",
+      "address": "6202 Schofield Ave, Weston",
+      "website": "https://arrowsportsclubweston.weebly.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "velveteen-plum",
+      "name": "The Velveteen Plum",
+      "city": "Wausau",
+      "address": "1520 Elm St, Wausau",
+      "website": "https://velveteenplum.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed"],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "drinks",
+          "items": ["$30 Bottle Night — reserve wines & bubblies"]
+        }
+      ]
+    },
+    {
+      "id": "nevermore-on-third",
+      "name": "Nevermore on Third Bar & Grille",
+      "city": "Wausau",
+      "address": "1206 N 3rd St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "wed", "thu", "fri"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — rotating specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "timekeeper-distillery",
+      "name": "Timekeeper Distillery",
+      "city": "Wausau",
+      "address": "720 Grant St, Wausau",
+      "website": "https://timekeeperdistillery.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["wed", "thu", "fri"],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "juliett",
+      "name": "Juliett",
+      "city": "Wausau",
+      "address": "608 N 3rd St, Wausau",
+      "website": "https://juliettcocktails.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "wed", "thu", "fri"],
+          "start": "17:00",
+          "end": "19:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — specials being confirmed"]
+        }
+      ]
+    },
+    {
+      "id": "limericks",
+      "name": "Limericks Public House",
+      "city": "Wausau",
+      "address": "634 N 3rd St, Wausau",
+      "website": "http://www.limerickswausau.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": ["tue", "wed", "thu", "fri"],
+          "start": "16:30",
+          "end": "19:00",
+          "type": "drinks",
+          "items": ["PLACEHOLDER — happy hour being confirmed"]
         }
       ]
     }
