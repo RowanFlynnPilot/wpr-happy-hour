@@ -16,13 +16,22 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
 3. **Set pricing → finish the rate card.** Fill real numbers into
    `public/partners.html` (currently "$––" placeholders) and remove its DRAFT
    ribbon in the same edit.
-4. **Register Plausible.** Add site `rowanflynnpilot.github.io` to the WPR
+4. **Register Plausible.** Add site `rowanflynnpilot.github.io` to a WPR
    Plausible account. The script tag is already live; no data is recorded until
-   the site is registered.
-5. **Embed on WordPress.** Stable page (e.g. `/happy-hour/`) using the README
-   snippet — it includes the query-string passthrough so article deep links
-   (`?view=fri`, `?bar=...`) work inside the iframe.
-6. **Announcement article.** Link the page; give each partner their own
+   the site is registered. Note (checked 2026-08-01): the main WP site runs
+   GA4 + Jetpack stats, not Plausible — so this means a new Plausible account.
+   If the newsroom would rather consolidate on GA4, swapping the tool's tag is
+   a one-line change (owner call; the Plausible pick is from July 2026).
+5. **Embed on WordPress.** The pattern is proven: the live Fish Fry Guide page
+   embeds its app the same way (iframe → GitHub Pages). Create the page —
+   suggest `/wausau-area-happy-hour-guide/` to match the fish fry slug — and
+   paste the README snippet; it adds auto-height plus the query-string
+   passthrough so article deep links (`?view=fri`, `?bar=...`) work inside
+   the iframe.
+6. **Cross-link the guides.** The happy hour app already links to the Fish Fry
+   Guide on Fridays. Add the reciprocal link on the fish fry side (WP page or
+   the wpr-fish-fry app footer) once the happy hour page exists.
+7. **Announcement article.** Link the page; give each partner their own
    `?bar=<id>` link to share on socials.
 
 Open decisions (owner/Chris):

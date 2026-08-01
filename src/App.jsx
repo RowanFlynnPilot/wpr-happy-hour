@@ -130,6 +130,9 @@ const CONTACT_LISTING = 'mailto:weber.chris@wausaupilotandreview.com?subject=Hap
 const CONTACT_SPONSOR = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20sponsorship';
 const CONTACT_CORRECTION = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20correction';
 
+// Sibling reader guide, live since July 2026 — cross-promoted on Fridays only
+const FISH_FRY_URL = 'https://wausaupilotandreview.com/wausau-area-fish-fry-guide/';
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // "2026-07-11" → "Jul 2026" — month precision so the badge doesn't read stale by Friday
 function fmtVerified(ymd) {
@@ -392,6 +395,13 @@ export default function App() {
             </p>
           )}
         </section>
+      )}
+
+      {(view === 'fri' || (view === 'now' && DAY_KEYS[now.getDay()] === 'fri')) && (
+        <p className="cross-promo">
+          Friday in Wisconsin means fish fry — see our{' '}
+          <a href={FISH_FRY_URL} target="_top">Wausau-area Fish Fry Guide</a>.
+        </p>
       )}
 
       <footer className="footer">

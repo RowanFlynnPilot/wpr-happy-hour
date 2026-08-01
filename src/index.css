@@ -292,6 +292,17 @@ a:focus-visible {
   padding: 48px 0;
 }
 
+.cross-promo {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.cross-promo a {
+  color: var(--teal-dark);
+}
+
 .footer {
   margin-top: 36px;
   padding-top: 16px;
