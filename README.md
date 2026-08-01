@@ -7,10 +7,12 @@ No Python, no cron, no backend — the content has no upstream source, so it doe
 
 ## ⚠️ Before launch
 
-Every special in `src/data/bars.json` is marked `PLACEHOLDER` and **must be verified with
-each bar** before this goes live. Under the paid partner model the verification call IS the
-sales call: Chris confirms the specials, closes the listing, and the bar's `tier` +
-`verifiedOn` land in the same JSON edit. Contact capture goes to the Notion pipeline.
+`src/data/bars.json` holds research-sourced initial data (2026-08-01): specials either
+come from a bar's own public advertising or are `PLACEHOLDER`-marked guesses. Everything
+**must still be verified with each bar by phone** before launch — the verification call
+IS the sales call: Chris confirms the specials, closes the listing, and the bar's `tier`
++ `verifiedOn` land in the same JSON edit. Contact capture goes to the Notion pipeline;
+the per-bar source sheet lives with the owner, not in this public repo.
 
 ## Data model
 

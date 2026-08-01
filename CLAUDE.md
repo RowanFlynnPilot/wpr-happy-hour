@@ -39,5 +39,10 @@ Windows / PowerShell 5.1. Use `;` for command chaining, `python -m pip` if
 Python ever needed (it shouldn't be here). GitHub: RowanFlynnPilot.
 
 ## Known state
-All specials in bars.json are PLACEHOLDER pending verification calls with each
-bar. That's a sales task, not a code task — never invent "real" specials.
+As of 2026-08-01, bars.json holds research-sourced initial data: identity fields
+(names, addresses, websites) corrected from public sources; specials are either
+sourced from a bar's own advertising (no PLACEHOLDER prefix) or PLACEHOLDER-marked
+guesses. Chris (sales) and Shereen (editorial) validate by phone before anything
+gets a verifiedOn date. Never invent specials, prices, or time windows — an
+unsourced window stays PLACEHOLDER-marked. Malarkey's and Whiskey River were
+removed 2026-08-01 (both closed).

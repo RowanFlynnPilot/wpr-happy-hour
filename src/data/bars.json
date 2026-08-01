@@ -1,13 +1,13 @@
 {
-  "updated": "2026-07-09",
+  "updated": "2026-08-01",
   "sponsor": null,
   "bars": [
     {
       "id": "faraway-place",
       "name": "Faraway Place",
       "city": "Wausau",
-      "address": "Downtown Wausau",
-      "website": "",
+      "address": "408 N 3rd St, Wausau",
+      "website": "https://farawaywausau.com/",
       "tier": "featured",
       "verifiedOn": null,
       "photo": null,
@@ -22,37 +22,11 @@
       ]
     },
     {
-      "id": "malarkeys-pub",
-      "name": "Malarkey's Pub & Townies Grill",
-      "city": "Wausau",
-      "address": "408 3rd St, Wausau",
-      "website": "",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
-          "start": "14:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": ["PLACEHOLDER — $1 off rails and taps"]
-        },
-        {
-          "days": ["wed"],
-          "start": "17:00",
-          "end": "21:00",
-          "type": "food",
-          "items": ["PLACEHOLDER — Half-price wings"]
-        }
-      ]
-    },
-    {
       "id": "red-eye-brewing",
       "name": "Red Eye Brewing Company",
       "city": "Wausau",
       "address": "612 Washington St, Wausau",
-      "website": "",
+      "website": "https://redeyebrewing.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -68,10 +42,10 @@
     },
     {
       "id": "bull-falls-brewery",
-      "name": "Bull Falls Brewery",
+      "name": "Bull Falls Brewing Co.",
       "city": "Wausau",
-      "address": "901 E Thomas St, Wausau",
-      "website": "",
+      "address": "905 E Thomas St, Wausau",
+      "website": "https://bullfallsbrewingco.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -89,18 +63,18 @@
       "id": "sconnis-alehouse",
       "name": "Sconni's Alehouse & Eatery",
       "city": "Schofield",
-      "address": "3425 Schofield Ave, Schofield",
+      "address": "1239 Schofield Ave, Schofield",
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
-          "start": "15:00",
-          "end": "18:00",
+          "days": ["mon", "tue", "wed", "thu"],
+          "start": "14:00",
+          "end": "17:00",
           "type": "both",
-          "items": ["PLACEHOLDER — $2 off tall taps", "PLACEHOLDER — Discounted apps"]
+          "items": ["PLACEHOLDER — happy hour deals being confirmed"]
         }
       ]
     },
@@ -109,7 +83,7 @@
       "name": "Dale's Weston Lanes",
       "city": "Weston",
       "address": "5902 Schofield Ave, Weston",
-      "website": "",
+      "website": "https://westonlanes.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -128,17 +102,20 @@
       "name": "Milwaukee Burger Company",
       "city": "Wausau",
       "address": "2200 Stewart Ave, Wausau",
-      "website": "",
+      "website": "https://milwaukeeburgercompany.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
           "days": ["mon", "tue", "wed", "thu", "fri"],
-          "start": "14:00",
-          "end": "17:00",
+          "start": "15:00",
+          "end": "18:00",
           "type": "both",
-          "items": ["PLACEHOLDER — $1 off taps", "PLACEHOLDER — Half-price cheese curds"]
+          "items": [
+            "$2 off all drinks — taps, mixed drinks, wine, margaritas",
+            "$6 appetizers — cheese curds, onion rings, fried pickles, pretzel bites"
+          ]
         }
       ]
     },
@@ -147,7 +124,7 @@
       "name": "Intermission",
       "city": "Wausau",
       "address": "325 N 4th St, Wausau",
-      "website": "",
+      "website": "https://intermissionwausau.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -163,7 +140,7 @@
     },
     {
       "id": "hiawatha-bar",
-      "name": "Hiawatha Bar & Grill",
+      "name": "The Hiawatha Social",
       "city": "Wausau",
       "address": "713 Grant St, Wausau",
       "website": "",
@@ -172,30 +149,11 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": ["thu", "fri"],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $2 domestic bottles"]
-        }
-      ]
-    },
-    {
-      "id": "whiskey-river",
-      "name": "Whiskey River Bar & Grill",
-      "city": "Rothschild",
-      "address": "1001 Imperial Ave, Rothschild",
-      "website": "",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": ["tue", "wed", "thu", "fri"],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "both",
-          "items": ["PLACEHOLDER — $1 off everything", "PLACEHOLDER — $5 apps"]
+          "items": ["PLACEHOLDER — specials being confirmed with the new owners"]
         }
       ]
     }
