@@ -861,33 +861,6 @@
       ]
     },
     {
-      "id": "campus-pub",
-      "name": "Campus Pub",
-      "city": "Wausau",
-      "address": "1110 W Campus Dr, Wausau",
-      "website": "",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
-          ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": [
-            "PLACEHOLDER — reported: 2-for-1 Double Bubble Mon–Thu (confirming)"
-          ]
-        }
-      ]
-    },
-    {
       "id": "emerald-night-club",
       "name": "Emerald Night Club",
       "city": "Wausau",
