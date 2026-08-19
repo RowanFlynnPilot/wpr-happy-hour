@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-01",
+  "updated": "2026-08-18",
   "sponsor": null,
   "bars": [
     {
@@ -13,11 +13,20 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $2 off craft cocktails", "PLACEHOLDER — $1 off taps"]
+          "items": [
+            "PLACEHOLDER — $2 off craft cocktails",
+            "PLACEHOLDER — $1 off taps"
+          ]
         }
       ]
     },
@@ -32,11 +41,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu"],
+          "days": [
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "15:00",
           "end": "17:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $1 off house pints"]
+          "items": [
+            "PLACEHOLDER — $1 off house pints"
+          ]
         }
       ]
     },
@@ -51,11 +66,16 @@
       "photo": null,
       "specials": [
         {
-          "days": ["thu", "fri"],
+          "days": [
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $4 pints of core lineup"]
+          "items": [
+            "PLACEHOLDER — $4 pints of core lineup"
+          ]
         }
       ]
     },
@@ -64,17 +84,35 @@
       "name": "Sconni's Alehouse & Eatery",
       "city": "Schofield",
       "address": "1239 Schofield Ave, Schofield",
-      "website": "",
+      "website": "http://www.sconnis.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "14:00",
           "end": "17:00",
           "type": "both",
-          "items": ["PLACEHOLDER — happy hour deals being confirmed"]
+          "items": [
+            "PLACEHOLDER — happy hour deals being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "11:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "Friday fish fry — 2pc cod $14 · 3pc $17 · 4pc $20 · 6pc shrimp $17"
+          ]
         }
       ]
     },
@@ -89,11 +127,18 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "16:00",
           "end": "19:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $2.50 domestic taps"]
+          "items": [
+            "PLACEHOLDER — $2.50 domestic taps"
+          ]
         }
       ]
     },
@@ -108,7 +153,13 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "both",
@@ -130,11 +181,16 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri", "sat"],
+          "days": [
+            "fri",
+            "sat"
+          ],
           "start": "20:00",
           "end": "22:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — $3 rail mixers"]
+          "items": [
+            "PLACEHOLDER — $3 rail mixers"
+          ]
         }
       ]
     },
@@ -149,7 +205,12 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu", "fri"],
+          "days": [
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "both",
@@ -172,46 +233,71 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon"],
+          "days": [
+            "mon"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "drinks",
-          "items": ["BOGO margaritas — all day"]
+          "items": [
+            "BOGO margaritas — all day"
+          ]
         },
         {
-          "days": ["tue"],
+          "days": [
+            "tue"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "drinks",
-          "items": ["Talls for the price of smalls — all day"]
+          "items": [
+            "Talls for the price of smalls — all day"
+          ]
         },
         {
-          "days": ["wed"],
+          "days": [
+            "wed"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "drinks",
-          "items": ["$3 domestic taps — all day"]
+          "items": [
+            "$3 domestic taps — all day"
+          ]
         },
         {
-          "days": ["thu"],
+          "days": [
+            "thu"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "drinks",
-          "items": ["$3.50 rail old fashioneds — all day"]
+          "items": [
+            "$3.50 rail old fashioneds — all day"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "both",
-          "items": ["Bartender's choice drink special", "Fish fry — deep-fried cod from $10.99"]
+          "items": [
+            "Bartender's choice drink special",
+            "Fish fry — deep-fried cod from $10.99"
+          ]
         },
         {
-          "days": ["sat"],
+          "days": [
+            "sat"
+          ],
           "start": "11:00",
           "end": "21:30",
           "type": "drinks",
-          "items": ["$4 bloody marys — all day"]
+          "items": [
+            "$4 bloody marys — all day"
+          ]
         }
       ]
     },
@@ -226,39 +312,60 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue"],
+          "days": [
+            "tue"
+          ],
           "start": "16:00",
           "end": "17:30",
           "type": "food",
-          "items": ["Early bird — half broasted chicken"]
+          "items": [
+            "Early bird — half broasted chicken"
+          ]
         },
         {
-          "days": ["wed", "fri"],
+          "days": [
+            "wed",
+            "fri"
+          ],
           "start": "16:00",
           "end": "17:30",
           "type": "food",
-          "items": ["Early bird — 1-pc fish fry, breaded or beer-battered"]
+          "items": [
+            "Early bird — 1-pc fish fry, breaded or beer-battered"
+          ]
         },
         {
-          "days": ["thu"],
+          "days": [
+            "thu"
+          ],
           "start": "16:00",
-          "end": "17:30",
+          "end": "17:00",
           "type": "food",
-          "items": ["Early bird — wing & rib buffet"]
+          "items": [
+            "Early bird — all-you-can-eat Richard's wings"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Full Friday fish fry — haddock, walleye, shrimp, poorman's lobster & more"]
+          "items": [
+            "Full Friday fish fry — haddock, walleye, shrimp, poorman's lobster & more"
+          ]
         },
         {
-          "days": ["sat"],
+          "days": [
+            "sat"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Cut-to-order prime rib"]
+          "items": [
+            "Cut-to-order prime rib"
+          ]
         }
       ]
     },
@@ -266,18 +373,24 @@
       "id": "glass-and-grain",
       "name": "Glass & Grain House",
       "city": "Wausau",
-      "address": "1702 N 6th St, Wausau",
+      "address": "1702 N 6th St Ste B, Wausau",
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
-          "days": ["wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -285,18 +398,37 @@
       "id": "olivas-gullivers",
       "name": "Oliva's at Gulliver's Landing",
       "city": "Rib Mountain",
-      "address": "151791 Gadwall Ln, Rib Mountain",
+      "address": "151701 Gadwall Ln, Rib Mountain",
       "website": "https://www.olivasgullivers.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "20:30",
+          "type": "food",
+          "items": [
+            "Friday fish menu — baked cod 4pc $16"
+          ]
         }
       ]
     },
@@ -311,11 +443,16 @@
       "photo": null,
       "specials": [
         {
-          "days": ["thu", "fri"],
-          "start": "15:00",
+          "days": [
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed with the new owners"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed with the new owners"
+          ]
         }
       ]
     },
@@ -330,32 +467,55 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "14:30",
           "end": "17:30",
           "type": "drinks",
-          "items": ["$3 domestic pints & bottles", "$1.50 off drinks"]
+          "items": [
+            "$3 domestic pints & bottles",
+            "$1.50 off drinks"
+          ]
         },
         {
-          "days": ["mon", "tue"],
+          "days": [
+            "mon",
+            "tue"
+          ],
           "start": "11:00",
           "end": "23:00",
           "type": "food",
-          "items": ["80¢ traditional wings — all day"]
+          "items": [
+            "80¢ traditional wings — all day"
+          ]
         },
         {
-          "days": ["wed", "sun"],
+          "days": [
+            "wed",
+            "sun"
+          ],
           "start": "11:00",
           "end": "23:00",
           "type": "food",
-          "items": ["80¢ boneless wings — all day"]
+          "items": [
+            "80¢ boneless wings — all day"
+          ]
         },
         {
-          "days": ["thu"],
+          "days": [
+            "thu"
+          ],
           "start": "11:00",
           "end": "23:00",
           "type": "food",
-          "items": ["$12 14-inch two-topping pizza"]
+          "items": [
+            "$12 14-inch two-topping pizza"
+          ]
         }
       ]
     },
@@ -370,28 +530,37 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed"],
+          "days": [
+            "wed"
+          ],
           "start": "16:00",
           "end": "21:00",
-          "type": "both",
+          "type": "drinks",
           "items": [
-            "Wine Down Wednesday — $5 off any wine bottle",
-            "Prime rib from 4 PM — 12oz $42 · 15oz $48, until sold out"
+            "Wine Down Wednesday — $5 off any wine bottle"
           ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Friday fish menu — beer-battered cod from $15, walleye, perch, snow crab"]
+          "items": [
+            "Friday fish menu — beer-battered cod from $15, walleye, perch, snow crab"
+          ]
         },
         {
-          "days": ["sat"],
+          "days": [
+            "sat"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Prime rib from 4 PM — 12oz $42 · 15oz $48, until sold out"]
+          "items": [
+            "PLACEHOLDER — Saturday prime rib being confirmed (no longer advertised on site)"
+          ]
         }
       ]
     },
@@ -406,11 +575,21 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
           "start": "11:00",
           "end": "21:00",
           "type": "food",
-          "items": ["PLACEHOLDER — daily themes being confirmed (AYCE wings, fish fry, prime rib)"]
+          "items": [
+            "PLACEHOLDER — daily themes being confirmed (AYCE wings, fish fry, prime rib)"
+          ]
         }
       ]
     },
@@ -425,11 +604,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -444,11 +631,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -463,11 +658,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed"],
+          "days": [
+            "wed"
+          ],
           "start": "17:00",
           "end": "21:00",
           "type": "drinks",
-          "items": ["$30 Bottle Night — reserve wines & bubblies"]
+          "items": [
+            "$30 Bottle Night — reserve wines & bubblies"
+          ]
         }
       ]
     },
@@ -482,11 +681,18 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu", "fri"],
+          "days": [
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — rotating specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — reported: $5 Tuesday dinner deal + weekly flatbread (confirming)"
+          ]
         }
       ]
     },
@@ -501,11 +707,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -520,11 +732,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "17:00",
           "end": "19:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -533,17 +751,24 @@
       "name": "Limericks Public House",
       "city": "Wausau",
       "address": "634 N 3rd St, Wausau",
-      "website": "http://www.limerickswausau.com/",
+      "website": "https://www.limerickswausau.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu", "fri"],
+          "days": [
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "16:30",
           "end": "19:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — happy hour being confirmed"]
+          "items": [
+            "PLACEHOLDER — happy hour being confirmed"
+          ]
         }
       ]
     },
@@ -558,18 +783,28 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon"],
+          "days": [
+            "mon"
+          ],
           "start": "11:00",
           "end": "21:00",
           "type": "drinks",
-          "items": ["All-day Monday happy hour — pricing being confirmed"]
+          "items": [
+            "All-day Monday happy hour — pricing being confirmed"
+          ]
         },
         {
-          "days": ["tue", "wed", "thu"],
+          "days": [
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["Happy hour — pricing being confirmed"]
+          "items": [
+            "Happy hour — pricing being confirmed"
+          ]
         }
       ]
     },
@@ -584,11 +819,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["sun", "mon", "tue", "wed", "thu"],
+          "days": [
+            "sun",
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["$4 standard pours"]
+          "items": [
+            "$4 standard pours"
+          ]
         }
       ]
     },
@@ -603,30 +846,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["thu", "fri", "sat"],
+          "days": [
+            "thu",
+            "fri",
+            "sat"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["PLACEHOLDER — reported: brisket Thu · fish fry Fri · prime rib Sat (confirming)"]
-        }
-      ]
-    },
-    {
-      "id": "mountain-view",
-      "name": "Mountain View Bar & Grill",
-      "city": "Rib Mountain",
-      "address": "227201 Hummingbird Rd, Rib Mountain",
-      "website": "",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
-          "start": "16:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — reported: brisket Thu · fish fry Fri · prime rib Sat (confirming)"
+          ]
         }
       ]
     },
@@ -641,11 +871,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — reported: 2-for-1 Double Bubble Mon–Thu (confirming)"]
+          "items": [
+            "PLACEHOLDER — reported: 2-for-1 Double Bubble Mon–Thu (confirming)"
+          ]
         }
       ]
     },
@@ -660,11 +898,16 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri", "sat"],
+          "days": [
+            "fri",
+            "sat"
+          ],
           "start": "17:00",
           "end": "20:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -679,11 +922,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -698,11 +949,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — daily specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — daily specials being confirmed"
+          ]
         }
       ]
     },
@@ -717,18 +976,29 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
         }
       ]
     },
@@ -743,11 +1013,16 @@
       "photo": null,
       "specials": [
         {
-          "days": ["thu", "fri"],
+          "days": [
+            "thu",
+            "fri"
+          ],
           "start": "18:00",
           "end": "20:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed under new management"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed under new management"
+          ]
         }
       ]
     },
@@ -762,11 +1037,18 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "thu", "sat", "sun"],
+          "days": [
+            "tue",
+            "thu",
+            "sat",
+            "sun"
+          ],
           "start": "13:00",
           "end": "21:00",
           "type": "both",
-          "items": ["PLACEHOLDER — reported: Tue taco bar · Sun bloody mary bar · $5 smashburgers Thu/Sat (confirming)"]
+          "items": [
+            "PLACEHOLDER — reported: Tue taco bar · Sun bloody mary bar · $5 smashburgers Thu/Sat (confirming)"
+          ]
         }
       ]
     },
@@ -781,11 +1063,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -800,11 +1088,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "17:00",
           "end": "21:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry & prime rib being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry & prime rib being confirmed"
+          ]
         }
       ]
     },
@@ -819,11 +1111,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "wed", "fri"],
+          "days": [
+            "mon",
+            "wed",
+            "fri"
+          ],
           "start": "11:00",
           "end": "21:00",
           "type": "both",
-          "items": ["PLACEHOLDER — reported: $1.75 mugs & wings Mon · free pool Wed · fish fry Fri (confirming)"]
+          "items": [
+            "PLACEHOLDER — reported: $1.75 mugs & wings Mon · free pool Wed · fish fry Fri (confirming)"
+          ]
         }
       ]
     },
@@ -838,11 +1136,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -857,11 +1163,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -876,39 +1190,59 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue"],
+          "days": [
+            "tue"
+          ],
           "start": "10:00",
           "end": "23:59",
           "type": "food",
-          "items": ["Chicken George — fried chicken tenders, 2 or 3 pc"]
+          "items": [
+            "Chicken George — fried chicken tenders, 2 or 3 pc"
+          ]
         },
         {
-          "days": ["wed"],
+          "days": [
+            "wed"
+          ],
           "start": "10:00",
           "end": "23:59",
           "type": "food",
-          "items": ["Taco salads — half or full"]
+          "items": [
+            "Taco salads — half or full"
+          ]
         },
         {
-          "days": ["thu"],
+          "days": [
+            "thu"
+          ],
           "start": "11:00",
           "end": "13:30",
           "type": "food",
-          "items": ["All-you-can-eat Build-a-Lunch buffet"]
+          "items": [
+            "All-you-can-eat Build-a-Lunch buffet"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:30",
           "end": "21:00",
           "type": "food",
-          "items": ["Friday fish fry — Atlantic cod, 2 or 3 pc"]
+          "items": [
+            "Friday fish fry — Atlantic cod, 2 or 3 pc"
+          ]
         },
         {
-          "days": ["sat"],
+          "days": [
+            "sat"
+          ],
           "start": "17:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Prime rib — Queen 10oz / King 16oz"]
+          "items": [
+            "Prime rib — Queen 10oz / King 16oz"
+          ]
         }
       ]
     },
@@ -923,25 +1257,41 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["Happy hour 3–6 — days & pricing being confirmed"]
+          "items": [
+            "Happy hour 3–6 — days & pricing being confirmed"
+          ]
         },
         {
-          "days": ["tue"],
+          "days": [
+            "tue"
+          ],
           "start": "11:00",
           "end": "20:00",
           "type": "food",
-          "items": ["Taco Tuesday"]
+          "items": [
+            "Taco Tuesday"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Friday fish fry — details being confirmed"]
+          "items": [
+            "Friday fish fry — details being confirmed"
+          ]
         }
       ]
     },
@@ -956,18 +1306,29 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — daily specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — daily specials being confirmed"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
         }
       ]
     },
@@ -982,11 +1343,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — happy hour being confirmed"]
+          "items": [
+            "PLACEHOLDER — happy hour being confirmed"
+          ]
         }
       ]
     },
@@ -1001,18 +1368,26 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed"],
+          "days": [
+            "wed"
+          ],
           "start": "11:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Wednesday fish wrap special (confirming)"]
+          "items": [
+            "PLACEHOLDER — Wednesday fish wrap special (confirming)"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
         }
       ]
     },
@@ -1027,11 +1402,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday haddock fish fry (confirming)"]
+          "items": [
+            "PLACEHOLDER — Friday haddock fish fry (confirming)"
+          ]
         }
       ]
     },
@@ -1046,11 +1425,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry: haddock, perch or shrimp (confirming)"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry: haddock, perch or shrimp (confirming)"
+          ]
         }
       ]
     },
@@ -1065,11 +1448,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:30",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
         }
       ]
     },
@@ -1084,11 +1471,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -1103,11 +1498,29 @@
       "photo": null,
       "specials": [
         {
-          "days": ["tue", "wed", "thu", "fri"],
+          "days": [
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed (newly reopened)"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed (newly reopened)"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:30",
+          "type": "food",
+          "items": [
+            "Friday fish fry — details being confirmed"
+          ]
         }
       ]
     },
@@ -1122,25 +1535,40 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
           "start": "11:00",
           "end": "16:00",
           "type": "food",
-          "items": ["$10 lunch baskets — six daily picks"]
+          "items": [
+            "$10 lunch baskets — six daily picks"
+          ]
         },
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Friday fish fry — beer-battered haddock, walleye, shrimp"]
+          "items": [
+            "Friday fish fry — beer-battered haddock, walleye, shrimp"
+          ]
         },
         {
-          "days": ["sat"],
+          "days": [
+            "sat"
+          ],
           "start": "16:00",
           "end": "21:00",
           "type": "food",
-          "items": ["Prime rib Saturday — with potato & salad bar"]
+          "items": [
+            "Prime rib Saturday — with potato & salad bar"
+          ]
         }
       ]
     },
@@ -1155,11 +1583,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["wed", "thu", "fri"],
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -1174,11 +1608,19 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — daily drink specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — daily drink specials being confirmed"
+          ]
         }
       ]
     },
@@ -1193,11 +1635,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday fish fry being confirmed"]
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
         }
       ]
     },
@@ -1212,11 +1658,17 @@
       "photo": null,
       "specials": [
         {
-          "days": ["mon", "thu", "fri"],
+          "days": [
+            "mon",
+            "thu",
+            "fri"
+          ],
           "start": "16:00",
           "end": "19:00",
           "type": "drinks",
-          "items": ["PLACEHOLDER — specials being confirmed"]
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     },
@@ -1231,11 +1683,15 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:30",
           "end": "20:30",
           "type": "food",
-          "items": ["PLACEHOLDER — Friday perch & cod fish fry (confirming)"]
+          "items": [
+            "PLACEHOLDER — Friday perch & cod fish fry (confirming)"
+          ]
         }
       ]
     },
@@ -1250,11 +1706,585 @@
       "photo": null,
       "specials": [
         {
-          "days": ["fri"],
+          "days": [
+            "fri"
+          ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
-          "items": ["PLACEHOLDER — reported: shrimp tacos & fish fry Fri (confirming)"]
+          "items": [
+            "PLACEHOLDER — reported: shrimp tacos & fish fry Fri (confirming)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oasis-arcade",
+      "name": "Oasis Arcade",
+      "city": "Wausau",
+      "address": "102 Jefferson St, Wausau",
+      "website": "https://www.oasisarcadewausau.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "19:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "venado",
+      "name": "Venado Wine-Spirits & Beer",
+      "city": "Wausau",
+      "address": "209 Grant St, Wausau",
+      "website": "https://venado.us/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jps-tippling-house",
+      "name": "J&P's Tippling House",
+      "city": "Rib Mountain",
+      "address": "227460 Shrike Ave, Rib Mountain",
+      "website": "https://jps-tippling-house.ourmenu.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kelly-club",
+      "name": "Kelly Club Sports Bar & Grill",
+      "city": "Schofield",
+      "address": "4810 Ross Ave, Schofield",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — Friday fish fry & broasted chicken being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "burks-bar",
+      "name": "Burk's Fireside Tap",
+      "city": "Wausau",
+      "address": "4711 Stewart Ave, Wausau",
+      "website": "https://burksbar.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aftershock",
+      "name": "Aftershock Bar & Grill",
+      "city": "Wausau",
+      "address": "1418 Lenard St, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "loading-zone",
+      "name": "Loading Zone Eatery",
+      "city": "Wausau",
+      "address": "157024 E Hamilton St, Wausau",
+      "website": "https://www.theloadingzone.biz/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "knowlton-house",
+      "name": "Knowlton House Distillery",
+      "city": "Knowlton",
+      "address": "204575 County Rd DB, Knowlton",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "19:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tiki-beach",
+      "name": "Tiki Beach Bar & Grill",
+      "city": "Knowlton",
+      "address": "1126 County Rd DB, Knowlton",
+      "website": "https://tikibeachllc.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chacks-day-break",
+      "name": "Chack's Day Break Bar & Grill",
+      "city": "Weston",
+      "address": "5307 Westfair Ave, Weston",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-pub",
+      "name": "21 Pub",
+      "city": "Rothschild",
+      "address": "18 Brown Blvd, Rothschild",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrow-tap",
+      "name": "Arrow Tap Tavern",
+      "city": "Marathon City",
+      "address": "318 Main St, Marathon City",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cassel-bar",
+      "name": "Cassel Bar & Grill",
+      "city": "Marathon City",
+      "address": "4505 County Rd N, Marathon City",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "marathon-sports-center",
+      "name": "Marathon City Sports Center",
+      "city": "Marathon City",
+      "address": "1200 State Hwy 107, Marathon City",
+      "website": "https://marathonsportscenter.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — Friday fish fry being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-beacon",
+      "name": "The Beacon",
+      "city": "Merrill",
+      "address": "N1297 Fairview Rd, Merrill",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bs-nest",
+      "name": "B's Nest",
+      "city": "Merrill",
+      "address": "1404 W Main St, Merrill",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — Friday perch fish fry being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rock-island",
+      "name": "Rock Island",
+      "city": "Merrill",
+      "address": "N2737 State Hwy 107, Merrill",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jims-corner",
+      "name": "Jim's Corner Pub",
+      "city": "Wausau",
+      "address": "1244 S 9th Ave, Wausau",
+      "website": "",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vino-latte",
+      "name": "Vino Latte",
+      "city": "Wausau",
+      "address": "3309 Terrace Ct, Wausau",
+      "website": "https://vino-latte.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "19:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hog-creek",
+      "name": "Hog Creek Bar & Grill",
+      "city": "Mosinee",
+      "address": "143203 State Hwy 153, Mosinee",
+      "website": "https://hogcreekbarandgrill.com/",
+      "tier": "partner",
+      "verifiedOn": null,
+      "photo": null,
+      "specials": [
+        {
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
+          "items": [
+            "PLACEHOLDER — specials being confirmed"
+          ]
         }
       ]
     }
