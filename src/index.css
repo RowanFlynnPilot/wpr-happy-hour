@@ -35,6 +35,52 @@ body {
   padding: 24px 16px 40px;
 }
 
+/* Masthead — house pattern shared with the other WPR tools */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 2px 0 10px;
+  border-bottom: 3px solid var(--ink);
+  margin-bottom: 18px;
+}
+
+.masthead-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.masthead-brand:hover {
+  color: var(--teal-dark);
+}
+
+.masthead-badge {
+  width: 30px;
+  height: 30px;
+}
+
+.masthead-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.footer-badge {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 8px;
+}
+
 /* Hero */
 .hero {
   text-align: center;

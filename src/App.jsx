@@ -286,6 +286,13 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="masthead">
+        <a className="masthead-brand" href="https://wausaupilotandreview.com" target="_top">
+          <img className="masthead-badge" src="./wpr-typewriter-badge.png" alt="" />
+          Wausau Pilot &amp; Review
+        </a>
+        <span className="masthead-tag">Independent. Local. Nonprofit news.</span>
+      </div>
       <header className="hero">
         <p className="hero-clock mono">
           {weekday} · {clock}
@@ -405,6 +412,7 @@ export default function App() {
       )}
 
       <footer className="footer">
+        <img className="footer-badge" src="./wpr-typewriter-badge.png" alt="" />
         <p className="sponsor-slot">
           Happy Hour Finder, presented by{' '}
           {DATA.sponsor ? (
