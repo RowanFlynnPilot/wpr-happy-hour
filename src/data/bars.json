@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-18",
+  "updated": "2026-09-26",
   "sponsor": null,
   "bars": [
     {
@@ -240,7 +240,7 @@
           "end": "21:30",
           "type": "drinks",
           "items": [
-            "BOGO margaritas — all day"
+            "Two-for-ones"
           ]
         },
         {
@@ -251,7 +251,7 @@
           "end": "21:30",
           "type": "drinks",
           "items": [
-            "Talls for the price of smalls — all day"
+            "BOGO margaritas"
           ]
         },
         {
@@ -262,7 +262,7 @@
           "end": "21:30",
           "type": "drinks",
           "items": [
-            "$3 domestic taps — all day"
+            "Talls for the price of smalls"
           ]
         },
         {
@@ -273,7 +273,7 @@
           "end": "21:30",
           "type": "drinks",
           "items": [
-            "$3.50 rail old fashioneds — all day"
+            "$3 domestic taps"
           ]
         },
         {
@@ -282,10 +282,9 @@
           ],
           "start": "11:00",
           "end": "21:30",
-          "type": "both",
+          "type": "drinks",
           "items": [
-            "Bartender's choice drink special",
-            "Fish fry — deep-fried cod from $10.99"
+            "$3.50 rail old fashioneds"
           ]
         },
         {
@@ -296,7 +295,41 @@
           "end": "21:30",
           "type": "drinks",
           "items": [
-            "$4 bloody marys — all day"
+            "Bartender's choice drink special"
+          ]
+        },
+        {
+          "days": [
+            "sun"
+          ],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "drinks",
+          "items": [
+            "$4 Bloody Marys"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "11:00",
+          "end": "21:30",
+          "type": "food",
+          "items": [
+            "Fish fry — beer-battered cod 1 pc $10.99 · 2 pc $11.99 · 3 pc $12.99 · 4 pc $13.99",
+            "Poorman's cod $15.99 · beer-battered shrimp $17.99"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "21:30",
+          "type": "food",
+          "items": [
+            "After 4 PM: pan-fried cod $15.99 · pan-fried walleye $17.99 · shrimp scampi $17.99"
           ]
         }
       ]
@@ -339,10 +372,10 @@
             "thu"
           ],
           "start": "16:00",
-          "end": "17:00",
+          "end": "17:30",
           "type": "food",
           "items": [
-            "Early bird — all-you-can-eat Richard's wings"
+            "Early bird — Richard's wing & rib buffet"
           ]
         },
         {
@@ -353,7 +386,8 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Full Friday fish fry — haddock, walleye, shrimp, poorman's lobster & more"
+            "Friday fish fry — haddock 1 pc $13.99 · 2 pc $16.99 · 3 pc $19.99; walleye $19.99",
+            "Poorman's/baked cod, shrimp & more"
           ]
         },
         {
@@ -406,28 +440,36 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
-          ],
-          "start": "16:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": [
-            "PLACEHOLDER — specials being confirmed"
-          ]
-        },
-        {
-          "days": [
             "fri"
           ],
           "start": "15:00",
           "end": "20:30",
           "type": "food",
           "items": [
-            "Friday fish menu — baked cod 4pc $16"
+            "Beer-battered haddock — 1 pc $10.50 · 2 pc $12 · 3 pc $14 · 4 pc $16",
+            "Baked fish 2–4 pc $12–$16 · pan-fried haddock $12–$16 · battered shrimp $17"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "15:00",
+          "end": "20:30",
+          "type": "food",
+          "items": [
+            "Prime rib — 12 oz $30 · 16 oz $34 · 20 oz $39 · 28 oz $48"
+          ]
+        },
+        {
+          "days": [
+            "sun"
+          ],
+          "start": "15:00",
+          "end": "19:30",
+          "type": "food",
+          "items": [
+            "Broasted chicken — 2 pc $15 · 3 pc $16 · 4 pc $17"
           ]
         }
       ]
@@ -484,6 +526,90 @@
         },
         {
           "days": [
+            "mon"
+          ],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "drinks",
+          "items": [
+            "20 oz mugs: $4 domestic, $5.50 craft (some exclusions)",
+            "$5 Jim Beam doubles"
+          ]
+        },
+        {
+          "days": [
+            "tue"
+          ],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "drinks",
+          "items": [
+            "$3 Miller Lite, Miller64 & Miller High Life",
+            "$5 Malibu doubles"
+          ]
+        },
+        {
+          "days": [
+            "wed"
+          ],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "drinks",
+          "items": [
+            "$3 Coors Light & Coors Banquet",
+            "$5 Bacardi doubles & spikers"
+          ]
+        },
+        {
+          "days": [
+            "thu"
+          ],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "drinks",
+          "items": [
+            "$4 Modelo & Corona",
+            "$7 margaritas & doubles"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "11:00",
+          "end": "23:59",
+          "type": "drinks",
+          "items": [
+            "$6 Jameson doubles & old fashioneds",
+            "$5 Kona Big Wave pints"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "11:00",
+          "end": "23:59",
+          "type": "drinks",
+          "items": [
+            "$5 Samuel Adams pints",
+            "$6 Jack Daniel's"
+          ]
+        },
+        {
+          "days": [
+            "sun"
+          ],
+          "start": "11:00",
+          "end": "23:00",
+          "type": "drinks",
+          "items": [
+            "$3 Bud Light, Busch Light, Budweiser & Michelob Ultra",
+            "$7 Grey Goose doubles · $9 Grey Goose Bloody Marys"
+          ]
+        },
+        {
+          "days": [
             "mon",
             "tue"
           ],
@@ -491,7 +617,7 @@
           "end": "23:00",
           "type": "food",
           "items": [
-            "80¢ traditional wings — all day"
+            "PLACEHOLDER — time being confirmed: 80¢ traditional wings"
           ]
         },
         {
@@ -503,7 +629,7 @@
           "end": "23:00",
           "type": "food",
           "items": [
-            "80¢ boneless wings — all day"
+            "PLACEHOLDER — time being confirmed: 80¢ boneless wings"
           ]
         },
         {
@@ -514,7 +640,7 @@
           "end": "23:00",
           "type": "food",
           "items": [
-            "$12 14-inch two-topping pizza"
+            "PLACEHOLDER — time being confirmed: $12 14-inch two-topping pizza"
           ]
         }
       ]
@@ -576,19 +702,13 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri",
-            "sat",
-            "sun"
+            "fri"
           ],
-          "start": "11:00",
-          "end": "21:00",
+          "start": "14:00",
+          "end": "17:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — daily themes being confirmed (AYCE wings, fish fry, prime rib)"
+            "Early bird: 1 pc fish $9.99 — dine-in, with any drink purchase"
           ]
         }
       ]
@@ -675,23 +795,20 @@
       "name": "Nevermore on Third Bar & Grille",
       "city": "Wausau",
       "address": "1206 N 3rd St, Wausau",
-      "website": "",
+      "website": "https://nevermoreonthird.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
           "days": [
-            "tue",
-            "wed",
-            "thu",
             "fri"
           ],
           "start": "16:00",
-          "end": "18:00",
-          "type": "drinks",
+          "end": "22:00",
+          "type": "food",
           "items": [
-            "PLACEHOLDER — reported: $5 Tuesday dinner deal + weekly flatbread (confirming)"
+            "Friday fish special — 2 pc battered white fish, fries, coleslaw & rye, $12"
           ]
         }
       ]
@@ -790,7 +907,7 @@
           "end": "21:00",
           "type": "drinks",
           "items": [
-            "All-day Monday happy hour — pricing being confirmed"
+            "PLACEHOLDER — closing time being confirmed: all-day Monday happy hour, pricing being confirmed"
           ]
         },
         {
@@ -916,7 +1033,7 @@
       "name": "Bob & Randy's Bar",
       "city": "Wausau",
       "address": "1515 N 6th St, Wausau",
-      "website": "https://bobandrandys.com/",
+      "website": "",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -1203,7 +1320,8 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Friday fish fry — Atlantic cod, 2 or 3 pc"
+            "Friday fish fry — Atlantic cod, 2 or 3 pc",
+            "Dining room: all-you-can-eat Friday buffet — fried shrimp, beer-battered cod, cod mornay; soup, salad & dessert bar"
           ]
         },
         {
@@ -1215,6 +1333,17 @@
           "type": "food",
           "items": [
             "Prime rib — Queen 10oz / King 16oz"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "17:00",
+          "end": "20:00",
+          "type": "food",
+          "items": [
+            "Saturday Night Buffet, all you can eat — beef tips, shrimp, BBQ ribs, broasted chicken; soup & salad bar"
           ]
         }
       ]
@@ -1231,17 +1360,13 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
+            "thu"
           ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
           "items": [
-            "Happy hour 3–6 — days & pricing being confirmed"
+            "Happy hour 3–6 — pricing being confirmed"
           ]
         },
         {
@@ -1252,7 +1377,7 @@
           "end": "20:00",
           "type": "food",
           "items": [
-            "Taco Tuesday"
+            "PLACEHOLDER — time being confirmed: Taco Tuesday — carne asada, spicy chicken & veggie tacos"
           ]
         },
         {
@@ -1263,7 +1388,7 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Friday fish fry — details being confirmed"
+            "PLACEHOLDER — time & details being confirmed: Friday fish fry"
           ]
         }
       ]
@@ -1332,7 +1457,7 @@
     },
     {
       "id": "weiks-pub",
-      "name": "Weiks Pub & Grill",
+      "name": "Weiks' Pub & Grill",
       "city": "Edgar",
       "address": "231745 County Rd S, Edgar",
       "website": "",
@@ -1529,7 +1654,7 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Friday fish fry — beer-battered haddock, walleye, shrimp"
+            "PLACEHOLDER — time being confirmed: Friday fish fry — haddock $15.95 · walleye $18.95 · 8-pc shrimp $19.95"
           ]
         },
         {
@@ -1540,32 +1665,7 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Prime rib Saturday — with potato & salad bar"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "sawmill-brewing",
-      "name": "Sawmill Brewing Company",
-      "city": "Merrill",
-      "address": "1110 E 10th St, Merrill",
-      "website": "https://sawmillbrewing.net/",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": [
-            "wed",
-            "thu",
-            "fri"
-          ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": [
-            "PLACEHOLDER — specials being confirmed"
+            "Prime rib $29.95 — with salad bar and fries or wedges"
           ]
         }
       ]
@@ -1718,7 +1818,7 @@
     },
     {
       "id": "venado",
-      "name": "Venado Wine-Spirits & Beer",
+      "name": "Venado Wine Bar",
       "city": "Wausau",
       "address": "209 Grant St, Wausau",
       "website": "https://venado.us/",
@@ -1747,7 +1847,7 @@
       "name": "J&P's Tippling House",
       "city": "Rib Mountain",
       "address": "227460 Shrike Ave, Rib Mountain",
-      "website": "https://jps-tippling-house.ourmenu.com/",
+      "website": "",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -1808,10 +1908,10 @@
     },
     {
       "id": "burks-bar",
-      "name": "Burk's Fireside Tap",
+      "name": "Burks Bar",
       "city": "Wausau",
       "address": "4711 Stewart Ave, Wausau",
-      "website": "https://burksbar.com/",
+      "website": "http://burksbar.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -1882,13 +1982,68 @@
       "specials": [
         {
           "days": [
+            "tue"
+          ],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "5 oz tenderloin & 3 shrimp $21",
+            "Chicken & ribs $17.50 (all white $20)",
+            "Cash prices — cards include an upcharge"
+          ]
+        },
+        {
+          "days": [
+            "wed"
+          ],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "12 oz queen-cut prime rib $23",
+            "Walleye dinner $17",
+            "Cod special 2 pc $10.50 · 3 pc $14.25 · 4 pc $18",
+            "Cash prices — cards include an upcharge"
+          ]
+        },
+        {
+          "days": [
+            "thu"
+          ],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "Deep-fried chicken $12 (white $16)",
+            "12 oz ribeye $22",
+            "Cash prices — cards include an upcharge"
+          ]
+        },
+        {
+          "days": [
             "fri"
           ],
           "start": "16:00",
-          "end": "20:00",
+          "end": "21:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — Friday fish fry being confirmed"
+            "Friday fish fry — cod 2 pc $11 · 3 pc $15 · 4 pc $19",
+            "Perch (4) $15 · walleye (2) $18 · shrimp (6) $15",
+            "Cash prices — cards include an upcharge"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "17:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "5 oz tenderloin & 3 shrimp $21 · with lobster $32",
+            "12 oz queen-cut prime rib $23 · ribs & 6 oz prime rib $23",
+            "Cash prices — cards include an upcharge"
           ]
         }
       ]
@@ -1898,21 +2053,20 @@
       "name": "Knowlton House Distillery",
       "city": "Knowlton",
       "address": "204575 County Rd DB, Knowlton",
-      "website": "",
+      "website": "https://knowltonhouse.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
       "specials": [
         {
           "days": [
-            "thu",
-            "fri"
+            "thu"
           ],
           "start": "16:00",
-          "end": "19:00",
-          "type": "drinks",
+          "end": "21:00",
+          "type": "both",
           "items": [
-            "PLACEHOLDER — specials being confirmed"
+            "$59 Date Night for two — 1 appetizer, 2 entrées, 1 dessert & 2 drinks"
           ]
         }
       ]
@@ -2054,7 +2208,7 @@
     },
     {
       "id": "marathon-sports-center",
-      "name": "Marathon City Sports Center",
+      "name": "Marathon Sports Center",
       "city": "Marathon City",
       "address": "1200 State Hwy 107, Marathon City",
       "website": "https://marathonsportscenter.com/",
@@ -2212,7 +2366,7 @@
       "name": "Vino Latte",
       "city": "Wausau",
       "address": "3309 Terrace Ct, Wausau",
-      "website": "https://vino-latte.com/",
+      "website": "http://www.vino-latte.com/",
       "tier": "partner",
       "verifiedOn": null,
       "photo": null,
@@ -2226,10 +2380,10 @@
             "fri"
           ],
           "start": "16:00",
-          "end": "19:00",
+          "end": "18:30",
           "type": "drinks",
           "items": [
-            "PLACEHOLDER — specials being confirmed"
+            "Buy one glass of wine, get one free (same bottle or tap)"
           ]
         }
       ]
@@ -2246,17 +2400,13 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
+            "sat"
           ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
+          "start": "16:00",
+          "end": "20:00",
+          "type": "food",
           "items": [
-            "PLACEHOLDER — specials being confirmed"
+            "Prime rib night — Queen 10–12 oz, King 12–14 oz"
           ]
         }
       ]

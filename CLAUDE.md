@@ -53,4 +53,11 @@ sourced from a bar's own advertising (no PLACEHOLDER prefix) or PLACEHOLDER-mark
 guesses. Chris (sales) and Shereen (editorial) validate by phone before anything
 gets a verifiedOn date. Never invent specials, prices, or time windows — an
 unsourced window stays PLACEHOLDER-marked. Malarkey's and Whiskey River were
-removed 2026-08-01 (both closed).
+removed 2026-08-01 (both closed); Sawmill Brewing 2026-09-26 (temporarily closed).
+
+Untimed specials (owner rule, 2026-09-26): a drink special the bar lists by day
+with no time may use the bar's own posted open hours for that day. A food special
+needs a serving time the bar states — for that special or its menu, or a kitchen
+that serves only one dinner window that day; otherwise its item is
+PLACEHOLDER-marked ("PLACEHOLDER — time being confirmed: …") until Chris confirms.
+An advertised "happy hour" with no time is never widened to open hours.
