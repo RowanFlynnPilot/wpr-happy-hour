@@ -53,7 +53,10 @@ sourced from a bar's own advertising (no PLACEHOLDER prefix) or PLACEHOLDER-mark
 guesses. Chris (sales) and Shereen (editorial) validate by phone before anything
 gets a verifiedOn date. Never invent specials, prices, or time windows — an
 unsourced window stays PLACEHOLDER-marked. Malarkey's and Whiskey River were
-removed 2026-08-01 (both closed); Sawmill Brewing 2026-09-26 (temporarily closed).
+removed 2026-08-01 (both closed); Sawmill Brewing 2026-09-26 (temporarily closed);
+Tiki Beach 2026-09-26 (closed for the season — re-add in spring). A bar's own
+Facebook posts count as own-source; match them by page URL, not name (several
+"Office Bar"s exist).
 
 Untimed specials (owner rule, 2026-09-26): a drink special the bar lists by day
 with no time may use the bar's own posted open hours for that day. A food special

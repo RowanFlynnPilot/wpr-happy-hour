@@ -5,9 +5,9 @@ The tool is code-complete and deployed to GitHub Pages
 wausaupilotandreview.com or announced**. What blocks launch, in order:
 
 1. **Verification/sales calls (Chris).** No bar in `src/data/bars.json` is
-   verified yet. After the 2026-09-26 research cross-check: 14 bars carry specials
-   sourced from their own advertising, 7 are partly sourced (some times still
-   unconfirmed), 52 are `PLACEHOLDER`. The dated call sheet lists what to confirm
+   verified yet. After the 2026-09-26 research cross-check (websites + the bars'
+   own Facebook posts): 14 bars carry specials sourced from their own advertising,
+   7 are partly sourced (some times still unconfirmed), 51 are `PLACEHOLDER`. The dated call sheet lists what to confirm
    on each call. Under the paid partner model the verification call
    IS the sales call: confirm the specials, close the listing, capture contact
    info in Notion. Each closed bar is one JSON edit — real items, `tier`
@@ -47,7 +47,7 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
 
 Open decisions (owner/Chris):
 
-- **Unsigned bars at launch.** 59 of 73 bars still show `PLACEHOLDER` text, and
+- **Unsigned bars at launch.** 58 of 72 bars still show `PLACEHOLDER` text, and
   under the paid model every listed bar should be a paying partner. Before going
   public, either remove unverified bars from bars.json (back to the call sheet) or
   add a launch rule that fails CI on any unverified bar. (The newsletter card

@@ -617,7 +617,7 @@
           "end": "23:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — time being confirmed: 80¢ traditional wings"
+            "PLACEHOLDER — time & wing style being confirmed: 80¢ wings"
           ]
         },
         {
@@ -629,7 +629,7 @@
           "end": "23:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — time being confirmed: 80¢ boneless wings"
+            "PLACEHOLDER — time & wing style being confirmed: 80¢ wings"
           ]
         },
         {
@@ -964,15 +964,15 @@
       "specials": [
         {
           "days": [
-            "thu",
-            "fri",
-            "sat"
+            "mon",
+            "wed",
+            "thu"
           ],
-          "start": "16:00",
-          "end": "21:00",
-          "type": "food",
+          "start": "15:00",
+          "end": "18:00",
+          "type": "drinks",
           "items": [
-            "PLACEHOLDER — reported: brisket Thu · fish fry Fri · prime rib Sat (confirming)"
+            "PLACEHOLDER — end time & prices being confirmed: happy hour from 3 PM"
           ]
         }
       ]
@@ -1360,13 +1360,16 @@
       "specials": [
         {
           "days": [
+            "mon",
+            "tue",
+            "wed",
             "thu"
           ],
           "start": "15:00",
           "end": "18:00",
           "type": "drinks",
           "items": [
-            "Happy hour 3–6 — pricing being confirmed"
+            "$1 off all drinks"
           ]
         },
         {
@@ -1442,15 +1445,13 @@
       "specials": [
         {
           "days": [
-            "wed",
-            "thu",
             "fri"
           ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
+          "start": "11:00",
+          "end": "21:00",
+          "type": "food",
           "items": [
-            "PLACEHOLDER — happy hour being confirmed"
+            "PLACEHOLDER — end time being confirmed: Friday fish fry from 11 AM — 2 pc $11 · 3 pc $12.50 · 4 pc $14 · fish & shrimp $16.50 · 6-pc shrimp $16; fish sandwich $8"
           ]
         }
       ]
@@ -1570,17 +1571,46 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
+            "tue"
           ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
+          "start": "11:00",
+          "end": "21:00",
+          "type": "food",
           "items": [
-            "PLACEHOLDER — specials being confirmed"
+            "PLACEHOLDER — time being confirmed: Tuesday Choose Day — Hulk Smash burgers $3.99 · taco trio $6.99"
+          ]
+        },
+        {
+          "days": [
+            "thu"
+          ],
+          "start": "11:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "PLACEHOLDER — time being confirmed: Thursday wing night — $1 whole wings · $9.99/lb chicken chunks"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "10:00",
+          "end": "16:00",
+          "type": "food",
+          "items": [
+            "French dip"
+          ]
+        },
+        {
+          "days": [
+            "sat"
+          ],
+          "start": "16:00",
+          "end": "21:00",
+          "type": "food",
+          "items": [
+            "Prime rib"
           ]
         }
       ]
@@ -1617,7 +1647,7 @@
           "end": "20:30",
           "type": "food",
           "items": [
-            "Friday fish fry — details being confirmed"
+            "PLACEHOLDER — time being confirmed: Friday fish fry"
           ]
         }
       ]
@@ -1666,6 +1696,17 @@
           "type": "food",
           "items": [
             "Prime rib $29.95 — with salad bar and fries or wedges"
+          ]
+        },
+        {
+          "days": [
+            "fri"
+          ],
+          "start": "16:00",
+          "end": "18:00",
+          "type": "both",
+          "items": [
+            "Free old fashioned with any entrée"
           ]
         }
       ]
@@ -2072,33 +2113,6 @@
       ]
     },
     {
-      "id": "tiki-beach",
-      "name": "Tiki Beach Bar & Grill",
-      "city": "Knowlton",
-      "address": "1126 County Rd DB, Knowlton",
-      "website": "https://tikibeachllc.com/",
-      "tier": "partner",
-      "verifiedOn": null,
-      "photo": null,
-      "specials": [
-        {
-          "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu",
-            "fri"
-          ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": [
-            "PLACEHOLDER — specials being confirmed"
-          ]
-        }
-      ]
-    },
-    {
       "id": "chacks-day-break",
       "name": "Chack's Day Break Bar & Grill",
       "city": "Weston",
@@ -2218,27 +2232,13 @@
       "specials": [
         {
           "days": [
-            "mon",
-            "tue",
-            "wed",
-            "thu"
-          ],
-          "start": "15:00",
-          "end": "18:00",
-          "type": "drinks",
-          "items": [
-            "PLACEHOLDER — specials being confirmed"
-          ]
-        },
-        {
-          "days": [
             "fri"
           ],
           "start": "16:00",
           "end": "20:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — Friday fish fry being confirmed"
+            "PLACEHOLDER — time being confirmed: Friday fish fry — walleye, cod, bluegill & shrimp dinners"
           ]
         }
       ]
