@@ -45,6 +45,11 @@ test('name, city and address must be non-empty strings', () => {
   rejects(doc([bar({ name: '  ' })]), /"name" must be a non-empty string/);
 });
 
+test('address must end with its city (cards print the address alone)', () => {
+  rejects(doc([bar({ address: '1 Main St' })]), /must end with ", Wausau"/);
+  rejects(doc([bar({ address: '1 Main St, Weston' })]), /must end with ", Wausau"/);
+});
+
 test('website: "" or a full http(s) URL', () => {
   assert.doesNotThrow(() => validate(doc([bar({ website: 'https://example.com/' })])));
   assert.doesNotThrow(() => validate(doc([bar({ website: 'http://example.com/' })])));

@@ -94,7 +94,7 @@ function SpecialRow({ special, now, showDays }) {
 
 // Derived from public address only — contact info stays in the Notion CRM
 const mapsUrl = (bar) =>
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bar.name}, ${bar.address}, ${bar.city} WI`)}`;
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bar.name}, ${bar.address} WI`)}`;
 
 // Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool.
 // The address is also shown as text in the footer: on a desktop with no mail app a
@@ -136,7 +136,7 @@ function BarCard({ bar, specials, now, showDays }) {
           )}
         </h3>
         <p className="card-address">
-          {bar.address} · {bar.city}
+          {bar.address /* ends with the town — validate() enforces it */}
           {bar.tier === 'featured' && (
             <>
               {' · '}

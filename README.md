@@ -52,6 +52,7 @@ load, and `npm run check` runs the same validator in CI before every deploy):
   "Details being confirmed"); `npm run check` warns on unverified or >90-day-old listings.
 - A verified bar may not carry `PLACEHOLDER` items — replace them with the confirmed
   specials in the same edit that sets `verifiedOn`.
+- `address` ends with `, <city>` (`"123 Main St, Wausau"`) — cards print it alone.
 - `id` is lowercase kebab-case and never changes once shared — it's the partner's
   `?bar=` link.
 - `website` is `""` or a full `http(s)://` URL (prefer https; http only for sites

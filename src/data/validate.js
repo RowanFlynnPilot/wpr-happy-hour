@@ -84,6 +84,10 @@ export function validate(json) {
     for (const field of ['name', 'city', 'address']) {
       if (!nonEmpty(bar[field])) throw new Error(`bars.json: bar "${bar.id}" "${field}" must be a non-empty string`);
     }
+    // Cards and the newsletter print the address alone, so it must carry the town
+    if (!bar.address.endsWith(`, ${bar.city}`)) {
+      throw new Error(`bars.json: bar "${bar.id}" "address" must end with ", ${bar.city}" (its city)`);
+    }
     // Sites that don't serve https (Sconni's, as of 2026-09) keep their http:// URL
     if (typeof bar.website !== 'string' || (bar.website !== '' && !isUrl(bar.website, ['https:', 'http:']))) {
       throw new Error(`bars.json: bar "${bar.id}" "website" must be "" (until verified) or a full http(s):// URL`);
