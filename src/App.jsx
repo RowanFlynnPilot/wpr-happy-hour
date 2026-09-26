@@ -11,9 +11,12 @@ import {
   fmtDays,
   fmtTime,
   fmtWindow,
+  groupSpecials,
+  isPlaceholder,
   minutesUntil,
   nextPour as findNextPour,
   nowListings,
+  placeholderText,
   specialStatus,
   trackedUrl,
   weekdayLabel,
@@ -57,36 +60,41 @@ const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.ge
 /* Components       */
 /* ---------------- */
 
-function StatusChip({ special, now }) {
-  const status = specialStatus(special, now);
+// The end time already sits beside the chip, so only the last hour gets a countdown
+function StatusChip({ group, now }) {
+  const status = specialStatus(group, now);
   if (status === 'now') {
-    const left = minutesUntil(special.end, now);
+    const left = minutesUntil(group.end, now);
     return (
       <span className="chip chip-now">
-        Pouring now{left <= 60 ? ` · ${left} min left` : ` · until ${fmtTime(special.end)}`}
+        {group.type === 'food' ? 'Serving' : 'Pouring'} now{left <= 60 ? ` · ${left} min left` : ''}
       </span>
     );
   }
   if (status === 'later') {
-    return <span className="chip chip-later">Starts {fmtTime(special.start)}</span>;
+    return <span className="chip chip-later">Starts {fmtTime(group.start)}</span>;
   }
   return null;
 }
 
-function SpecialRow({ special, now, showDays }) {
+// One window (days + hours) of a bar's specials; see groupSpecials()
+function SpecialRow({ group, now, showDays }) {
   return (
     <div className="special">
       <div className="special-meta">
-        {showDays && (
-          <span className="special-days mono">{fmtDays(special.days)}</span>
-        )}
-        <span className="special-time mono">{fmtWindow(special)}</span>
-        {now && <StatusChip special={special} now={now} />}
+        {showDays && <span className="special-days mono">{fmtDays(group.days)}</span>}
+        <span className="special-time mono">{fmtWindow(group)}</span>
+        {now && <StatusChip group={group} now={now} />}
+        {group.placeholder && <span className="chip chip-placeholder">Placeholder</span>}
       </div>
       <ul className="special-items">
-        {special.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
+        {group.items.map((item, i) =>
+          isPlaceholder(item) ? (
+            <li key={i} className="item-placeholder">{placeholderText(item)}</li>
+          ) : (
+            <li key={i}>{item}</li>
+          )
+        )}
       </ul>
     </div>
   );
@@ -147,9 +155,12 @@ function BarCard({ bar, specials, now, showDays }) {
           )}
         </p>
       </header>
-      {specials.map((s, i) => (
-        <SpecialRow key={i} special={s} now={now} showDays={showDays} />
-      ))}
+      {/* Grows to fill the card so the footer lines up across a grid row */}
+      <div className="card-specials">
+        {groupSpecials(specials).map((g, i) => (
+          <SpecialRow key={i} group={g} now={now} showDays={showDays} />
+        ))}
+      </div>
       <p className={`card-verified mono${bar.verifiedOn ? '' : ' pending'}`}>
         {bar.verifiedOn ? `✓ Verified ${fmtVerified(bar.verifiedOn)}` : 'Details being confirmed'}
       </p>
@@ -223,6 +234,7 @@ export default function App() {
 
   const clock = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const weekday = now.toLocaleDateString([], { weekday: 'long' });
+  const today = DAY_KEYS[now.getDay()];
 
   return (
     <div className="app">
@@ -233,6 +245,8 @@ export default function App() {
         </a>
         <span className="masthead-tag">Independent. Local. Nonprofit news.</span>
       </div>
+      {/* WPR house flag rule: thick over thin, as on the fleet's other tools */}
+      <div className="masthead-rule" />
       <header className="hero">
         <p className="hero-clock mono">
           {weekday} · {clock}
@@ -272,7 +286,9 @@ export default function App() {
             <button
               key={d}
               aria-pressed={view === d}
-              className={`day-btn${view === d ? ' active' : ''}`}
+              aria-current={d === today ? 'date' : undefined}
+              title={d === today ? 'Today' : undefined}
+              className={`day-btn${view === d ? ' active' : ''}${d === today ? ' today' : ''}`}
               onClick={() => setView(d)}
             >
               {DAY_LABELS[d]}
@@ -370,8 +386,9 @@ export default function App() {
           )}
         </p>
         <p>
-          A <strong>Wausau Pilot &amp; Review</strong> community tool · Partner listings are paid
-          placements · Last updated <span className="mono">{DATA.updated}</span>
+          A <strong>Wausau Pilot &amp; Review</strong> community tool ·{' '}
+          <a href="tel:+17153015539">715-301-5539</a> · Partner listings are paid placements · Last
+          updated <span className="mono">{DATA.updated}</span>
         </p>
         <p>
           Run a bar or restaurant? Get listed: email Chris Weber at{' '}

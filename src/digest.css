@@ -82,8 +82,8 @@ body.digest-page {
   position: absolute;
   top: -11px;
   right: 14px;
-  background: var(--teal);
-  color: #fff;
+  background: var(--teal-dark);
+  color: var(--on-teal);
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;

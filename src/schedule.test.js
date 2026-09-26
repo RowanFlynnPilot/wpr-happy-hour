@@ -10,7 +10,10 @@ import {
   fmtDays,
   fmtTime,
   fmtWindows,
+  groupSpecials,
+  isPlaceholder,
   minutesUntil,
+  placeholderText,
   nextPour,
   nowListings,
   specialStatus,
@@ -39,7 +42,28 @@ test('fmtTime renders 12-hour times', () => {
   assert.equal(fmtTime('09:05'), '9:05 AM');
   assert.equal(fmtTime('12:00'), '12 PM');
   assert.equal(fmtTime('15:30'), '3:30 PM');
-  assert.equal(fmtTime('23:59'), '11:59 PM');
+  assert.equal(fmtTime('23:30'), '11:30 PM');
+  assert.equal(fmtTime('23:59'), 'midnight'); // the data's cap for past-midnight windows
+});
+
+test('groupSpecials merges same days + hours, keeps order, derives type', () => {
+  const groups = groupSpecials([
+    special({ days: ['fri'], start: '11:00', end: '21:30', type: 'drinks', items: ['$3.50 old fashioneds'] }),
+    special({ days: ['fri'], start: '11:00', end: '21:30', type: 'food', items: ['Fish fry'] }),
+    special({ days: ['fri'], start: '16:00', end: '21:30', type: 'food', items: ['Pan-fried walleye'] }),
+  ]);
+  assert.equal(groups.length, 2);
+  assert.deepEqual(groups[0].items, ['$3.50 old fashioneds', 'Fish fry']);
+  assert.equal(groups[0].type, 'both');
+  assert.equal(groups[1].type, 'food');
+  assert.equal(groups[0].placeholder, false);
+});
+
+test('placeholder lines are flagged and shown without the raw marker', () => {
+  const [g] = groupSpecials([special({ items: ['PLACEHOLDER — specials being confirmed'] })]);
+  assert.equal(g.placeholder, true);
+  assert.equal(isPlaceholder('PLACEHOLDER — x'), true);
+  assert.equal(placeholderText('PLACEHOLDER — time being confirmed: Friday fish fry'), 'Time being confirmed: Friday fish fry');
 });
 
 test('fmtDays collapses consecutive runs, Mon-first, no week wrap', () => {

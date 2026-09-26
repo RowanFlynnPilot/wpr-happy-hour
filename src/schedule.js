@@ -26,6 +26,8 @@ export function fmtDays(days) {
 }
 
 export function fmtTime(hm) {
+  // 23:59 is how the data caps a window that runs past midnight (no cross-midnight windows)
+  if (hm === '23:59') return 'midnight';
   const [h, m] = hm.split(':').map(Number);
   const period = h >= 12 ? 'PM' : 'AM';
   const hour12 = h % 12 === 0 ? 12 : h % 12;
@@ -54,6 +56,30 @@ export function specialStatus(special, date) {
 
 export function minutesUntil(hm, date) {
   return toMinutes(hm) - (date.getHours() * 60 + date.getMinutes());
+}
+
+// A card shows one header per window: specials sharing days + hours (a drinks
+// and a food special, 11–9:30) merge, items in data order. Type is 'drinks' or
+// 'food' when all agree, else 'both'. placeholder: any item is a PLACEHOLDER.
+export function groupSpecials(specials) {
+  const groups = new Map();
+  for (const s of specials) {
+    const key = `${s.days.join(',')}|${s.start}|${s.end}`;
+    const g = groups.get(key);
+    if (g) {
+      g.items.push(...s.items);
+      if (g.type !== s.type) g.type = 'both';
+    } else groups.set(key, { days: s.days, start: s.start, end: s.end, type: s.type, items: [...s.items] });
+  }
+  return [...groups.values()].map((g) => ({ ...g, placeholder: g.items.some(isPlaceholder) }));
+}
+
+// Research placeholders carry a "PLACEHOLDER — " prefix in the data (a guessed item or
+// window); cards show them muted, tagged "Placeholder", instead of the raw marker.
+export const isPlaceholder = (item) => item.includes('PLACEHOLDER'); // same test as validate()
+export function placeholderText(item) {
+  const t = item.replace(/^PLACEHOLDER\s*(—|-|:)?\s*/, '');
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
 export const tierRank = (bar) => (bar.tier === 'featured' ? 0 : 1);

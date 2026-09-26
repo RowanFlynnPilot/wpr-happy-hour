@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { DAY_KEYS, validate } from './data/validate.js';
-import { digestFor, fmtWindow, fmtWindows, weekdayLabel } from './schedule.js';
+import { digestFor, fmtWindow, fmtWindows, groupSpecials, weekdayLabel } from './schedule.js';
 import './index.css';
 import './digest.css';
 
@@ -52,12 +52,12 @@ function Digest() {
           {bar.photo && <img className="digest-photo" src={bar.photo} alt="" />}
           <h2 className="digest-name">{bar.name}</h2>
           <p className="digest-address">{bar.address}</p>
-          {specials.map((s, i) => (
+          {groupSpecials(specials).map((g, i) => (
             <div className="digest-special" key={i}>
-              <p className="digest-time mono">{fmtWindow(s)}</p>
+              <p className="digest-time mono">{fmtWindow(g)}</p>
               <ul className="digest-items">
-                {s.items.map((item) => (
-                  <li key={item}>{item}</li>
+                {g.items.map((item, j) => (
+                  <li key={j}>{item}</li>
                 ))}
               </ul>
             </div>

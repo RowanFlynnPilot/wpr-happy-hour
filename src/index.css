@@ -1,16 +1,19 @@
 /* WPR design system */
 :root {
   --teal: #3a867c;
-  --teal-dark: #2c6a62;
+  --teal-dark: #2c6a62; /* fill behind small light text: 6.3:1 (--teal is 4.3:1, under AA) */
   --teal-tint: #e4efec;
   --cream: #f6f2e9;
   --ink: #22302c;
   --ink-soft: #5a6b66;
-  --card: #ffffff;
+  --card: #fffdf8; /* warm off-white, not pure white, on the cream page */
+  --on-teal: #fffdf8;
   --line: #e3ddd0;
   --amber: #8a6119; /* darkened 2026-07-16 for WCAG AA on --amber-tint (4.7:1) */
   --amber-tint: #f6edda;
 }
+
+/* Type scale: 11 · 13 · 15 · 19 px + the hero. Spacing: multiples of 4px. */
 
 * {
   box-sizing: border-box;
@@ -42,18 +45,16 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 4px 12px;
-  padding: 2px 0 10px;
-  border-bottom: 3px solid var(--ink);
-  margin-bottom: 18px;
+  padding-bottom: 12px;
 }
 
 .masthead-brand {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   font-family: 'Fraunces', serif;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 19px;
   color: var(--ink);
   text-decoration: none;
 }
@@ -63,8 +64,8 @@ body {
 }
 
 .masthead-badge {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
 }
 
 .masthead-tag {
@@ -75,16 +76,24 @@ body {
   color: var(--ink-soft);
 }
 
+/* Classic newspaper flag rule: 4px over 1px with a 3px gap (border-box: 4 + 3 + 1) */
+.masthead-rule {
+  height: 8px;
+  border-top: 4px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  margin-bottom: 16px;
+}
+
 .footer-badge {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   margin-bottom: 8px;
 }
 
 /* Hero */
 .hero {
   text-align: center;
-  padding: 8px 0 20px;
+  padding: 8px 0 24px;
 }
 
 .hero-clock {
@@ -110,7 +119,6 @@ body {
 .hero-sub {
   color: var(--ink-soft);
   margin-top: 8px;
-  font-size: 14px;
 }
 
 /* Controls */
@@ -129,28 +137,51 @@ body {
 .day-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .day-btn {
+  position: relative;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--card);
   color: var(--ink);
   cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
 .day-btn:hover {
   border-color: var(--teal);
 }
 
+.day-btn:active {
+  background: var(--teal-tint);
+}
+
 .day-btn.active {
+  background: var(--teal-dark);
+  border-color: var(--teal-dark);
+  color: var(--on-teal);
+}
+
+/* Today: a small dot under the label (aria-current="date" says it to screen readers) */
+.day-btn.today::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
   background: var(--teal);
-  border-color: var(--teal);
-  color: #fff;
+}
+
+.day-btn.active.today::after {
+  background: var(--on-teal);
 }
 
 .day-btn:focus-visible,
@@ -168,31 +199,61 @@ a:focus-visible {
 .filters select {
   font-family: 'Public Sans', sans-serif;
   font-size: 13px;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--card);
   color: var(--ink);
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.filters select:hover {
+  border-color: var(--teal);
+}
+
+/* Phones: all eight day buttons on one row, filters share the next */
+@media (max-width: 560px) {
+  .day-picker {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    width: 100%;
+  }
+
+  .day-btn {
+    padding: 8px 0;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .filters select {
+    flex: 1;
+  }
 }
 
 /* Sections */
 .section-label {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 20px;
-  margin: 20px 0 12px;
+  font-size: 19px;
+  margin: 24px 0 12px;
   color: var(--teal-dark);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  gap: 20px; /* wider than a card's 16px padding, so cards read as separate */
 }
 
-/* Cards */
+/* Cards — a column so the verified line sits at the bottom of every card in a row */
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -212,13 +273,13 @@ a:focus-visible {
   position: absolute;
   top: -10px;
   right: 12px;
-  background: var(--teal);
-  color: #fff;
+  background: var(--teal-dark);
+  color: var(--on-teal);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 2px 10px;
+  padding: 2px 8px;
   border-radius: 999px;
 }
 
@@ -250,18 +311,23 @@ a:focus-visible {
 .card-address {
   color: var(--ink-soft);
   font-size: 13px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .card-address a {
   color: var(--teal-dark);
 }
 
+.card-specials {
+  flex: 1 0 auto;
+  padding-bottom: 12px;
+}
+
 /* Specials */
 .special {
   border-top: 1px dashed var(--line);
   margin-top: 12px;
-  padding-top: 10px;
+  padding-top: 12px;
 }
 
 .special-meta {
@@ -269,11 +335,11 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .special-days {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
@@ -285,19 +351,26 @@ a:focus-visible {
 .chip {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  padding: 2px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
   white-space: nowrap;
 }
 
 .chip-now {
-  background: var(--teal);
-  color: #fff;
+  background: var(--teal-dark);
+  color: var(--on-teal);
 }
 
 .chip-later {
   background: var(--amber-tint);
   color: var(--amber);
+}
+
+/* Research placeholder (guessed item or window) until the verification call — says so, quietly */
+.chip-placeholder {
+  padding: 1px 8px;
+  border: 1px dashed var(--ink-soft);
+  color: var(--ink-soft);
 }
 
 .special-items {
@@ -306,7 +379,6 @@ a:focus-visible {
 }
 
 .special-items li {
-  font-size: 14px;
   padding-left: 16px;
   position: relative;
 }
@@ -319,8 +391,15 @@ a:focus-visible {
   font-weight: 700;
 }
 
+.special-items .item-placeholder {
+  color: var(--ink-soft);
+}
+
+.special-items .item-placeholder::before {
+  color: var(--ink-soft);
+}
+
 .card-verified {
-  margin-top: 12px;
   padding-top: 8px;
   border-top: 1px dashed var(--line);
   font-size: 11px;
@@ -340,7 +419,7 @@ a:focus-visible {
 
 .cross-promo {
   text-align: center;
-  margin-top: 28px;
+  margin-top: 32px;
   font-size: 13px;
   color: var(--ink-soft);
 }
@@ -350,7 +429,7 @@ a:focus-visible {
 }
 
 .footer {
-  margin-top: 36px;
+  margin-top: 40px;
   padding-top: 16px;
   border-top: 1px solid var(--line);
   text-align: center;
@@ -359,7 +438,7 @@ a:focus-visible {
 }
 
 .footer p + p {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .footer a {
