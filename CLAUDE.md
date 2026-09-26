@@ -34,6 +34,10 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   The email side lives in the wpr-newsletter repo (auto-sends; confirm before
   touching it).
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
+- Verification lands through `npm run calls -- <call-sheet.csv> [--write]`
+  (scripts/apply-calls.mjs): Chris's "Verified" rows set specials, tier and
+  verifiedOn in one validated step. Don't hand-edit verifiedOn. The call sheet
+  itself stays off the repo (phone numbers).
 
 ## Engineering rules
 - No fallbacks: one correct path. Fail fast and loud.

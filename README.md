@@ -66,6 +66,33 @@ load, and `npm run check` runs the same validator in CI before every deploy):
 
 Update `updated` (top-level) whenever specials change; it renders in the footer.
 
+## Recording verification calls
+
+The call sheet (a CSV kept off the repo — it holds phone numbers) is the input.
+For each call Chris fills four columns: **Call date**, **Outcome** (`Verified`,
+`Callback`, `No answer`, `Declined`, `Closed`), **Tier sold** (`Partner` or
+`Featured`), and **Verified specials (final)**, one special per line:
+
+```
+Mon-Fri 3pm-6pm drinks: $2 off rails; $1 off taps
+Fri 4-9pm food: Fish fry — cod 2 pc $12 · 3 pc $15
+```
+
+Days take ranges, lists, `Daily`, `Weekdays`; times take `3pm`, `3:30pm`, `noon`,
+`midnight`; type is `drinks`, `food` or `both`; items split on `;`. "Until close"
+is not a time — get the closing time. Then:
+
+```powershell
+npm run calls -- "C:\Users\rpfly\OneDrive\Desktop\happy-hour-call-tracker-2026-09-26.csv"
+npm run calls -- "C:\Users\rpfly\OneDrive\Desktop\happy-hour-call-tracker-2026-09-26.csv" --write
+```
+
+The first command previews; `--write` applies. Every `Verified` row replaces that
+bar's specials, sets its tier and `verifiedOn` = the call date, and the whole file
+passes `validate()` before anything is written. A row it can't read stops the run
+and names the bar. Other outcomes are listed, never applied. Re-running the same
+sheet is safe.
+
 Top-level `sponsor` is `null` until the title sponsorship sells, then
 `{ "name": "Business Name", "url": "https://..." }` (`url` may be `""`). Selling
 the slot is a JSON edit, not a code change.

@@ -7,8 +7,11 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
 1. **Verification/sales calls (Chris).** No bar in `src/data/bars.json` is
    verified yet. After the 2026-09-26 research cross-check (websites + the bars'
    own Facebook posts): 14 bars carry specials sourced from their own advertising,
-   7 are partly sourced (some times still unconfirmed), 51 are `PLACEHOLDER`. The dated call sheet lists what to confirm
-   on each call. Under the paid partner model the verification call
+   7 are partly sourced (some times still unconfirmed), 51 are `PLACEHOLDER`. The
+   dated call sheet is in call order (tier 1 = sourced, pitch-ready) and lists
+   what to confirm on each call. Chris logs Call date / Outcome / Tier sold /
+   Verified specials; `npm run calls` turns Verified rows into listings (README →
+   Recording verification calls). Under the paid partner model the verification call
    IS the sales call: confirm the specials, close the listing, capture contact
    info in Notion. Each closed bar is one JSON edit — real items, `tier`
    (`partner`/`featured`), `verifiedOn: <call date>` — and bump the top-level

@@ -9,6 +9,7 @@
     "test": "node --test",
     "build": "vite build",
     "render": "node scripts/render-digest.mjs",
+    "calls": "node scripts/apply-calls.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
