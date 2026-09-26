@@ -25,7 +25,15 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Time logic: start inclusive, end exclusive, no cross-midnight windows,
   visitor's local browser time. Do not introduce timezone libraries.
 - Single component file (App.jsx) is intentional at this size. Split only
-  when a file genuinely has multiple responsibilities.
+  when a file genuinely has multiple responsibilities. Time/listing logic lives
+  in src/schedule.js because three consumers share it (App.jsx, the newsletter
+  card src/digest.jsx, scripts/render-digest.mjs); it's unit-tested (`npm test`).
+- Newsletter card: digest.html is screenshotted by Playwright at deploy time into
+  one PNG per weekday + digest.json (dist/digest/). Verified bars only — nothing
+  unconfirmed reaches subscribers. No cron: the card changes only with bars.json.
+  The email side lives in the wpr-newsletter repo (auto-sends; confirm before
+  touching it).
+- Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
 
 ## Engineering rules
 - No fallbacks: one correct path. Fail fast and loud.

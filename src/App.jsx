@@ -2,49 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import data from './data/bars.json';
 // Schema lives in validate.js — shared with scripts/check-data.mjs so CI
 // rejects bad data before it can deploy. The app still throws at load.
-import { DAY_KEYS, toMinutes, validate } from './data/validate.js';
-
-const DAY_LABELS = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
-const WEEK_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-
-// ["mon","tue","wed","thu","fri"] → "Mon–Fri"; non-consecutive runs join with ' · '
-function fmtDays(days) {
-  const idx = days.map((d) => WEEK_ORDER.indexOf(d)).sort((a, b) => a - b);
-  const runs = [];
-  for (const i of idx) {
-    const last = runs[runs.length - 1];
-    if (last && i === last[1] + 1) last[1] = i;
-    else runs.push([i, i]);
-  }
-  return runs
-    .map(([a, b]) => (a === b ? DAY_LABELS[WEEK_ORDER[a]] : `${DAY_LABELS[WEEK_ORDER[a]]}–${DAY_LABELS[WEEK_ORDER[b]]}`))
-    .join(' · ');
-}
-
-/* ---------------- */
-/* Time utilities   */
-/* ---------------- */
-
-function fmtTime(hm) {
-  const [h, m] = hm.split(':').map(Number);
-  const period = h >= 12 ? 'PM' : 'AM';
-  const hour12 = h % 12 === 0 ? 12 : h % 12;
-  return m === 0 ? `${hour12} ${period}` : `${hour12}:${String(m).padStart(2, '0')} ${period}`;
-}
-
-// Status of one special relative to a Date: 'now' | 'later' | 'done' | null (not today)
-function specialStatus(special, date) {
-  const today = DAY_KEYS[date.getDay()];
-  if (!special.days.includes(today)) return null;
-  const mins = date.getHours() * 60 + date.getMinutes();
-  if (mins < toMinutes(special.start)) return 'later';
-  if (mins < toMinutes(special.end)) return 'now';
-  return 'done';
-}
-
-function minutesUntil(hm, date) {
-  return toMinutes(hm) - (date.getHours() * 60 + date.getMinutes());
-}
+import { DAY_KEYS, validate } from './data/validate.js';
+// Time + listing logic is shared with the newsletter card and unit-tested
+import {
+  DAY_LABELS,
+  WEEK_ORDER,
+  dayListings,
+  fmtDays,
+  fmtTime,
+  fmtWindow,
+  minutesUntil,
+  nextPour as findNextPour,
+  nowListings,
+  specialStatus,
+  trackedUrl,
+  weekdayLabel,
+} from './schedule.js';
 
 /* ---------------- */
 /* Data (validated) */
@@ -107,9 +80,7 @@ function SpecialRow({ special, now, showDays }) {
         {showDays && (
           <span className="special-days mono">{fmtDays(special.days)}</span>
         )}
-        <span className="special-time mono">
-          {fmtTime(special.start)}–{fmtTime(special.end)}
-        </span>
+        <span className="special-time mono">{fmtWindow(special)}</span>
         {now && <StatusChip special={special} now={now} />}
       </div>
       <ul className="special-items">
@@ -125,10 +96,13 @@ function SpecialRow({ special, now, showDays }) {
 const mapsUrl = (bar) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bar.name}, ${bar.address}, ${bar.city} WI`)}`;
 
-// Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool
-const CONTACT_LISTING = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing';
-const CONTACT_SPONSOR = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20sponsorship';
-const CONTACT_CORRECTION = 'mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20correction';
+// Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool.
+// The address is also shown as text in the footer: on a desktop with no mail app a
+// mailto: click does nothing, and the reader needs something to copy.
+const CHRIS_EMAIL = 'weber.chris@wausaupilotandreview.com';
+const CONTACT_LISTING = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20listing`;
+const CONTACT_SPONSOR = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20sponsorship`;
+const CONTACT_CORRECTION = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20correction`;
 
 // Sibling reader guide, live since July 2026 — cross-promoted on Fridays only
 const FISH_FRY_URL = 'https://wausaupilotandreview.com/wausau-area-fish-fry-guide/';
@@ -153,7 +127,8 @@ function BarCard({ bar, specials, now, showDays }) {
       <header className="card-head">
         <h3 className="card-name">
           {bar.website ? (
-            <a href={bar.website} target="_blank" rel="noopener noreferrer">
+            // Every listing is paid — rel="sponsored" is the disclosure to search engines
+            <a href={trackedUrl(bar.website)} target="_blank" rel="noopener noreferrer sponsored">
               {bar.name}
             </a>
           ) : (
@@ -186,11 +161,6 @@ function BarCard({ bar, specials, now, showDays }) {
 /* App              */
 /* ---------------- */
 
-const tierRank = (bar) => (bar.tier === 'featured' ? 0 : 1);
-const featuredFirst = (a, b) => tierRank(a) - tierRank(b) || a.name.localeCompare(b.name);
-// Time-ordered lists sort on the earliest qualifying special, regardless of data order
-const earliestStart = (specials) => Math.min(...specials.map((s) => toMinutes(s.start)));
-
 export default function App() {
   const [now, setNow] = useState(() => new Date());
   const [view, setView] = useState(INITIAL_VIEW); // 'now' | one of DAY_KEYS
@@ -198,8 +168,16 @@ export default function App() {
   const [type, setType] = useState(INITIAL_TYPE); // 'all' | 'drinks' | 'food'
 
   useEffect(() => {
-    const tick = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(tick);
+    const refresh = () => setNow(new Date());
+    const tick = setInterval(refresh, 30_000);
+    // Phones freeze background tabs — refresh the moment the page is visible
+    // again instead of showing stale "Pouring now" status until the next tick
+    const onVisible = () => document.visibilityState === 'visible' && refresh();
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(tick);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
 
   // Embedded in the WordPress iframe: report content height so the parent can
@@ -231,55 +209,17 @@ export default function App() {
 
   // Now view: bars grouped by whether any qualifying special is active this minute
   const { pouring, laterToday, nextPour } = useMemo(() => {
-    const pouring = [];
-    const laterToday = [];
-    for (const bar of cityBars) {
-      const qualifying = bar.specials.filter(typeMatch);
-      const active = qualifying.filter((s) => specialStatus(s, now) === 'now');
-      const upcoming = qualifying.filter((s) => specialStatus(s, now) === 'later');
-      if (active.length > 0) pouring.push({ bar, specials: active });
-      else if (upcoming.length > 0) laterToday.push({ bar, specials: upcoming });
-    }
-    pouring.sort((a, b) => featuredFirst(a.bar, b.bar));
-    laterToday.sort(
-      (a, b) =>
-        tierRank(a.bar) - tierRank(b.bar) ||
-        earliestStart(a.specials) - earliestStart(b.specials) ||
-        a.bar.name.localeCompare(b.bar.name)
-    );
+    const { pouring, laterToday } = nowListings(cityBars, now, typeMatch);
     // Quiet night: tease the next upcoming pour (same filters) instead of a dead end
-    let nextPour = null;
-    if (pouring.length === 0 && laterToday.length === 0) {
-      for (let offset = 1; offset <= 7 && nextPour === null; offset++) {
-        const dayKey = DAY_KEYS[(now.getDay() + offset) % 7];
-        for (const bar of cityBars) {
-          for (const s of bar.specials) {
-            if (typeMatch(s) && s.days.includes(dayKey) && (!nextPour || toMinutes(s.start) < toMinutes(nextPour.start))) {
-              nextPour = { offset, dayKey, start: s.start };
-            }
-          }
-        }
-      }
-    }
-    return { pouring, laterToday, nextPour };
+    const quiet = pouring.length === 0 && laterToday.length === 0;
+    return { pouring, laterToday, nextPour: quiet ? findNextPour(cityBars, now, typeMatch) : null };
   }, [cityBars, now, type]);
 
   // Day view: every bar with a qualifying special on the chosen day
-  const dayList = useMemo(() => {
-    if (view === 'now') return [];
-    return cityBars
-      .map((bar) => ({
-        bar,
-        specials: bar.specials.filter((s) => typeMatch(s) && s.days.includes(view)),
-      }))
-      .filter((e) => e.specials.length > 0)
-      .sort(
-        (a, b) =>
-          tierRank(a.bar) - tierRank(b.bar) ||
-          earliestStart(a.specials) - earliestStart(b.specials) ||
-          a.bar.name.localeCompare(b.bar.name)
-      );
-  }, [cityBars, view, type]);
+  const dayList = useMemo(
+    () => (view === 'now' ? [] : dayListings(cityBars, view, typeMatch)),
+    [cityBars, view, type]
+  );
 
   const clock = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const weekday = now.toLocaleDateString([], { weekday: 'long' });
@@ -417,7 +357,7 @@ export default function App() {
           Happy Hour Finder, presented by{' '}
           {DATA.sponsor ? (
             DATA.sponsor.url ? (
-              <a className="sponsor-name" href={DATA.sponsor.url} target="_blank" rel="noopener noreferrer">
+              <a className="sponsor-name" href={trackedUrl(DATA.sponsor.url)} target="_blank" rel="noopener noreferrer sponsored">
                 {DATA.sponsor.name}
               </a>
             ) : (
@@ -434,14 +374,10 @@ export default function App() {
           placements · Last updated <span className="mono">{DATA.updated}</span>
         </p>
         <p>
-          Run a bar or restaurant? <a href={CONTACT_LISTING}>Email Chris Weber to get listed</a> ·{' '}
-          <a href={CONTACT_CORRECTION}>Spot an error? Tell us</a>
+          Run a bar or restaurant? Get listed: email Chris Weber at{' '}
+          <a href={CONTACT_LISTING}>{CHRIS_EMAIL}</a> · <a href={CONTACT_CORRECTION}>Spot an error? Tell us</a>
         </p>
       </footer>
     </div>
   );
-}
-
-function weekdayLabel(key) {
-  return { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' }[key];
 }

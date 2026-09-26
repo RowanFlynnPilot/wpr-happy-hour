@@ -50,10 +50,18 @@ load, and `npm run check` runs the same validator in CI before every deploy):
 - `verifiedOn` is `null` until the specials are confirmed with the bar by phone, then the
   `YYYY-MM-DD` of that call. Renders as "✓ Verified <Mon Year>" on the card (null shows
   "Details being confirmed"); `npm run check` warns on unverified or >90-day-old listings.
-- `days` values: `mon tue wed thu fri sat sun`.
+- A verified bar may not carry `PLACEHOLDER` items — replace them with the confirmed
+  specials in the same edit that sets `verifiedOn`.
+- `id` is lowercase kebab-case and never changes once shared — it's the partner's
+  `?bar=` link.
+- `website` is `""` or a full `http(s)://` URL (prefer https; http only for sites
+  without it). `photo` is `null` or a full `https://` URL.
+- `days` values: `mon tue wed thu fri sat sun`, no repeats.
 - `start`/`end` are 24h `HH:MM`; `end` must be after `start`. No cross-midnight windows.
 - `type` is `"drinks"`, `"food"`, or `"both"` — drives the food/drinks filter.
-- Contact info for bars lives in the Notion pipeline, **never** in this file.
+- Dates are real calendar dates; CI also rejects `updated`/`verifiedOn` in the future.
+- Unknown fields are rejected. Contact info for bars lives in the Notion pipeline,
+  **never** in this file — a `"phone"` key fails the build.
 
 Update `updated` (top-level) whenever specials change; it renders in the footer.
 
@@ -66,6 +74,10 @@ the slot is a JSON edit, not a code change.
 ```powershell
 cd C:\Users\rpfly\Projects\wpr-happy-hour; npm install; npm run dev
 ```
+
+`npm run check` validates bars.json; `npm test` runs the unit tests (Node's built-in
+runner — time logic in `src/schedule.js`, every validator rule). CI runs both before
+every deploy.
 
 ## Deploy
 
@@ -95,6 +107,34 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
 </script>
 ```
 
+## Newsletter card
+
+Email can't run the app (no iframes, no JavaScript), so the newsletter gets an image —
+the same pattern as the Packers, gas-price and meeting digests. `digest.html` is a
+536px card; `scripts/render-digest.mjs` screenshots it with Playwright at deploy time:
+
+- `digest/<day>.png` — one per weekday. **Verified bars only**: featured partners get
+  a full entry (up to 3, with specials and photo), every other verified partner open
+  that day gets a name + time line (up to 8, then "+N more"). The presenting
+  `sponsor` is baked in — one sponsorship covers the tool and the newsletter.
+- `digest/digest.json` — per-day `count`, `image`, `alt`. `image` is `null` on days
+  with no verified partners; the newsletter omits the section on those days.
+- `digest/demo.png` — sales preview with sample listings. Any day, live:
+  `digest.html?day=thu&demo`, or `&demo=Bar%20Name` to put a prospect's name in the
+  featured spot for a screenshot.
+
+No schedule is needed: the card only changes when bars.json does, and the newsletter
+picks the weekday's file. Local run (first time: `npx playwright install chromium`):
+
+```powershell
+npm run build; npm run render
+```
+
+The newsletter side lives in the `wpr-newsletter` repo: add `wpr-happy-hour` to the
+tools-proxy allowlist (then redeploy the Cloudflare worker), and read `digest.json`
+in a fail-soft block like the featured pet, linking the image to the WP page with
+`?view=<day>`.
+
 ## Sales assets
 
 - `public/partners.html` — the rate card Chris shares or prints to PDF:
@@ -122,3 +162,6 @@ localhost traffic is ignored automatically.
   socials and table tents. Invalid values are ignored.
 - **Sort:** featured first, then by start time, then alphabetically.
 - **Sponsor slot:** footer line reserved for the title sponsor.
+- **Paid links:** bar websites and the sponsor link carry `rel="sponsored"` (every
+  listing is paid) and `utm_source=wausaupilotandreview&utm_medium=widget&utm_campaign=happy-hour`,
+  so partners see WPR's referrals in their own analytics.

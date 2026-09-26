@@ -6,6 +6,20 @@ import { validate } from '../src/data/validate.js';
 
 const raw = await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8');
 const json = validate(JSON.parse(raw));
+
+// CI-only: no date may be in the future ("never invent a date"). Kept out of
+// validate() because it reads the clock — a visitor with a wrong clock must
+// never be able to break the app. Local date; CI runs in UTC, which is never
+// behind Central, so a same-day Wausau date always passes.
+const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+const future = [
+  ...(json.updated > today ? [`"updated" ${json.updated}`] : []),
+  ...json.bars.filter((b) => b.verifiedOn !== null && b.verifiedOn > today).map((b) => `${b.id} verifiedOn ${b.verifiedOn}`),
+];
+if (future.length) {
+  throw new Error(`bars.json: date(s) in the future (today is ${today}): ${future.join(', ')}`);
+}
+
 const specials = json.bars.reduce((n, b) => n + b.specials.length, 0);
 const verified = json.bars.filter((b) => b.verifiedOn !== null);
 console.log(

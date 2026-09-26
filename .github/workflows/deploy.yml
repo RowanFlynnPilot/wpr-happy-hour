@@ -19,7 +19,18 @@ jobs:
           node-version: 24
       - run: npm ci
       - run: npm run check
+      - run: npm test
       - run: npm run build
+      # Newsletter card images (dist/digest/) — see scripts/render-digest.mjs.
+      # Rendered from bars.json at deploy time, one per weekday, so no schedule
+      # is needed. A failed render fails the deploy: re-run the workflow.
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run render
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

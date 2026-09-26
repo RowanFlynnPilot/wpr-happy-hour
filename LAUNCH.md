@@ -4,12 +4,13 @@ The tool is code-complete and deployed to GitHub Pages
 (https://rowanflynnpilot.github.io/wpr-happy-hour/), but **not yet embedded on
 wausaupilotandreview.com or announced**. What blocks launch, in order:
 
-1. **Verification/sales calls (Chris).** Every special in `src/data/bars.json` is
-   still `PLACEHOLDER`. Under the paid partner model the verification call IS the
-   sales call: confirm the specials, close the listing, capture contact info in
-   Notion. Each closed bar is one JSON edit — real items, `tier`
+1. **Verification/sales calls (Chris).** No bar in `src/data/bars.json` is
+   verified yet: 63 carry `PLACEHOLDER` specials, 11 carry specials sourced from
+   the bar's own advertising. Under the paid partner model the verification call
+   IS the sales call: confirm the specials, close the listing, capture contact
+   info in Notion. Each closed bar is one JSON edit — real items, `tier`
    (`partner`/`featured`), `verifiedOn: <call date>` — and bump the top-level
-   `updated`. Target: ~8 signed founding partners before going public, so the
+   `updated` (CI rejects a verified bar that still has `PLACEHOLDER` items). Target: ~8 signed founding partners before going public, so the
    tracker is useful on day one.
 2. **Dress the featured showcase.** Faraway Place needs a street address, website,
    and `photo` URL before Chris demos the featured tier to anyone.
@@ -28,14 +29,28 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    paste the README snippet; it adds auto-height plus the query-string
    passthrough so article deep links (`?view=fri`, `?bar=...`) work inside
    the iframe.
-6. **Cross-link the guides.** The happy hour app already links to the Fish Fry
+6. **Switch on the newsletter card** (owner decision 2026-09-26: both daily
+   editions). The images already publish with every deploy (README → Newsletter
+   card); what's left lives in the `wpr-newsletter` repo, which sends to
+   subscribers automatically — review before merging there. Add `wpr-happy-hour`
+   to the tools-proxy allowlist and redeploy that Cloudflare worker, then add a
+   fail-soft section that reads `digest/digest.json`, shows the weekday's image
+   linked to the WP page (`?view=<day>`), and omits itself when `image` is null.
+   Needs the WP page from step 5 and at least one verified partner.
+7. **Cross-link the guides.** The happy hour app already links to the Fish Fry
    Guide on Fridays. Add the reciprocal link on the fish fry side (WP page or
    the wpr-fish-fry app footer) once the happy hour page exists.
-7. **Announcement article.** Link the page; give each partner their own
+8. **Announcement article.** Link the page; give each partner their own
    `?bar=<id>` link to share on socials.
 
 Open decisions (owner/Chris):
 
-- Price points for partner / featured / presenting sponsor.
+- **Unsigned bars at launch.** 63 of 74 bars still show `PLACEHOLDER` text, and
+  under the paid model every listed bar should be a paying partner. Before going
+  public, either remove unverified bars from bars.json (back to the call sheet) or
+  add a launch rule that fails CI on any unverified bar. (The newsletter card
+  already shows verified bars only.)
+- Price points for partner / featured / presenting sponsor (now including the
+  daily newsletter card — see the rate card).
 - Removal policy and timing for lapsed payers.
 - Founding-partner launch offer (rate lock? badge?).
