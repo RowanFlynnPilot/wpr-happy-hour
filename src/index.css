@@ -59,8 +59,12 @@ body {
   text-decoration: none;
 }
 
-.masthead-brand:hover {
-  color: var(--teal-dark);
+/* Hover styles are gated to real pointers throughout: on phones a tap leaves
+   :hover stuck until the next tap elsewhere */
+@media (hover: hover) and (pointer: fine) {
+  .masthead-brand:hover {
+    color: var(--teal-dark);
+  }
 }
 
 .masthead-badge {
@@ -151,10 +155,16 @@ body {
   color: var(--ink);
   cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  touch-action: manipulation; /* quick taps on neighbors otherwise read as a double-tap zoom */
+  -webkit-tap-highlight-color: transparent; /* :active carries the press feedback */
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.day-btn:hover {
-  border-color: var(--teal);
+@media (hover: hover) and (pointer: fine) {
+  .day-btn:hover {
+    border-color: var(--teal);
+  }
 }
 
 .day-btn:active {
@@ -208,8 +218,18 @@ a:focus-visible {
   transition: border-color 150ms ease;
 }
 
-.filters select:hover {
-  border-color: var(--teal);
+@media (hover: hover) and (pointer: fine) {
+  .filters select:hover {
+    border-color: var(--teal);
+  }
+}
+
+/* iOS zooms the page (here: the whole WordPress page) on focus of any control
+   under 16px and never zooms back — the one deliberate exception to the type scale */
+@media (pointer: coarse) {
+  .filters select {
+    font-size: 16px;
+  }
 }
 
 /* Phones: all eight day buttons on one row, filters share the next */
@@ -231,6 +251,7 @@ a:focus-visible {
 
   .filters select {
     flex: 1;
+    min-width: 0; /* at 16px the two selects would otherwise overflow a narrow frame */
   }
 }
 
@@ -245,7 +266,7 @@ a:focus-visible {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 20px; /* wider than a card's 16px padding, so cards read as separate */
 }
 
@@ -303,9 +324,11 @@ a:focus-visible {
   text-decoration: none;
 }
 
-.card-name a:hover {
-  color: var(--teal-dark);
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .card-name a:hover {
+    color: var(--teal-dark);
+    text-decoration: underline;
+  }
 }
 
 .card-address {
@@ -466,8 +489,23 @@ a.sponsor-open {
   text-decoration: none;
 }
 
-a.sponsor-name:hover {
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  a.sponsor-name:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Announced to screen readers, never shown */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

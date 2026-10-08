@@ -195,14 +195,32 @@ export default function App() {
   // size the frame. Parent listener lives in the README snippet; manual test
   // harness at public/embed-test.html. Height is not sensitive, so '*' is fine —
   // the parent side is what must origin-check.
+  // A ?bar= deep link's report also carries its card's position (anchor), once:
+  // a frame sized to its content can't scroll itself, so the parent page must.
+  // Measured after the web fonts load — they reflow every card above it.
   useEffect(() => {
     if (window.parent === window) return; // standalone page, nothing to report
-    const post = () =>
-      window.parent.postMessage({ type: 'wpr-hh-height', height: document.body.scrollHeight }, '*');
+    let anchor = null;
+    const post = () => {
+      window.parent.postMessage({ type: 'wpr-hh-height', height: document.body.scrollHeight, anchor }, '*');
+      anchor = null; // once — later resizes must not yank the reader back
+    };
     const ro = new ResizeObserver(post);
     ro.observe(document.body);
     post();
-    return () => ro.disconnect();
+    let live = true;
+    const card = INITIAL_BAR && document.getElementById(`bar-${INITIAL_BAR}`);
+    if (card) {
+      document.fonts.ready.then(() => {
+        if (!live) return;
+        anchor = Math.round(card.getBoundingClientRect().top + window.scrollY);
+        post();
+      });
+    }
+    return () => {
+      live = false;
+      ro.disconnect();
+    };
   }, []);
 
   // ?bar= deep link: INITIAL_VIEW guarantees the card is in the first paint
@@ -232,6 +250,13 @@ export default function App() {
     [cityBars, view, type]
   );
 
+  // Screen readers hear the result of a filter or day change. Counts only move
+  // when a window opens or closes — never the per-minute countdown text.
+  const status =
+    view === 'now'
+      ? `${pouring.length} pouring now, ${laterToday.length} later today`
+      : `${dayList.length} bar${dayList.length === 1 ? '' : 's'} with ${weekdayLabel(view)} specials`;
+
   const clock = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const weekday = now.toLocaleDateString([], { weekday: 'long' });
   const today = DAY_KEYS[now.getDay()];
@@ -247,125 +272,130 @@ export default function App() {
       </div>
       {/* WPR house flag rule: thick over thin, as on the fleet's other tools */}
       <div className="masthead-rule" />
-      <header className="hero">
-        <p className="hero-clock mono">
-          {weekday} · {clock}
-        </p>
-        <h1 className="hero-title">
-          {view === 'now' ? (
-            pouring.length > 0 ? (
-              <>
-                <span className="hero-count mono">{pouring.length}</span> happy hour
-                {pouring.length === 1 ? ' is' : 's are'} pouring right now
-              </>
-            ) : laterToday.length > 0 ? (
-              <>
-                <span className="hero-count mono">{laterToday.length}</span> happy hour
-                {laterToday.length === 1 ? '' : 's'} starting later today
-              </>
+      <main>
+        <header className="hero">
+          <p className="hero-clock mono">
+            {weekday} · {clock}
+          </p>
+          <h1 className="hero-title">
+            {view === 'now' ? (
+              pouring.length > 0 ? (
+                <>
+                  <span className="hero-count mono">{pouring.length}</span> happy hour
+                  {pouring.length === 1 ? ' is' : 's are'} pouring right now
+                </>
+              ) : laterToday.length > 0 ? (
+                <>
+                  <span className="hero-count mono">{laterToday.length}</span> happy hour
+                  {laterToday.length === 1 ? '' : 's'} starting later today
+                </>
+              ) : (
+                'Nothing pouring at the moment'
+              )
             ) : (
-              'Nothing pouring at the moment'
-            )
-          ) : (
-            `${weekdayLabel(view)} happy hours`
-          )}
-        </h1>
-        <p className="hero-sub">Happy hour specials at partner bars across the Wausau area</p>
-      </header>
+              `${weekdayLabel(view)} happy hours`
+            )}
+          </h1>
+          <p className="hero-sub">Happy hour specials at partner bars across the Wausau area</p>
+        </header>
 
-      <nav className="controls">
-        <div className="day-picker" role="group" aria-label="Pick a day">
-          <button
-            aria-pressed={view === 'now'}
-            className={`day-btn${view === 'now' ? ' active' : ''}`}
-            onClick={() => setView('now')}
-          >
-            Now
-          </button>
-          {WEEK_ORDER.map((d) => (
+        <div className="controls">
+          <div className="day-picker" role="group" aria-label="Pick a day">
             <button
-              key={d}
-              aria-pressed={view === d}
-              aria-current={d === today ? 'date' : undefined}
-              title={d === today ? 'Today' : undefined}
-              className={`day-btn${view === d ? ' active' : ''}${d === today ? ' today' : ''}`}
-              onClick={() => setView(d)}
+              aria-pressed={view === 'now'}
+              className={`day-btn${view === 'now' ? ' active' : ''}`}
+              onClick={() => setView('now')}
             >
-              {DAY_LABELS[d]}
+              Now
             </button>
-          ))}
-        </div>
-        <div className="filters">
-          <select value={city} onChange={(e) => setCity(e.target.value)} aria-label="Filter by city">
-            <option value="all">All cities</option>
-            {CITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
+            {WEEK_ORDER.map((d) => (
+              <button
+                key={d}
+                aria-pressed={view === d}
+                aria-current={d === today ? 'date' : undefined}
+                title={d === today ? 'Today' : undefined}
+                className={`day-btn${view === d ? ' active' : ''}${d === today ? ' today' : ''}`}
+                onClick={() => setView(d)}
+              >
+                {DAY_LABELS[d]}
+              </button>
             ))}
-          </select>
-          <select value={type} onChange={(e) => setType(e.target.value)} aria-label="Filter by type">
-            <option value="all">Food & drinks</option>
-            <option value="drinks">Drinks</option>
-            <option value="food">Food</option>
-          </select>
-        </div>
-      </nav>
-
-      {view === 'now' ? (
-        <>
-          {pouring.length > 0 && (
-            <section>
-              <h2 className="section-label">Pouring now</h2>
-              <div className="grid">
-                {pouring.map(({ bar, specials }) => (
-                  <BarCard key={bar.id} bar={bar} specials={specials} now={now} showDays={false} />
-                ))}
-              </div>
-            </section>
-          )}
-          {laterToday.length > 0 && (
-            <section>
-              <h2 className="section-label">Later today</h2>
-              <div className="grid">
-                {laterToday.map(({ bar, specials }) => (
-                  <BarCard key={bar.id} bar={bar} specials={specials} now={now} showDays={false} />
-                ))}
-              </div>
-            </section>
-          )}
-          {pouring.length === 0 && laterToday.length === 0 && (
-            <p className="empty">
-              Quiet out there right now.
-              {nextPour
-                ? ` Next happy hour: ${nextPour.offset === 1 ? 'tomorrow' : weekdayLabel(nextPour.dayKey)} at ${fmtTime(nextPour.start)}.`
-                : ' Pick a day above to plan ahead.'}
-            </p>
-          )}
-        </>
-      ) : (
-        <section>
-          {dayList.length > 0 ? (
-            <div className="grid">
-              {dayList.map(({ bar, specials }) => (
-                <BarCard key={bar.id} bar={bar} specials={specials} now={null} showDays={true} />
+          </div>
+          <div className="filters">
+            <select value={city} onChange={(e) => setCity(e.target.value)} aria-label="Filter by city">
+              <option value="all">All cities</option>
+              {CITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
-            </div>
-          ) : (
-            <p className="empty">
-              No specials listed for {weekdayLabel(view)} yet.{' '}
-              <a href={CONTACT_LISTING}>Run one? Get it listed.</a>
-            </p>
-          )}
-        </section>
-      )}
-
-      {(view === 'fri' || (view === 'now' && DAY_KEYS[now.getDay()] === 'fri')) && (
-        <p className="cross-promo">
-          Friday in Wisconsin means fish fry — see our{' '}
-          <a href={FISH_FRY_URL} target="_top">Wausau-area Fish Fry Guide</a>.
+            </select>
+            <select value={type} onChange={(e) => setType(e.target.value)} aria-label="Filter by type">
+              <option value="all">Food & drinks</option>
+              <option value="drinks">Drinks</option>
+              <option value="food">Food</option>
+            </select>
+          </div>
+        </div>
+        <p className="sr-only" role="status">
+          {status}
         </p>
-      )}
+
+        {view === 'now' ? (
+          <>
+            {pouring.length > 0 && (
+              <section>
+                <h2 className="section-label">Pouring now</h2>
+                <div className="grid">
+                  {pouring.map(({ bar, specials }) => (
+                    <BarCard key={bar.id} bar={bar} specials={specials} now={now} showDays={false} />
+                  ))}
+                </div>
+              </section>
+            )}
+            {laterToday.length > 0 && (
+              <section>
+                <h2 className="section-label">Later today</h2>
+                <div className="grid">
+                  {laterToday.map(({ bar, specials }) => (
+                    <BarCard key={bar.id} bar={bar} specials={specials} now={now} showDays={false} />
+                  ))}
+                </div>
+              </section>
+            )}
+            {pouring.length === 0 && laterToday.length === 0 && (
+              <p className="empty">
+                Quiet out there right now.
+                {nextPour
+                  ? ` Next happy hour: ${nextPour.offset === 1 ? 'tomorrow' : weekdayLabel(nextPour.dayKey)} at ${fmtTime(nextPour.start)}.`
+                  : ' Pick a day above to plan ahead.'}
+              </p>
+            )}
+          </>
+        ) : (
+          <section>
+            {dayList.length > 0 ? (
+              <div className="grid">
+                {dayList.map(({ bar, specials }) => (
+                  <BarCard key={bar.id} bar={bar} specials={specials} now={null} showDays={true} />
+                ))}
+              </div>
+            ) : (
+              <p className="empty">
+                No specials listed for {weekdayLabel(view)} yet.{' '}
+                <a href={CONTACT_LISTING}>Run one? Get it listed.</a>
+              </p>
+            )}
+          </section>
+        )}
+
+        {(view === 'fri' || (view === 'now' && DAY_KEYS[now.getDay()] === 'fri')) && (
+          <p className="cross-promo">
+            Friday in Wisconsin means fish fry — see our{' '}
+            <a href={FISH_FRY_URL} target="_top">Wausau-area Fish Fry Guide</a>.
+          </p>
+        )}
+      </main>
 
       <footer className="footer">
         <img className="footer-badge" src="./wpr-typewriter-badge.png" alt="" />

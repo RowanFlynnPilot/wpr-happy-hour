@@ -42,6 +42,9 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    fail-soft section that reads `digest/digest.json`, shows the weekday's image
    linked to the WP page (`?view=<day>`), and omits itself when `image` is null.
    Needs the WP page from step 5 and at least one verified partner.
+   The **newsletter spotlight** (per-send ad, README → Newsletter spotlight) needs
+   no code per sale, only a verified partner and a place to run: a Broadstreet zone
+   in the edition sold (ask Shereen), the way other dated newsletter ads run.
 7. **Cross-link the guides.** The happy hour app already links to the Fish Fry
    Guide on Fridays. Add the reciprocal link on the fish fry side (WP page or
    the wpr-fish-fry app footer) once the happy hour page exists.
@@ -57,5 +60,9 @@ Open decisions (owner/Chris):
   already shows verified bars only.)
 - Price points for partner / featured / presenting sponsor (now including the
   daily newsletter card — see the rate card).
+- Spotlight price. WPR's own rate card sells a daily-newsletter banner at
+  $300/week per edition; the spotlight is a bigger unit, so price it per send
+  (research suggests $25–50) or it undercuts the banner. Also: a "21+" line on
+  drink spotlights? (Best practice, not a Wisconsin requirement.)
 - Removal policy and timing for lapsed payers.
 - Founding-partner launch offer (rate lock? badge?).

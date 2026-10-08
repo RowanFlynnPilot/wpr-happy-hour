@@ -1,4 +1,5 @@
-/* Newsletter card — screenshotted at 536 CSS px wide, 2x, by
+/* Newsletter images — the day card (digest.html) and the spotlight ad
+   (spotlight.html, at the bottom). Screenshotted at 536 CSS px wide, 2x, by
    scripts/render-digest.mjs. Phones shrink email images to ~60%, so type runs
    larger than the app's. Square corners: the newsletter rounds the image. */
 body.digest-page {
@@ -196,4 +197,135 @@ body.digest-page {
   margin-top: 18px;
   padding-top: 10px;
   border-top: 1px solid var(--line);
+}
+
+/* Spotlight ad — one partner's own paid strip. The yellow rule and chip are
+   the newsletter's sponsored convention (#FED850, dark text), baked into the
+   image so the disclosure travels wherever the ad runs. The chip says
+   "Advertisement": the FTC's native-ad guide names it as clearly understood,
+   while bare "Sponsored" can read as underwriting. Opaque, with a hairline
+   edge, so dark-mode mail clients (which recolor the page around images)
+   still frame it. */
+.spotlight {
+  width: 536px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-top: 4px solid #fed850;
+  padding: 16px 24px 18px;
+}
+
+.spotlight-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spotlight-chip {
+  background: #fed850;
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.spotlight-kicker {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+}
+
+/* Name block, with the featured-tier photo beside it */
+.spotlight-id {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.spotlight-photo {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.spotlight-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.spotlight-address {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.spotlight-rows {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* One line per window: days · hours · what's on */
+.spotlight-rows li {
+  display: grid;
+  grid-template-columns: 76px 124px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.spotlight-days {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+}
+
+.spotlight-time {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* A line budget, so a wordy menu can't stretch the ad: six lines of specials at
+   most, shared by the rows shown (one row gets four). The alt text and the bar's
+   own site carry the rest. */
+.spotlight-what {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.spotlight-rows[data-rows='1'] .spotlight-what {
+  -webkit-line-clamp: 4;
+}
+
+.spotlight-rows[data-rows='2'] .spotlight-what {
+  -webkit-line-clamp: 3;
+}
+
+.spotlight-more {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+.spotlight-cta {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--teal-dark);
+  margin-top: 10px;
 }

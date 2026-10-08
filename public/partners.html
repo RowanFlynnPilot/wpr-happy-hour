@@ -79,11 +79,12 @@
         position: relative;
       }
       .tier.featured { border: 2px solid var(--teal); }
+      .spotlight-sample { width: 100%; height: auto; border-radius: 8px; align-self: start; }
       .tier-badge {
         position: absolute;
         top: -11px;
         right: 14px;
-        background: var(--teal);
+        background: var(--teal-dark); /* 6.2:1 behind small light text; --teal is 4.3:1 */
         color: #fff;
         font-family: 'JetBrains Mono', monospace;
         font-size: 11px;
@@ -166,7 +167,7 @@
             <li>Pinned to the top of every list</li>
             <li>Photo on your card + accent border &amp; badge</li>
             <li>One-tap Directions link</li>
-            <li>Spotlighted in the daily newsletter — your specials and photo, not just your name</li>
+            <li>A full entry on the newsletter's daily happy hour card — your specials and photo, not just your name</li>
           </ul>
         </div>
         <div class="tier">
@@ -179,6 +180,22 @@
             <li>Linked to your site</li>
           </ul>
         </div>
+      </div>
+
+      <h2>Newsletter spotlight</h2>
+      <div class="tiers">
+        <div class="tier">
+          <h3>Spotlight ad</h3>
+          <p class="price">$–– <small>/ send</small></p>
+          <ul>
+            <li>Your own ad in our morning or afternoon newsletter, on the dates you choose</li>
+            <li>Built from your confirmed listing — always your current specials, times and prices</li>
+            <li>Your name, address and up to three specials; your photo with a Featured listing</li>
+            <li>One click to your website</li>
+          </ul>
+        </div>
+        <img class="spotlight-sample" src="./digest/spotlight-demo.png"
+             alt="Sample spotlight ad: an Advertisement label, the bar's name and address, and its specials with times" />
       </div>
 
       <h2>Every placement includes</h2>

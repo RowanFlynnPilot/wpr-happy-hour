@@ -150,14 +150,26 @@ export function digestFor(bars, day) {
   };
 }
 
+// Newsletter spotlight: one VERIFIED partner's own small sponsored ad, built from
+// its listing — its week of specials, one row per window, Monday first. Capped
+// (with a line budget per row, in digest.css) so the ad stays small; the rest count as "more".
+export const SPOTLIGHT_MAX_ROWS = 3;
+export function spotlightFor(bar) {
+  if (bar.verifiedOn === null) throw new Error(`spotlight: "${bar.id}" is not verified — unconfirmed specials never go to subscribers`);
+  const firstDay = (g) => Math.min(...g.days.map((d) => WEEK_ORDER.indexOf(d)));
+  const rows = groupSpecials(bar.specials).sort((a, b) => firstDay(a) - firstDay(b) || toMinutes(a.start) - toMinutes(b.start));
+  return { rows: rows.slice(0, SPOTLIGHT_MAX_ROWS), more: Math.max(0, rows.length - SPOTLIGHT_MAX_ROWS) };
+}
+
 // Paid outbound links (bar websites, the presenting sponsor). The links carry
 // rel="noreferrer", so without UTM tags a partner's own analytics would file
 // WPR's referrals under "direct" — these tags are their renewal evidence.
+// medium says where the click came from: 'widget' (the app) or 'newsletter'.
 // validate() guarantees the URL parses.
-export function trackedUrl(url) {
+export function trackedUrl(url, medium = 'widget') {
   const u = new URL(url);
   u.searchParams.set('utm_source', 'wausaupilotandreview');
-  u.searchParams.set('utm_medium', 'widget');
+  u.searchParams.set('utm_medium', medium);
   u.searchParams.set('utm_campaign', 'happy-hour');
   return u.href;
 }

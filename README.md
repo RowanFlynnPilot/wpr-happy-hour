@@ -129,7 +129,13 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
   window.addEventListener('message', function (e) {
     if (e.origin !== 'https://rowanflynnpilot.github.io') return;
     if (e.data && e.data.type === 'wpr-hh-height') {
-      document.getElementById('wpr-hh').height = e.data.height;
+      var frame = document.getElementById('wpr-hh');
+      frame.height = e.data.height;
+      // ?bar= links: the frame can't scroll itself once it's full height, so the
+      // page scrolls to the partner's card (sent once, on the first report)
+      if (typeof e.data.anchor === 'number') {
+        window.scrollTo(0, frame.getBoundingClientRect().top + window.scrollY + e.data.anchor);
+      }
     }
   });
 </script>
@@ -162,6 +168,38 @@ The newsletter side lives in the `wpr-newsletter` repo: add `wpr-happy-hour` to 
 tools-proxy allowlist (then redeploy the Cloudflare worker), and read `digest.json`
 in a fail-soft block like the featured pet, linking the image to the WP page with
 `?view=<day>`.
+
+## Newsletter spotlight
+
+The cheap placement: one partner's own small ad in a newsletter, sold by the send.
+`spotlight.html` builds it from the bar's listing, so the ad always matches the finder;
+`scripts/render-digest.mjs` renders it with the newsletter card:
+
+- `digest/spotlight/<id>.png` — one per **verified** bar, so a sale needs no code
+  change. Name, address, up to three windows (Monday first, at most six lines
+  of specials between them, then "+N more specials"), the bar's website as the call to action, and the photo for
+  featured partners. Labeled "Advertisement" inside the image.
+- `digest/spotlight.json` — per ad: `image`, `alt` (the whole ad, for readers who
+  block images) and `link` (the bar's site with `utm_medium=newsletter`; `null` when
+  it has no site — link its finder listing, `?bar=<id>`, instead).
+- `digest/spotlight-demo.png` — sales preview; live with a prospect's name:
+  `spotlight.html?demo=Bar%20Name`.
+
+**Running one.** Bookings (dates, edition) stay offline with the sale, never in
+bars.json. The newsletter already runs date-ranged ads through Broadstreet and shows a
+zone only while it has a placement (`conditional_zone_block` in wpr-newsletter), so
+the spotlight can run the same way: upload the bar's PNG as the creative for the sold
+dates, with `link` and `alt` from spotlight.json. Broadstreet holds a copy — if the
+bar's specials change mid-run, re-upload the new image. (A wpr-newsletter block that
+reads spotlight.json directly would need a cache-busting `?v=` on the image URL:
+Gmail's image proxy caches by URL.)
+
+**Sales notes** (research, 2026-10-08 — not legal advice): the bar pays for its own
+spotlight. A brewery or distributor paying for a bar's ad runs into Wisconsin's
+tied-house law (Wis. Stat. 125.33) — confirm with DOR before taking that money.
+Wisconsin has no statewide ban on advertising happy hours or price specials, but cities
+can restrict some promotions through license conditions; keep "bottomless" and
+drinking-game copy out.
 
 ## Sales assets
 

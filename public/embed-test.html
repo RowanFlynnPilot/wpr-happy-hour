@@ -23,8 +23,13 @@
       window.addEventListener('message', (e) => {
         if (e.origin !== location.origin) return;
         if (e.data && e.data.type === 'wpr-hh-height') {
-          document.getElementById('wpr-hh').height = e.data.height;
+          const frame = document.getElementById('wpr-hh');
+          frame.height = e.data.height;
           document.getElementById('h').textContent = e.data.height + 'px';
+          // ?bar= deep link: scroll this page to the card (README snippet does the same)
+          if (typeof e.data.anchor === 'number') {
+            window.scrollTo(0, frame.getBoundingClientRect().top + window.scrollY + e.data.anchor);
+          }
         }
       });
     </script>

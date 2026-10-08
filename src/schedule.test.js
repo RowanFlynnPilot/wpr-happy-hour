@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {
   DIGEST_MAX_FEATURED,
   DIGEST_MAX_LISTED,
+  SPOTLIGHT_MAX_ROWS,
   dayListings,
   digestFor,
   fmtDays,
@@ -17,6 +18,7 @@ import {
   nextPour,
   nowListings,
   specialStatus,
+  spotlightFor,
   trackedUrl,
 } from './schedule.js';
 
@@ -156,10 +158,33 @@ test('digestFor caps featured entries and the name list, counting the rest', () 
   assert.equal(d.more, d.count - DIGEST_MAX_FEATURED - DIGEST_MAX_LISTED);
 });
 
+test('spotlightFor: verified only, one row per window, Monday first, capped', () => {
+  const v = { verifiedOn: '2026-09-01' };
+  assert.throws(() => spotlightFor(bar('unverified')), /not verified/);
+  const { rows, more } = spotlightFor(
+    bar('busy', {
+      ...v,
+      specials: [
+        special({ days: ['fri'], start: '16:00', end: '21:00', type: 'food', items: ['Fish fry'] }),
+        special({ days: ['mon', 'tue', 'wed', 'thu', 'fri'], start: '15:00', end: '18:00', items: ['$2 off rails'] }),
+        special({ days: ['mon', 'tue', 'wed', 'thu', 'fri'], start: '15:00', end: '18:00', type: 'food', items: ['$6 apps'] }),
+        special({ days: ['sun'], start: '11:00', end: '14:00' }),
+        special({ days: ['sat'], start: '11:00', end: '14:00' }),
+        special({ days: ['tue'], start: '18:00', end: '21:00' }),
+      ],
+    })
+  );
+  assert.equal(rows.length, SPOTLIGHT_MAX_ROWS);
+  assert.deepEqual(rows[0].items, ['$2 off rails', '$6 apps']); // merged window
+  assert.deepEqual(rows.map((r) => r.days[0]), ['mon', 'tue', 'fri']);
+  assert.equal(more, 2);
+});
+
 test('trackedUrl adds UTM tags and keeps the existing query', () => {
   const u = new URL(trackedUrl('https://example.com/menu?x=1&utm_source=old'));
   assert.equal(u.searchParams.get('x'), '1');
   assert.equal(u.searchParams.get('utm_source'), 'wausaupilotandreview');
   assert.equal(u.searchParams.get('utm_medium'), 'widget');
   assert.equal(u.searchParams.get('utm_campaign'), 'happy-hour');
+  assert.equal(new URL(trackedUrl('https://example.com/', 'newsletter')).searchParams.get('utm_medium'), 'newsletter');
 });
