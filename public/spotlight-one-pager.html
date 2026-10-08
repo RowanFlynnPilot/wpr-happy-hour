@@ -9,207 +9,242 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- Chris's leave-behind for the newsletter spotlight (the cheap per-send ad).
-         One Letter page: prints/saves to PDF from the browser, or share the URL.
-         The sample ad is the live demo the deploy renders (digest/spotlight-demo.png),
-         so it can't drift from the real ad. Every claim is one Chris can defend:
-         audience numbers are WPR's own published figures (sponsorship page,
-         Jan 2026) — no open rates (Apple Mail inflates them), no invented results.
+         One Letter page: print or save to PDF from the browser, or send the URL.
+         The centerpiece is the ad where readers meet it — the 5 p.m. edition on a
+         phone. The ad inside is the live render (digest/spotlight-sample.png), so it
+         can't drift from the real thing; the stories around it are drawn as lines,
+         not invented headlines. Every claim is one Chris can defend: audience
+         numbers are WPR's own published figures (sponsorship page, Jan 2026), no
+         open rates (Apple Mail inflates them), no promised results.
          Price is "$––" until set; remove the DRAFT ribbon in the same edit. -->
     <style>
-      /* WPR design system (mirrors src/index.css tokens) */
+      /* WPR design system (mirrors src/index.css tokens) + the newsletter's
+         sponsored yellow, the one hot accent on the page */
       :root {
-        --teal: #3a867c;
-        --teal-dark: #2c6a62;
-        --teal-tint: #e4efec;
-        --cream: #f6f2e9;
         --ink: #22302c;
         --ink-soft: #5a6b66;
+        --paper: #fffdf8;
+        --cream: #f6f2e9;
         --line: #e3ddd0;
+        --teal: #3a867c;
+        --teal-dark: #2c6a62;
+        --on-teal: #fffdf8;
+        --yellow: #fed850;
         --amber: #8a6119;
         --amber-tint: #f6edda;
-        --on-teal: #fffdf8;
       }
       * { box-sizing: border-box; margin: 0; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body {
         background: var(--cream);
         color: var(--ink);
         font-family: 'Public Sans', system-ui, sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
+        font-size: 13.5px;
+        line-height: 1.55;
       }
-      .mono { font-family: 'JetBrains Mono', monospace; }
-      a { color: var(--teal-dark); }
+      a { color: inherit; }
 
-      /* One Letter sheet on screen; the sheet itself when printed */
       .sheet {
         max-width: 8.5in;
         margin: 24px auto;
-        background: #fff;
-        padding: 0.45in 0.6in 0.4in;
-        box-shadow: 0 1px 3px rgba(34, 48, 44, 0.12);
+        background: var(--paper);
+        padding: 0.4in 0.55in 0;
+        box-shadow: 0 1px 2px rgba(34, 48, 44, 0.08), 0 12px 32px -16px rgba(34, 48, 44, 0.25);
+        overflow: hidden; /* the booking band runs to the sheet's edges */
       }
 
-      /* WPR flag: badge + wordmark, thick-over-thin rule */
-      .flag {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-      .flag-brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        color: var(--ink);
-        text-decoration: none;
-      }
-      .flag-brand img { width: 52px; height: 52px; }
-      .wordmark { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1.1; }
+      /* WPR flag: seal + wordmark, thick-over-thin rule */
+      .flag { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .flag-brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+      .flag-brand .seal { width: 56px; height: 56px; flex: none; }
+      .wordmark { display: block; height: 22px; width: auto; }
       .tagline {
         display: block;
-        font-size: 10px;
+        font-size: 9.5px;
         letter-spacing: 0.28em;
-        text-transform: uppercase;
+        text-transform: uppercase; /* WPR's tagline, set exactly as the brand does */
         color: var(--ink-soft);
-        margin-top: 3px;
+        margin-top: 6px;
       }
-      .flag-label {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--teal-dark);
-        text-align: right;
-      }
-      .rule { height: 8px; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 12px 0 14px; }
+      .flag-note { font-size: 12px; color: var(--ink-soft); text-align: right; line-height: 1.4; }
+      .flag-note strong { display: block; color: var(--ink); font-weight: 600; }
+      .rule { height: 8px; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 12px 0 0; }
 
       .draft {
         background: var(--amber-tint);
         color: var(--amber);
         border: 1px dashed var(--amber);
         border-radius: 6px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
+        font-size: 11.5px;
+        font-weight: 600;
         text-align: center;
-        padding: 5px 10px;
-        margin-bottom: 14px;
+        padding: 4px 10px;
+        margin-top: 12px;
       }
 
+      /* Hero: the pitch on the left, the ad where readers meet it on the right */
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 292px;
+        gap: 32px;
+        align-items: center;
+        margin-top: 16px;
+      }
       h1 {
         font-family: 'Fraunces', serif;
         font-weight: 600;
-        font-size: 32px;
-        line-height: 1.1;
-        letter-spacing: -0.01em;
+        font-size: 46px;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
       }
-      .sub { font-size: 16px; color: var(--ink-soft); margin-top: 6px; }
-
-      h2 {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
+      .dek {
+        font-family: 'Fraunces', serif;
+        font-size: 19px;
+        line-height: 1.35;
         color: var(--teal-dark);
+        margin-top: 12px;
+        max-width: 34ch;
+      }
+      .problem { margin-top: 12px; max-width: 46ch; color: var(--ink); }
+
+      /* The phone — drawn in CSS, holding the real ad */
+      .phone {
+        width: 292px;
+        padding: 9px;
+        border-radius: 42px;
+        background: var(--ink);
+        box-shadow: 0 2px 4px rgba(34, 48, 44, 0.12), 0 24px 40px -20px rgba(34, 48, 44, 0.45);
+      }
+      .screen {
+        position: relative;
+        isolation: isolate;
+        height: 352px;
+        overflow: hidden;
+        border-radius: 33px;
+        background: #fff;
+      }
+      .island { position: absolute; top: 9px; left: 50%; width: 76px; height: 21px; margin-left: -38px; border-radius: 11px; background: var(--ink); }
+      .status { display: flex; justify-content: space-between; padding: 11px 24px 0; font-size: 11.5px; font-weight: 600; }
+      .status-icons { display: flex; gap: 4px; align-items: center; }
+      .status-icons i { display: block; width: 4px; border-radius: 1px; background: var(--ink); }
+      .status-icons i:nth-child(1) { height: 5px; }
+      .status-icons i:nth-child(2) { height: 7px; }
+      .status-icons i:nth-child(3) { height: 9px; }
+      .status-icons b { display: block; width: 20px; height: 9px; margin-left: 4px; border: 1.5px solid var(--ink); border-radius: 3px; }
+      .mail { display: flex; align-items: center; gap: 8px; padding: 14px 14px 9px; border-bottom: 1px solid var(--line); }
+      .mail img { width: 26px; height: 26px; }
+      .mail-from { font-size: 11px; font-weight: 700; line-height: 1.25; }
+      .mail-subject { font-size: 10.5px; color: var(--ink-soft); line-height: 1.25; }
+      .mail-time { margin-left: auto; font-size: 10px; color: var(--ink-soft); align-self: flex-start; }
+      .letter { padding: 10px 12px; }
+      .letter .wordmark { height: 10px; margin: 2px auto 0; }
+      .letter-rule { height: 4px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 7px 0 10px; }
+      /* Stories as lines: the point is where the ad sits, not invented headlines */
+      .story { margin-bottom: 11px; }
+      .story i { display: block; height: 5px; margin-top: 4px; border-radius: 3px; background: #ebe6db; }
+      .story i:first-child { height: 8px; margin-top: 0; background: #cfc8b9; }
+      .section-rule { height: 2px; background: var(--teal); margin: 4px 0 9px; }
+      .letter .ad { display: block; width: 100%; height: auto; border-radius: 4px; margin: 2px 0 12px; }
+      .phone-caption { font-size: 11.5px; color: var(--ink-soft); text-align: center; margin-top: 10px; }
+
+      /* Three reasons, marked on top in teal like every WPR card */
+      .reasons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 20px; }
+      .reason { border-top: 3px solid var(--teal); padding-top: 10px; }
+      h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; line-height: 1.2; margin-bottom: 4px; }
+      .reason p { font-size: 13px; }
+
+      /* Proof, said as a sentence — WPR's own published numbers */
+      .proof {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        font-family: 'Fraunces', serif;
+        font-size: 17px;
+        line-height: 1.4;
+        max-width: 40ch;
+      }
+      .proof strong { font-weight: 700; color: var(--teal-dark); }
+
+      /* How it works: a real sequence, so it's numbered — in a quieter panel, so
+         it reads as a process rather than a second set of reasons */
+      .how { margin-top: 20px; background: var(--cream); border-radius: 10px; padding: 14px 20px; }
+      .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; position: relative; isolation: isolate; }
+      .steps::before { content: ''; position: absolute; z-index: -1; top: 13px; left: 14px; right: 33%; height: 1px; background: var(--teal); }
+      .steps li { font-size: 12.5px; line-height: 1.5; }
+      .steps h3 { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+      .step-num {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--cream);
+        border: 1.5px solid var(--teal);
+        color: var(--teal-dark);
+        font-family: 'Fraunces', serif;
+        font-weight: 700;
+        font-size: 14px;
         margin-bottom: 6px;
       }
 
-      .split {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-top: 16px;
-        align-items: start;
-      }
-      .split p + h2 { margin-top: 16px; }
-      .why { list-style: none; padding: 0; }
-      .why li { padding: 7px 0; border-top: 1px solid var(--line); }
-      .why li:first-child { border-top: 0; padding-top: 0; }
-      .why strong { display: block; font-size: 15px; }
-
-      .sample img { display: block; width: 100%; height: auto; border-radius: 6px; }
-      .sample figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 6px; }
-
-      /* Audience numbers — WPR's own published figures */
-      .stats {
-        margin-top: 12px;
-        border-top: 4px solid var(--teal); /* house convention: blocks mark their top edge */
-        background: var(--teal-tint);
-        padding: 4px 14px;
-      }
-      .stat { display: flex; align-items: baseline; gap: 12px; padding: 5px 0; }
-      .stat + .stat { border-top: 1px solid #fff; }
-      .stat-num { flex: none; width: 128px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1.15; color: var(--teal-dark); }
-      .stat-label { font-size: 13px; }
-
-      .steps {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-top: 8px;
-        counter-reset: step;
-        list-style: none;
-        padding: 0;
-      }
-      .steps li { counter-increment: step; font-size: 13.5px; }
-      .steps li::before {
-        content: counter(step);
-        display: inline-grid;
-        place-items: center;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: var(--teal-dark);
-        color: var(--on-teal);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-      .steps strong { display: block; font-size: 15px; }
-      .how { margin-top: 16px; }
-
-      /* Price + the ask */
+      /* The ask: a full-width band at the foot of the sheet */
       .book {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1fr auto;
         gap: 24px;
         align-items: center;
-        margin-top: 16px;
-        padding: 12px 18px;
-        border: 1px solid var(--line);
-        border-top: 4px solid #fed850; /* the newsletter's sponsored yellow */
-        border-radius: 0 0 8px 8px;
+        margin: 20px -0.55in 0;
+        padding: 14px 0.55in;
+        background: var(--teal-dark);
+        color: var(--on-teal);
       }
-      .price { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--teal-dark); line-height: 1; }
-      .price small { display: block; font-size: 12px; font-weight: 400; color: var(--ink-soft); margin-top: 6px; }
-      .ask strong { display: block; font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
-      .ask a { font-weight: 600; }
-      .nowrap { white-space: nowrap; }
+      .book-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 26px; line-height: 1.1; }
+      .book-who { margin-top: 6px; font-size: 13.5px; }
+      .book-who a { font-weight: 600; text-decoration-color: rgba(255, 253, 248, 0.5); text-underline-offset: 2px; }
+      .price {
+        background: var(--yellow);
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 8px 18px 9px;
+        text-align: center;
+      }
+      .price-num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px; line-height: 1; }
+      .price-unit { font-size: 12px; font-weight: 600; margin-top: 2px; }
 
-      .fine {
+      footer {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0 0.26in;
         font-size: 11px;
+        line-height: 1.6;
         color: var(--ink-soft);
-        margin-top: 14px;
-        padding-top: 8px;
-        border-top: 1px solid var(--line);
       }
+      footer img { width: 36px; height: 36px; flex: none; }
+      .nowrap { white-space: nowrap; }
 
       @page { size: letter; margin: 0; }
       @media print {
         body { background: #fff; }
         .sheet { margin: 0; box-shadow: none; }
       }
-      @media (max-width: 640px) {
-        .sheet { margin: 0; padding: 24px 16px; box-shadow: none; }
+      @media (max-width: 700px) {
+        .sheet { margin: 0; padding: 20px 16px 0; box-shadow: none; }
         .flag { flex-direction: column; align-items: flex-start; }
-        .flag-label { text-align: left; }
-        h1 { font-size: 26px; }
-        .split, .steps, .book { grid-template-columns: 1fr; }
+        .flag-note { text-align: left; }
+        .hero, .reasons, .steps, .book { grid-template-columns: 1fr; }
+        .hero { gap: 24px; }
+        h1 { font-size: 38px; }
+        .phone { margin: 0 auto; }
+        .steps::before { display: none; }
+        .book { margin: 24px -16px 0; padding: 20px 16px; }
+        .price { justify-self: start; }
+        footer { padding-bottom: 20px; }
       }
     </style>
   </head>
@@ -217,106 +252,121 @@
     <main class="sheet">
       <header class="flag">
         <a class="flag-brand" href="https://wausaupilotandreview.com/">
-          <img src="./wpr-typewriter-badge.png" alt="" />
+          <img class="seal" src="./wpr-typewriter-badge.png" alt="" width="56" height="56" />
           <span>
-            <span class="wordmark">Wausau Pilot &amp; Review</span>
+            <img class="wordmark" src="./wpr-wordmark.png" alt="Wausau Pilot &amp; Review" width="172" height="22" />
             <span class="tagline">Where Locals Look First For News</span>
           </span>
         </a>
-        <p class="flag-label">Advertising<br />Newsletter spotlight</p>
+        <p class="flag-note"><strong>Newsletter spotlight</strong>Advertising for bars and restaurants</p>
       </header>
       <div class="rule"></div>
 
-      <p class="draft">DRAFT — set the price and delete this ribbon before sharing</p>
+      <p class="draft">Draft: set the price and delete this ribbon before sharing</p>
 
-      <h1>Your specials, in 41,000 local inboxes.</h1>
-      <p class="sub">A low-cost ad in our daily newsletter, for bars and restaurants across Marathon County.</p>
-
-      <div class="split">
+      <section class="hero">
         <div>
-          <h2>The problem</h2>
-          <p>
+          <h1>Your specials, in 41,000 local inboxes.</h1>
+          <p class="dek">A low-cost ad in our daily newsletter for Marathon County bars and restaurants.</p>
+          <p class="problem">
             Your specials are what bring people in. But a social post only reaches the people the
             feed decides to show it to, and the sign out front only reaches people already driving
             past.
           </p>
-          <h2>The spotlight</h2>
-          <ul class="why">
-            <li>
-              <strong>Lands when people decide.</strong>
-              The 5&nbsp;p.m. edition arrives right at happy hour; the 7&nbsp;a.m. edition helps people plan
-              the night.
-            </li>
-            <li>
-              <strong>Always right.</strong>
-              Built from your Happy Hour Finder listing and confirmed with you by phone. Specials
-              change? One call or email.
-            </li>
-            <li>
-              <strong>Cheap to try, easy to measure.</strong>
-              Priced per send, for one day or a run of dates. Clicks go straight to your website,
-              tagged so they show up in your own site stats.
-            </li>
-          </ul>
+          <p class="proof">
+            Sent <strong>twice a day</strong>, at 7&nbsp;a.m. and 5&nbsp;p.m., by a newsroom with
+            <strong>35,000+</strong> daily readers across Marathon County.
+          </p>
         </div>
-        <div>
-          <figure class="sample">
-            <img
-              src="./digest/spotlight-demo.png"
-              alt="Sample spotlight ad: an Advertisement label, the bar's name and address, its specials with days and times, and a link to its website"
-            />
-            <figcaption>The actual ad, with a sample listing. Featured partners add their photo.</figcaption>
-          </figure>
-          <div class="stats">
-            <div class="stat">
-              <p class="stat-num">41,000</p>
-              <p class="stat-label">newsletter subscribers, and growing</p>
-            </div>
-            <div class="stat">
-              <p class="stat-num">Twice daily</p>
-              <p class="stat-label">7&nbsp;a.m. and 5&nbsp;p.m. editions — you pick</p>
-            </div>
-            <div class="stat">
-              <p class="stat-num">35,000+</p>
-              <p class="stat-label">daily readers across Marathon County</p>
+        <figure>
+          <div class="phone" role="img" aria-label="Illustration: the spotlight ad in the 5 p.m. edition of the Wausau Pilot & Review newsletter on a phone">
+            <div class="screen">
+              <span class="island"></span>
+              <div class="status">
+                <span>5:02</span>
+                <span class="status-icons"><i></i><i></i><i></i><b></b></span>
+              </div>
+              <div class="mail">
+                <img src="./wpr-typewriter-badge.png" alt="" width="26" height="26" />
+                <div>
+                  <p class="mail-from">Wausau Pilot &amp; Review</p>
+                  <p class="mail-subject">Afternoon edition</p>
+                </div>
+                <span class="mail-time">5:02 PM</span>
+              </div>
+              <div class="letter">
+                <img class="wordmark" src="./wpr-wordmark.png" alt="" width="78" height="10" />
+                <div class="letter-rule"></div>
+                <div class="story"><i style="width: 92%"></i><i></i><i style="width: 70%"></i></div>
+                <img class="ad" src="./digest/spotlight-sample.png" alt="" width="1072" height="504" />
+                <div class="section-rule"></div>
+                <div class="story"><i style="width: 86%"></i><i></i><i style="width: 62%"></i></div>
+                <div class="story"><i style="width: 74%"></i><i></i><i style="width: 90%"></i></div>
+              </div>
             </div>
           </div>
+          <figcaption class="phone-caption">Your spotlight in the 5 p.m. edition (sample listing)</figcaption>
+        </figure>
+      </section>
+
+      <section class="reasons">
+        <div class="reason">
+          <h2>Lands when people decide</h2>
+          <p>The 5&nbsp;p.m. edition arrives right at happy hour; the 7&nbsp;a.m. edition helps people plan the night.</p>
         </div>
-      </div>
+        <div class="reason">
+          <h2>Always right</h2>
+          <p>Built from your Happy Hour Finder listing, confirmed with you by phone. Specials change? One call or email.</p>
+        </div>
+        <div class="reason">
+          <h2>Cheap to try</h2>
+          <p>Priced per send, for one day or a run of dates. Clicks to your site show up in your own stats.</p>
+        </div>
+      </section>
 
       <section class="how">
-        <h2>How it works</h2>
-        <ol class="steps">
+        <ol class="steps" aria-label="How it works">
           <li>
-            <strong>Confirm your specials</strong>
-            What you’re running, when, and the prices. Not on the Happy Hour Finder yet? One call
-            sets up both.
+            <span class="step-num">1</span>
+            <h3>Confirm your specials</h3>
+            What you’re running, when, and the prices. New to the Happy Hour Finder? One call sets up
+            both.
           </li>
           <li>
-            <strong>Pick your dates</strong>
-            7&nbsp;a.m. or 5&nbsp;p.m. — every Friday, one big night, or a whole month.
+            <span class="step-num">2</span>
+            <h3>Pick your dates</h3>
+            7&nbsp;a.m. or 5&nbsp;p.m.: every Friday, one big night, or a whole month.
           </li>
           <li>
-            <strong>Your spotlight runs</strong>
+            <span class="step-num">3</span>
+            <h3>Your spotlight runs</h3>
             Labeled as an ad, beside the local news people open the email for.
           </li>
         </ol>
       </section>
 
-      <div class="book">
-        <p class="price">$––<small>per send</small></p>
-        <p class="ask">
-          <strong>Book a spotlight</strong>
-          Chris Weber ·
-          <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Newsletter%20spotlight">weber.chris@wausaupilotandreview.com</a>
-          · Wausau Pilot &amp; Review, <a class="nowrap" href="tel:+17153015539">715-301-5539</a>
-        </p>
-      </div>
+      <section class="book">
+        <div>
+          <p class="book-title">Book a spotlight</p>
+          <p class="book-who">
+            Chris Weber,
+            <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Newsletter%20spotlight">weber.chris@wausaupilotandreview.com</a>,
+            <a class="nowrap" href="tel:+17153015539">715-301-5539</a>
+          </p>
+        </div>
+        <div class="price">
+          <p class="price-num">$––</p>
+          <p class="price-unit">per send</p>
+        </div>
+      </section>
 
-      <p class="fine">
-        Wausau Pilot &amp; Review is a nonprofit newsroom: advertising supports free local journalism.
-        Audience figures: wausaupilotandreview.com/sponsorship-and-advertising, January 2026.
-      </p>
+      <footer>
+        <img src="./wpr-typewriter-badge.png" alt="" width="36" height="36" />
+        <p>
+          Wausau Pilot &amp; Review · 715-301-5539 · a nonprofit newsroom: advertising supports free local journalism.<br />
+          Audience figures: wausaupilotandreview.com/sponsorship-and-advertising, January 2026.
+        </p>
+      </footer>
     </main>
   </body>
 </html>

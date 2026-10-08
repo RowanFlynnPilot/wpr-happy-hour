@@ -9,218 +9,236 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
     <!-- Chris's quick reference for spotlight calls, the companion to
-         spotlight-one-pager.html. Hosted unlinked + noindex, like the rate card,
-         so it's written to be fine if a prospect ever read it: no claim Chris can't
+         spotlight-one-pager.html. Set as a script: the owner's line on the left,
+         Chris's reply in the serif on the right, and the question that keeps the
+         call moving beneath it. Hosted unlinked + noindex, like the rate card, so
+         it's written to be fine if a prospect ever read it: no claim Chris can't
          show, no promised results, and it says when not to sell. Lines tagged
          "Check" need a yes from the named person before Chris relies on them. -->
     <style>
       /* WPR design system (mirrors src/index.css tokens) */
       :root {
+        --ink: #22302c;
+        --ink-soft: #5a6b66;
+        --paper: #fffdf8;
+        --cream: #f6f2e9;
+        --line: #e3ddd0;
         --teal: #3a867c;
         --teal-dark: #2c6a62;
         --teal-tint: #e4efec;
-        --cream: #f6f2e9;
-        --ink: #22302c;
-        --ink-soft: #5a6b66;
-        --line: #e3ddd0;
         --amber: #8a6119;
         --amber-tint: #f6edda;
       }
       * { box-sizing: border-box; margin: 0; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body {
         background: var(--cream);
         color: var(--ink);
         font-family: 'Public Sans', system-ui, sans-serif;
         font-size: 13px;
-        line-height: 1.45;
+        line-height: 1.5;
       }
-      .mono { font-family: 'JetBrains Mono', monospace; }
-      a { color: var(--teal-dark); }
 
       .sheet {
         max-width: 8.5in;
         margin: 24px auto;
-        background: #fff;
-        padding: 0.4in 0.5in 0.35in;
-        box-shadow: 0 1px 3px rgba(34, 48, 44, 0.12);
+        background: var(--paper);
+        padding: 0.4in 0.5in 0.32in;
+        box-shadow: 0 1px 2px rgba(34, 48, 44, 0.08), 0 12px 32px -16px rgba(34, 48, 44, 0.25);
       }
 
-      .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
-      .kicker {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--teal-dark);
-      }
-      h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 26px; line-height: 1.15; margin-top: 2px; }
-      .internal { font-size: 11px; color: var(--ink-soft); text-align: right; }
-      .rule { height: 7px; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 8px 0 10px; }
+      /* WPR flag, compact: this is a working document */
+      .flag { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .flag-brand { display: flex; align-items: center; gap: 12px; }
+      .flag-brand .seal { width: 40px; height: 40px; flex: none; }
+      .wordmark { display: block; height: 17px; width: auto; }
+      .flag-note { font-size: 12px; color: var(--ink-soft); text-align: right; line-height: 1.4; }
+      .flag-note strong { display: block; color: var(--ink); font-weight: 600; }
+      .rule { height: 7px; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 10px 0 14px; }
 
-      h2 {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--teal-dark);
-        margin: 14px 0 6px;
-      }
+      h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
+      .dek { font-family: 'Fraunces', serif; font-size: 16px; color: var(--teal-dark); margin-top: 4px; }
 
-      table { width: 100%; border-collapse: collapse; }
-      th {
-        text-align: left;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--ink-soft);
-        padding: 0 8px 4px 0;
-        border-bottom: 2px solid var(--ink);
+      /* The script: their line, then yours, then the question */
+      .script { list-style: none; padding: 0; margin-top: 14px; border-top: 2px solid var(--ink); }
+      .exchange {
+        display: grid;
+        grid-template-columns: 176px 1fr;
+        gap: 18px;
+        padding: 6px 0 7px;
+        border-bottom: 1px solid var(--line);
       }
-      td { vertical-align: top; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); }
-      td:first-child { font-weight: 600; width: 21%; }
-      td:nth-child(2) { width: 51%; }
-      td:last-child { color: var(--teal-dark); font-style: italic; padding-right: 0; }
-      tr:nth-child(even) td { background: #fcfaf5; }
-
-      .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
-      .box { border-top: 4px solid var(--teal); background: var(--teal-tint); padding: 2px 12px 10px; }
-      .box.stop { border-top-color: var(--amber); background: var(--amber-tint); }
-      .box h2 { margin-top: 8px; }
-      .box.stop h2 { color: var(--amber); }
-      .box ul { padding-left: 16px; }
-      .box li { margin: 3px 0; }
+      .they {
+        position: relative;
+        padding-left: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      .they::before {
+        content: '“';
+        position: absolute;
+        left: -1px;
+        top: -5px;
+        font-family: 'Fraunces', serif;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--teal);
+      }
+      .you { font-family: 'Fraunces', serif; font-size: 14px; line-height: 1.35; }
+      .ask { margin-top: 1px; font-size: 12.5px; font-style: italic; color: var(--teal-dark); }
+      .ask b { font-style: normal; font-weight: 600; }
 
       .check {
         display: inline-block;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 9.5px;
-        font-style: normal;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        font-family: 'Public Sans', sans-serif;
+        font-size: 10.5px;
+        font-weight: 600;
         color: var(--amber);
+        background: var(--amber-tint);
         border: 1px dashed var(--amber);
-        border-radius: 3px;
-        padding: 0 4px;
+        border-radius: 4px;
+        padding: 0 5px;
+        margin-left: 4px;
         white-space: nowrap;
+        vertical-align: 1px;
       }
 
-      .links { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 12px; }
-      .links p + p { margin-top: 3px; }
-      .links code { font-family: 'JetBrains Mono', monospace; font-size: 11px; word-break: break-all; }
+      /* Limits, marked on top like every WPR card: amber for stop, teal for steer */
+      .limits { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+      .limit { border-top: 4px solid var(--teal); background: var(--teal-tint); padding: 8px 14px 10px; }
+      .limit.stop { border-top-color: var(--amber); background: var(--amber-tint); }
+      h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+      .limit ul { padding-left: 16px; font-size: 12px; line-height: 1.45; }
+      .limit li + li { margin-top: 3px; }
+
+      .wrap-up { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-soft); }
+      .wrap-up strong { color: var(--ink); }
+      .wrap-up p + p { margin-top: 2px; }
+      .url { color: var(--teal-dark); font-weight: 600; word-break: break-all; }
 
       @page { size: letter; margin: 0; }
       @media print {
         body { background: #fff; }
         .sheet { margin: 0; box-shadow: none; }
       }
-      /* Phones: each objection becomes a card */
       @media (max-width: 640px) {
         .sheet { margin: 0; padding: 20px 16px; box-shadow: none; }
-        .head { flex-direction: column; align-items: flex-start; }
-        .internal { text-align: left; }
-        .two { grid-template-columns: 1fr; }
-        thead { display: none; }
-        tr, td { display: block; width: auto !important; }
-        tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
-        td { border: 0; padding: 2px 0; }
-        tr:nth-child(even) td { background: none; }
+        .flag { flex-direction: column; align-items: flex-start; }
+        .flag-note { text-align: left; }
+        h1 { font-size: 26px; }
+        .exchange { grid-template-columns: 1fr; gap: 4px; padding: 10px 0; }
+        .limits { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <main class="sheet">
-      <header class="head">
-        <div>
-          <p class="kicker">Newsletter spotlight · for Chris</p>
-          <h1>What bar owners say, and what to say back</h1>
+      <header class="flag">
+        <div class="flag-brand">
+          <img class="seal" src="./wpr-typewriter-badge.png" alt="" width="40" height="40" />
+          <img class="wordmark" src="./wpr-wordmark.png" alt="Wausau Pilot &amp; Review" width="133" height="17" />
         </div>
-        <p class="internal">Internal sales reference<br />Wausau Pilot &amp; Review</p>
+        <p class="flag-note"><strong>Newsletter spotlight</strong>Sales reference for Chris</p>
       </header>
       <div class="rule"></div>
 
-      <table>
-        <thead>
-          <tr><th>They say</th><th>Say this</th><th>Then ask</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>“I post my specials on Facebook. It’s free.”</td>
-            <td>Keep posting. Facebook reaches your followers; the spotlight reaches our 41,000 newsletter subscribers, who open it for local news.</td>
-            <td>Who would you like to see walk in who doesn’t follow you yet?</td>
-          </tr>
-          <tr>
-            <td>“It’s too expensive.” / “No budget.”</td>
-            <td>It’s priced by the send, not a contract. Try one send on the night you most want to fill, then decide.</td>
-            <td>Which night is slowest for you?</td>
-          </tr>
-          <tr>
-            <td>“Does email advertising even work?”</td>
-            <td>I won’t promise you customers. I can show you 41,000 subscribers, and clicks to your site tagged so they show up in your own stats (as wausaupilotandreview / newsletter).</td>
-            <td>Does your website have analytics? I’ll show you where to look.</td>
-          </tr>
-          <tr>
-            <td>“I don’t have time for ads.” / “My specials change all the time.”</td>
-            <td>You don’t make anything: we build it from your specials and confirm them by phone. A change is one call or email.</td>
-            <td>What’s running this week?</td>
-          </tr>
-          <tr>
-            <td>“We’re a restaurant, not a bar.”</td>
-            <td>Food specials work the same way: Friday fish fry, prime rib night, an early-bird menu.</td>
-            <td>What’s your best night for food?</td>
-          </tr>
-          <tr>
-            <td>“We don’t have a website.”</td>
-            <td>Then the ad links to your Happy Hour Finder listing, with your specials and address.</td>
-            <td>Where do people usually look up your hours?</td>
-          </tr>
-          <tr>
-            <td>“How is this different from your regular newsletter ad?”</td>
-            <td>The banner runs all week in one edition, for any business ($300/week). The spotlight is by the send, built from your specials. Want every day? The banner may be the better buy.</td>
-            <td>Every day, or just your special nights?</td>
-          </tr>
-          <tr>
-            <td>“Let me check with my partner.”</td>
-            <td>Of course. I’ll send you the one-pager and a preview of the ad with your name on it.</td>
-            <td>When should I follow up, and with whom?</td>
-          </tr>
-          <tr>
-            <td>“Will this get us a story?”</td>
-            <td>No. Ads are labeled “Advertisement,” and the newsroom decides its coverage on its own. <span class="check">Check wording · Shereen</span></td>
-            <td>Is there news coming up, like an anniversary or new owner? Send it to the newsroom.</td>
-          </tr>
-        </tbody>
-      </table>
+      <h1>What bar owners say, and what to say back</h1>
+      <p class="dek">Promise only what you can show them: the audience, the ad, and their own clicks.</p>
 
-      <div class="two">
-        <section class="box stop">
+      <ol class="script">
+        <li class="exchange">
+          <p class="they">I post my specials on Facebook. It’s free.”</p>
+          <div>
+            <p class="you">Keep posting. Facebook reaches your followers. We reach 41,000 subscribers.</p>
+            <p class="ask"><b>Ask:</b> Who would you like to see walk in who doesn’t follow you yet?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">It’s too expensive. There’s no budget.”</p>
+          <div>
+            <p class="you">Priced by the send, not a contract. Try it on the night you most want to fill.</p>
+            <p class="ask"><b>Ask:</b> Which night is slowest for you?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">Does email advertising even work?”</p>
+          <div>
+            <p class="you">I won’t promise customers. I can show you 41,000 subscribers, and the clicks in your own site stats (tagged “wausaupilotandreview / newsletter”).</p>
+            <p class="ask"><b>Ask:</b> Does your website have analytics? I’ll show you where to look.</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">No time for ads. My specials keep changing.”</p>
+          <div>
+            <p class="you">Nothing to make. We build it from your specials, and a change is one call.</p>
+            <p class="ask"><b>Ask:</b> What’s running this week?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">We’re a restaurant, not a&nbsp;bar.”</p>
+          <div>
+            <p class="you">Food specials work the same: Friday fish fry, prime rib night, early-bird menus.</p>
+            <p class="ask"><b>Ask:</b> What’s your best night for food?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">We don’t have a website.”</p>
+          <div>
+            <p class="you">Then the ad links to your Happy Hour Finder listing, with specials and address.</p>
+            <p class="ask"><b>Ask:</b> Where do people usually look up your hours?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">How’s this different from your regular ads?”</p>
+          <div>
+            <p class="you">The banner runs all week in one edition, at $300 a week. The spotlight is by the send, built from your specials. Want every day? The banner may fit better.</p>
+            <p class="ask"><b>Ask:</b> Every day, or just your special nights?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">Let me check with my partner.”</p>
+          <div>
+            <p class="you">Of course. I’ll send the one-pager and a preview with your name on it.</p>
+            <p class="ask"><b>Ask:</b> When should I follow up, and with whom?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">Will this get us a story?”</p>
+          <div>
+            <p class="you">No. Ads are labeled “Advertisement,” and the newsroom decides coverage on its own.<span class="check">Check wording with Shereen</span></p>
+            <p class="ask"><b>Ask:</b> Got news coming up, like an anniversary? Send it to the newsroom.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="limits">
+        <section class="limit stop">
           <h2>Hard noes</h2>
           <ul>
-            <li><strong>A brewery or distributor paying for the bar’s ad.</strong> The bar buys its own. Wisconsin’s tied-house law limits what suppliers can give bars. <span class="check">Check · DOR</span> The bar can still name their beer in its special.</li>
-            <li><strong>“Bottomless,” all-you-can-drink or drinking-game copy.</strong> Some cities restrict these promotions. Stick to the special and its price.</li>
-            <li><strong>Running before the call.</strong> An ad runs only from a confirmed listing. No confirmation, no ad.</li>
+            <li><strong>A brewery or distributor paying for it.</strong> The bar buys its own ad; Wisconsin’s tied-house law limits what suppliers give bars.<span class="check">Check with DOR</span> Naming their beer in the special is fine.</li>
+            <li><strong>“Bottomless” or drinking-game copy.</strong> Some cities restrict these. Stick to the special and its price.</li>
+            <li><strong>An ad before the call.</strong> It runs only from a confirmed listing.</li>
           </ul>
         </section>
-        <section class="box">
+        <section class="limit">
           <h2>Don’t sell it when</h2>
           <ul>
-            <li>They have no steady specials. The ad would have nothing to show, so offer the banner instead.</li>
-            <li>They want to be in every edition all week. The $300/week banner fits that better.</li>
-            <li>They won’t commit to prices. The ad shows the prices you confirm, so it can’t run with guesses.</li>
+            <li><strong>No steady specials.</strong> The ad would have nothing to show; offer the banner.</li>
+            <li><strong>They want every edition, all week.</strong> The $300-a-week banner fits that better.</li>
+            <li><strong>No firm prices.</strong> The ad shows the prices you confirm; it can’t run on guesses.</li>
           </ul>
         </section>
       </div>
 
-      <div class="links">
-        <p><strong>Before you hang up:</strong> send the preview with their name (swap in the bar’s name), then log any new objection in the call sheet’s Call notes column.</p>
-        <p>Preview: <code>rowanflynnpilot.github.io/wpr-happy-hour/spotlight.html?demo=Bar%20Name</code></p>
-        <p>One-pager: <code>rowanflynnpilot.github.io/wpr-happy-hour/spotlight-one-pager.html</code></p>
+      <div class="wrap-up">
+        <p><strong>Before you hang up:</strong> send the preview with their name, and log any new objection in the call sheet’s Call notes column.</p>
+        <p>Preview (swap in the bar’s name): <span class="url">rowanflynnpilot.github.io/wpr-happy-hour/spotlight.html?demo=Bar%20Name</span></p>
+        <p>One-pager: <span class="url">rowanflynnpilot.github.io/wpr-happy-hour/spotlight-one-pager.html</span></p>
       </div>
     </main>
   </body>

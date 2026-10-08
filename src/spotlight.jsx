@@ -5,6 +5,8 @@
 //   spotlight.html?bar=<id>          the real ad (verified bars only — throws otherwise)
 //   spotlight.html?demo              sales preview with a sample listing
 //   spotlight.html?demo=Bar%20Name   same, with the prospect's name
+//   spotlight.html?demo&sample       same, minus the ribbon — for collateral that
+//                                    already says it's a sample (the one-pager)
 // Internal page, not linked from the app.
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -18,13 +20,16 @@ const DATA = validate(data);
 const PARAMS = new URLSearchParams(window.location.search);
 const DEMO = PARAMS.has('demo');
 const BAR_ID = PARAMS.get('bar');
+// A forwarded demo link must explain itself, so the ribbon stays unless the
+// image is going into a page that labels it (spotlight-one-pager.html)
+const RIBBON = DEMO && !PARAMS.has('sample');
 if (DEMO === (BAR_ID !== null)) throw new Error('spotlight.html: pass exactly one of ?bar=<id> or ?demo');
 
 function Spotlight({ bar, cta }) {
   const { rows, more } = spotlightFor(bar);
   return (
     <div className="spotlight">
-      {DEMO && <p className="digest-ribbon mono">Sales preview · sample listing</p>}
+      {RIBBON && <p className="digest-ribbon mono">Sales preview · sample listing</p>}
       <div className="spotlight-head">
         <span className="spotlight-chip">Advertisement</span>
         <span className="spotlight-kicker mono">Happy Hour Finder</span>

@@ -183,7 +183,8 @@ The cheap placement: one partner's own small ad in a newsletter, sold by the sen
   block images) and `link` (the bar's site with `utm_medium=newsletter`; `null` when
   it has no site — link its finder listing, `?bar=<id>`, instead).
 - `digest/spotlight-demo.png` — sales preview; live with a prospect's name:
-  `spotlight.html?demo=Bar%20Name`.
+  `spotlight.html?demo=Bar%20Name`. `digest/spotlight-sample.png` is the same without
+  its "Sales preview" ribbon (`?demo&sample`), for the one-pager, which labels it itself.
 
 **Running one.** Bookings (dates, edition) stay offline with the sale, never in
 bars.json. The newsletter already runs date-ranged ads through Broadstreet and shows a
@@ -209,7 +210,9 @@ drinking-game copy out.
   from the reader UI.
 - `public/spotlight-one-pager.html` — Chris's leave-behind for the newsletter
   spotlight: one Letter page (browser → Print → Save as PDF), or send the URL
-  (.../spotlight-one-pager.html). Its sample is the live `digest/spotlight-demo.png`.
+  (.../spotlight-one-pager.html). Its centerpiece is the ad on a phone in the 5 p.m.
+  edition, using the live `digest/spotlight-sample.png` (stories are drawn as lines, not
+  invented headlines). WPR's wordmark is committed as `public/wpr-wordmark.png`.
   Audience numbers are WPR's published figures (sponsorship page, Jan 2026) — update
   them there first. Same "$––" + DRAFT-ribbon rule as the rate card.
 - `public/spotlight-objections.html` — Chris's one-page quick reference for spotlight
