@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Newsletter Spotlight — Wausau Pilot &amp; Review</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chris's leave-behind for the newsletter spotlight (the cheap per-send ad).
+         One Letter page: prints/saves to PDF from the browser, or share the URL.
+         The sample ad is the live demo the deploy renders (digest/spotlight-demo.png),
+         so it can't drift from the real ad. Every claim is one Chris can defend:
+         audience numbers are WPR's own published figures (sponsorship page,
+         Jan 2026) — no open rates (Apple Mail inflates them), no invented results.
+         Price is "$––" until set; remove the DRAFT ribbon in the same edit. -->
+    <style>
+      /* WPR design system (mirrors src/index.css tokens) */
+      :root {
+        --teal: #3a867c;
+        --teal-dark: #2c6a62;
+        --teal-tint: #e4efec;
+        --cream: #f6f2e9;
+        --ink: #22302c;
+        --ink-soft: #5a6b66;
+        --line: #e3ddd0;
+        --amber: #8a6119;
+        --amber-tint: #f6edda;
+        --on-teal: #fffdf8;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        background: var(--cream);
+        color: var(--ink);
+        font-family: 'Public Sans', system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .mono { font-family: 'JetBrains Mono', monospace; }
+      a { color: var(--teal-dark); }
+
+      /* One Letter sheet on screen; the sheet itself when printed */
+      .sheet {
+        max-width: 8.5in;
+        margin: 24px auto;
+        background: #fff;
+        padding: 0.45in 0.6in 0.4in;
+        box-shadow: 0 1px 3px rgba(34, 48, 44, 0.12);
+      }
+
+      /* WPR flag: badge + wordmark, thick-over-thin rule */
+      .flag {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .flag-brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .flag-brand img { width: 52px; height: 52px; }
+      .wordmark { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1.1; }
+      .tagline {
+        display: block;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-top: 3px;
+      }
+      .flag-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-dark);
+        text-align: right;
+      }
+      .rule { height: 8px; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 12px 0 14px; }
+
+      .draft {
+        background: var(--amber-tint);
+        color: var(--amber);
+        border: 1px dashed var(--amber);
+        border-radius: 6px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        text-align: center;
+        padding: 5px 10px;
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+      }
+      .sub { font-size: 16px; color: var(--ink-soft); margin-top: 6px; }
+
+      h2 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-dark);
+        margin-bottom: 6px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 16px;
+        align-items: start;
+      }
+      .split p + h2 { margin-top: 16px; }
+      .why { list-style: none; padding: 0; }
+      .why li { padding: 7px 0; border-top: 1px solid var(--line); }
+      .why li:first-child { border-top: 0; padding-top: 0; }
+      .why strong { display: block; font-size: 15px; }
+
+      .sample img { display: block; width: 100%; height: auto; border-radius: 6px; }
+      .sample figcaption { font-size: 12px; color: var(--ink-soft); margin-top: 6px; }
+
+      /* Audience numbers — WPR's own published figures */
+      .stats {
+        margin-top: 12px;
+        border-top: 4px solid var(--teal); /* house convention: blocks mark their top edge */
+        background: var(--teal-tint);
+        padding: 4px 14px;
+      }
+      .stat { display: flex; align-items: baseline; gap: 12px; padding: 5px 0; }
+      .stat + .stat { border-top: 1px solid #fff; }
+      .stat-num { flex: none; width: 128px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; line-height: 1.15; color: var(--teal-dark); }
+      .stat-label { font-size: 13px; }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 8px;
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+      }
+      .steps li { counter-increment: step; font-size: 13.5px; }
+      .steps li::before {
+        content: counter(step);
+        display: inline-grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--teal-dark);
+        color: var(--on-teal);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .steps strong { display: block; font-size: 15px; }
+      .how { margin-top: 16px; }
+
+      /* Price + the ask */
+      .book {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 24px;
+        align-items: center;
+        margin-top: 16px;
+        padding: 12px 18px;
+        border: 1px solid var(--line);
+        border-top: 4px solid #fed850; /* the newsletter's sponsored yellow */
+        border-radius: 0 0 8px 8px;
+      }
+      .price { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--teal-dark); line-height: 1; }
+      .price small { display: block; font-size: 12px; font-weight: 400; color: var(--ink-soft); margin-top: 6px; }
+      .ask strong { display: block; font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
+      .ask a { font-weight: 600; }
+      .nowrap { white-space: nowrap; }
+
+      .fine {
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin-top: 14px;
+        padding-top: 8px;
+        border-top: 1px solid var(--line);
+      }
+
+      @page { size: letter; margin: 0; }
+      @media print {
+        body { background: #fff; }
+        .sheet { margin: 0; box-shadow: none; }
+      }
+      @media (max-width: 640px) {
+        .sheet { margin: 0; padding: 24px 16px; box-shadow: none; }
+        .flag { flex-direction: column; align-items: flex-start; }
+        .flag-label { text-align: left; }
+        h1 { font-size: 26px; }
+        .split, .steps, .book { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <header class="flag">
+        <a class="flag-brand" href="https://wausaupilotandreview.com/">
+          <img src="./wpr-typewriter-badge.png" alt="" />
+          <span>
+            <span class="wordmark">Wausau Pilot &amp; Review</span>
+            <span class="tagline">Where Locals Look First For News</span>
+          </span>
+        </a>
+        <p class="flag-label">Advertising<br />Newsletter spotlight</p>
+      </header>
+      <div class="rule"></div>
+
+      <p class="draft">DRAFT — set the price and delete this ribbon before sharing</p>
+
+      <h1>Your specials, in 41,000 local inboxes.</h1>
+      <p class="sub">A low-cost ad in our daily newsletter, for bars and restaurants across Marathon County.</p>
+
+      <div class="split">
+        <div>
+          <h2>The problem</h2>
+          <p>
+            Your specials are what bring people in. But a social post only reaches the people the
+            feed decides to show it to, and the sign out front only reaches people already driving
+            past.
+          </p>
+          <h2>The spotlight</h2>
+          <ul class="why">
+            <li>
+              <strong>Lands when people decide.</strong>
+              The 5&nbsp;p.m. edition arrives right at happy hour; the 7&nbsp;a.m. edition helps people plan
+              the night.
+            </li>
+            <li>
+              <strong>Always right.</strong>
+              Built from your Happy Hour Finder listing and confirmed with you by phone. Specials
+              change? One call or email.
+            </li>
+            <li>
+              <strong>Cheap to try, easy to measure.</strong>
+              Priced per send, for one day or a run of dates. Clicks go straight to your website,
+              tagged so they show up in your own site stats.
+            </li>
+          </ul>
+        </div>
+        <div>
+          <figure class="sample">
+            <img
+              src="./digest/spotlight-demo.png"
+              alt="Sample spotlight ad: an Advertisement label, the bar's name and address, its specials with days and times, and a link to its website"
+            />
+            <figcaption>The actual ad, with a sample listing. Featured partners add their photo.</figcaption>
+          </figure>
+          <div class="stats">
+            <div class="stat">
+              <p class="stat-num">41,000</p>
+              <p class="stat-label">newsletter subscribers, and growing</p>
+            </div>
+            <div class="stat">
+              <p class="stat-num">Twice daily</p>
+              <p class="stat-label">7&nbsp;a.m. and 5&nbsp;p.m. editions — you pick</p>
+            </div>
+            <div class="stat">
+              <p class="stat-num">35,000+</p>
+              <p class="stat-label">daily readers across Marathon County</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="how">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <strong>Confirm your specials</strong>
+            What you’re running, when, and the prices. Not on the Happy Hour Finder yet? One call
+            sets up both.
+          </li>
+          <li>
+            <strong>Pick your dates</strong>
+            7&nbsp;a.m. or 5&nbsp;p.m. — every Friday, one big night, or a whole month.
+          </li>
+          <li>
+            <strong>Your spotlight runs</strong>
+            Labeled as an ad, beside the local news people open the email for.
+          </li>
+        </ol>
+      </section>
+
+      <div class="book">
+        <p class="price">$––<small>per send</small></p>
+        <p class="ask">
+          <strong>Book a spotlight</strong>
+          Chris Weber ·
+          <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Newsletter%20spotlight">weber.chris@wausaupilotandreview.com</a>
+          · Wausau Pilot &amp; Review, <a class="nowrap" href="tel:+17153015539">715-301-5539</a>
+        </p>
+      </div>
+
+      <p class="fine">
+        Wausau Pilot &amp; Review is a nonprofit newsroom: advertising supports free local journalism.
+        Audience figures: wausaupilotandreview.com/sponsorship-and-advertising, January 2026.
+      </p>
+    </main>
+  </body>
+</html>

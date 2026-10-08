@@ -207,6 +207,15 @@ drinking-game copy out.
   https://rowanflynnpilot.github.io/wpr-happy-hour/partners.html. Prices are "$––"
   placeholders until set; remove the DRAFT ribbon in the same edit. Not linked
   from the reader UI.
+- `public/spotlight-one-pager.html` — Chris's leave-behind for the newsletter
+  spotlight: one Letter page (browser → Print → Save as PDF), or send the URL
+  (.../spotlight-one-pager.html). Its sample is the live `digest/spotlight-demo.png`.
+  Audience numbers are WPR's published figures (sponsorship page, Jan 2026) — update
+  them there first. Same "$––" + DRAFT-ribbon rule as the rate card.
+- `public/spotlight-objections.html` — Chris's one-page quick reference for spotlight
+  calls: what bar owners say, a line to say back, a follow-up question, the hard noes
+  (supplier-paid ads, "bottomless" copy) and when not to sell. Written to be fine if a
+  prospect read it. Lines tagged "Check" need a yes from Shereen / DOR first.
 - `LAUNCH.md` — the ordered launch checklist.
 
 ## Analytics

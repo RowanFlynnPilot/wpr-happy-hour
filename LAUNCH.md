@@ -20,8 +20,8 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
 2. **Dress the featured showcase.** Faraway Place needs a street address, website,
    and `photo` URL before Chris demos the featured tier to anyone.
 3. **Set pricing → finish the rate card.** Fill real numbers into
-   `public/partners.html` (currently "$––" placeholders) and remove its DRAFT
-   ribbon in the same edit.
+   `public/partners.html` and `public/spotlight-one-pager.html` (currently "$––"
+   placeholders) and remove each page's DRAFT ribbon in the same edit.
 4. **Register Plausible.** Add site `rowanflynnpilot.github.io` to a WPR
    Plausible account. The script tag is already live; no data is recorded until
    the site is registered. Note (checked 2026-08-01): the main WP site runs
