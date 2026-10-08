@@ -204,9 +204,12 @@ drinking-game copy out.
 
 ## Sales assets
 
-- `public/partners.html` — the rate card Chris shares or prints to PDF:
-  https://rowanflynnpilot.github.io/wpr-happy-hour/partners.html. Prices are "$––"
-  placeholders until set; remove the DRAFT ribbon in the same edit. Not linked
+- `public/partners.html` — the rate card Chris shares or prints to PDF (one Letter page):
+  https://rowanflynnpilot.github.io/wpr-happy-hour/partners.html. Set as a menu, each
+  placement with a dotted leader to its price. Prices are "$––" until set; amber
+  "To settle" tags mark promises that aren't true yet (analytics, billing terms, the
+  founding offer, the newsletter card's 8-a-day list). Fill the prices, settle the tags
+  and remove the DRAFT ribbon in the same edit. Not linked
   from the reader UI.
 - `public/spotlight-one-pager.html` — Chris's leave-behind for the newsletter
   spotlight: one Letter page (browser → Print → Save as PDF), or send the URL

@@ -9,215 +9,340 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
+    <!-- The rate card Chris shares or prints to PDF (one Letter page). Set like
+         a supper-club menu — each placement, a dotted leader, its price — because
+         it is a menu, and its buyers run bars. The Featured listing is boxed with
+         the same badge it carries in the finder. Every line is one Chris can
+         defend; amber "To settle" tags mark the ones that aren't true yet.
+         Prices are "$––" until set: fill them, settle the tags, and remove the
+         DRAFT ribbon in the same edit. -->
     <style>
       /* WPR design system (mirrors src/index.css tokens) */
       :root {
+        --ink: #22302c;
+        --ink-soft: #5a6b66;
+        --paper: #fffdf8;
+        --cream: #f6f2e9;
+        --line: #e3ddd0;
         --teal: #3a867c;
         --teal-dark: #2c6a62;
         --teal-tint: #e4efec;
-        --cream: #f6f2e9;
-        --ink: #22302c;
-        --ink-soft: #5a6b66;
-        --card: #ffffff;
-        --line: #e3ddd0;
+        --on-teal: #fffdf8;
         --amber: #8a6119;
         --amber-tint: #f6edda;
       }
       * { box-sizing: border-box; margin: 0; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body {
         background: var(--cream);
         color: var(--ink);
         font-family: 'Public Sans', system-ui, sans-serif;
-        font-size: 16px;
-        line-height: 1.55;
+        font-size: 13.5px;
+        line-height: 1.5;
       }
-      .mono { font-family: 'JetBrains Mono', monospace; }
-      .page { max-width: 880px; margin: 0 auto; padding: 32px 20px 56px; }
+      a { color: inherit; }
+
+      .sheet {
+        max-width: 8.5in;
+        margin: 24px auto;
+        background: var(--paper);
+        padding: 0.4in 0.55in 0;
+        box-shadow: 0 1px 2px rgba(34, 48, 44, 0.08), 0 12px 32px -16px rgba(34, 48, 44, 0.25);
+        overflow: hidden; /* the contact band runs to the sheet's edges */
+      }
+
+      /* WPR flag: seal + wordmark, thick-over-thin rule */
+      .flag { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .flag-brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+      .flag-brand .seal { width: 52px; height: 52px; flex: none; }
+      .wordmark { display: block; height: 20px; width: auto; }
+      .tagline {
+        display: block;
+        font-size: 9.5px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase; /* WPR's tagline, set exactly as the brand does */
+        color: var(--ink-soft);
+        margin-top: 5px;
+      }
+      .flag-note { font-size: 12px; color: var(--ink-soft); text-align: right; line-height: 1.4; }
+      .flag-note strong { display: block; color: var(--ink); font-weight: 600; }
+      .rule { height: 8px; border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink); margin: 12px 0 0; }
+
       .draft {
         background: var(--amber-tint);
         color: var(--amber);
         border: 1px dashed var(--amber);
-        border-radius: 8px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 13px;
-        padding: 8px 14px;
-        margin-bottom: 28px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
         text-align: center;
+        padding: 4px 10px;
+        margin-top: 12px;
       }
-      .kicker {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 13px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--teal-dark);
+      .settle {
+        display: inline-block;
+        font-size: 10.5px;
+        font-weight: 600;
+        font-style: normal;
+        color: var(--amber);
+        background: var(--amber-tint);
+        border: 1px dashed var(--amber);
+        border-radius: 4px;
+        padding: 0 5px;
+        margin-left: 4px;
+        white-space: nowrap;
+        vertical-align: 1px;
       }
+
       h1 {
         font-family: 'Fraunces', serif;
         font-weight: 600;
-        font-size: clamp(30px, 5vw, 44px);
-        line-height: 1.12;
-        margin: 6px 0 14px;
+        font-size: 40px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-top: 16px;
       }
-      .lede { color: var(--ink-soft); max-width: 60ch; }
-      .lede a { color: var(--teal-dark); }
-      h2 {
+      .dek { font-family: 'Fraunces', serif; font-size: 16.5px; line-height: 1.4; color: var(--teal-dark); margin-top: 6px; max-width: 64ch; }
+
+      /* The menu */
+      .menu { margin-top: 14px; }
+      .course {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         font-family: 'Fraunces', serif;
+        font-size: 15px;
         font-weight: 600;
-        font-size: 24px;
         color: var(--teal-dark);
-        margin: 40px 0 14px;
+        margin: 0 0 6px;
       }
-      .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-      .tier {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 20px;
+      .course::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
+      .course + .item { margin-top: 0; }
+      .item { padding: 7px 0; }
+      .item + .item { border-top: 1px solid var(--line); }
+      .item-head { display: flex; align-items: baseline; gap: 10px; }
+      .item-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; line-height: 1.2; }
+      .leader { flex: 1; border-bottom: 2px dotted var(--teal); transform: translateY(-4px); min-width: 24px; }
+      .item-price { font-family: 'Fraunces', serif; font-weight: 700; font-size: 21px; line-height: 1.2; white-space: nowrap; }
+      .item-price small { font-family: 'Public Sans', sans-serif; font-size: 12.5px; font-weight: 400; color: var(--ink-soft); }
+      .item-note { font-size: 12px; font-weight: 600; color: var(--teal-dark); margin-left: 2px; }
+      .item p { margin-top: 3px; max-width: 76ch; }
+
+      /* Featured: boxed and badged the way it is in the finder */
+      .item.featured {
         position: relative;
+        margin: 10px -16px;
+        padding: 14px 16px 12px;
+        border: 2px solid var(--teal);
+        border-radius: 12px;
+        background: #fff;
       }
-      .tier.featured { border: 2px solid var(--teal); }
-      .spotlight-sample { width: 100%; height: auto; border-radius: 8px; align-self: start; }
-      .tier-badge {
+      .item.featured + .item { border-top: 0; }
+      .badge {
         position: absolute;
         top: -11px;
-        right: 14px;
-        background: var(--teal-dark); /* 6.2:1 behind small light text; --teal is 4.3:1 */
-        color: #fff;
-        font-family: 'JetBrains Mono', monospace;
+        right: 16px;
+        background: var(--teal-dark);
+        color: var(--on-teal);
         font-size: 11px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-weight: 700;
         padding: 2px 10px;
         border-radius: 999px;
       }
-      .tier h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; }
-      .price {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--teal-dark);
-        margin: 8px 0 2px;
-      }
-      .price small { font-size: 13px; font-weight: 400; color: var(--ink-soft); }
-      .tier ul { padding-left: 18px; margin-top: 10px; font-size: 14.5px; }
-      .tier li { margin: 5px 0; }
+
+      .item.with-sample { display: grid; grid-template-columns: 1fr 210px; gap: 20px; align-items: center; }
+      .sample { display: block; width: 100%; height: auto; border-radius: 6px; }
+
+      /* What every placement includes */
       .includes {
-        background: var(--teal-tint);
-        border-radius: 12px;
-        padding: 20px 22px;
-      }
-      .includes ul { padding-left: 18px; }
-      .includes li { margin: 6px 0; }
-      .founding {
-        border-left: 4px solid var(--teal);
-        background: var(--card);
-        border-radius: 0 12px 12px 0;
-        padding: 16px 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
         margin-top: 14px;
+        padding: 10px 18px 12px;
+        background: var(--cream);
+        border-radius: 10px;
       }
-      .contact {
-        margin-top: 44px;
-        padding-top: 20px;
-        border-top: 1px solid var(--line);
-        text-align: center;
+      .includes h2 { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+      .includes .settle { font-size: 10px; padding: 0 4px; }
+      .includes p { font-size: 12px; line-height: 1.45; }
+
+      .founding { margin-top: 12px; font-size: 13px; }
+      .founding strong { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; }
+
+      /* The ask: a full-width band, the same as on the spotlight one-pager */
+      .book {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        margin: 18px -0.55in 0;
+        padding: 16px 0.55in;
+        background: var(--teal-dark);
+        color: var(--on-teal);
       }
-      .contact a { color: var(--teal-dark); font-weight: 600; }
-      .fine { color: var(--ink-soft); font-size: 13px; margin-top: 8px; }
+      .book-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 24px; line-height: 1.1; }
+      .book-who { font-size: 13.5px; text-align: right; }
+      .book-who a { font-weight: 600; text-decoration-color: rgba(255, 253, 248, 0.5); text-underline-offset: 2px; }
+      .nowrap { white-space: nowrap; }
+
+      footer {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0 0.28in;
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+      }
+      footer img { width: 36px; height: 36px; flex: none; }
+
+      @page { size: letter; margin: 0; }
       @media print {
         body { background: #fff; }
-        .page { padding: 0; }
+        .sheet { margin: 0; box-shadow: none; }
+      }
+      @media (max-width: 680px) {
+        .sheet { margin: 0; padding: 20px 16px 0; box-shadow: none; }
+        .flag { flex-direction: column; align-items: flex-start; }
+        .flag-note { text-align: left; }
+        h1 { font-size: 32px; }
+        .item.featured { margin: 10px -8px; padding: 14px 8px 12px; }
+        .item-head { flex-wrap: wrap; row-gap: 0; }
+        .item-note { order: 3; width: 100%; margin: 0; }
+        .item.with-sample, .includes { grid-template-columns: 1fr; }
+        .book { flex-direction: column; align-items: flex-start; margin: 20px -16px 0; padding: 18px 16px; }
+        .book-who { text-align: left; }
+        footer { padding-bottom: 20px; }
       }
     </style>
   </head>
   <body>
-    <div class="page">
-      <p class="draft">DRAFT — set real prices and delete this ribbon before sharing</p>
+    <main class="sheet">
+      <header class="flag">
+        <a class="flag-brand" href="https://wausaupilotandreview.com/">
+          <img class="seal" src="./wpr-typewriter-badge.png" alt="" width="52" height="52" />
+          <span>
+            <img class="wordmark" src="./wpr-wordmark.png" alt="Wausau Pilot &amp; Review" width="156" height="20" />
+            <span class="tagline">Where Locals Look First For News</span>
+          </span>
+        </a>
+        <p class="flag-note"><strong>Happy Hour Finder</strong>Partner rate card</p>
+      </header>
+      <div class="rule"></div>
 
-      <p class="kicker">Wausau Pilot &amp; Review</p>
-      <h1>Happy Hour Finder — Partner Rate Card</h1>
-      <p class="lede">
-        The <a href="./">Happy Hour Finder</a> is a live, time-aware guide to drink and food
-        specials across the Wausau area, embedded on wausaupilotandreview.com. Readers see
-        what's pouring <em>right now</em> — and every listing is a verified partner placement,
-        confirmed with you by phone.
+      <p class="draft">Draft: set the prices, settle the amber items, then delete this ribbon</p>
+
+      <h1>Be where locals look for specials.</h1>
+      <p class="dek">
+        The <a href="./">Happy Hour Finder</a> is WPR’s live guide to drink and food specials across
+        the Wausau area. Every listing is a paid partner placement, confirmed with you by phone.
       </p>
 
-      <h2>Placements</h2>
-      <div class="tiers">
-        <div class="tier">
-          <h3>Partner listing</h3>
-          <p class="price">$–– <small>/ month</small></p>
-          <ul>
-            <li>Your specials, live by day and hour</li>
-            <li>"Pouring now" status the moment your happy hour starts</li>
-            <li>Verified-by-phone badge on your card</li>
-            <li>Your own shareable link for socials &amp; table tents</li>
-            <li>Named in our daily newsletter on your happy hour days</li>
-          </ul>
-        </div>
-        <div class="tier featured">
-          <span class="tier-badge">Featured</span>
-          <h3>Featured listing</h3>
-          <p class="price">$–– <small>/ month</small></p>
-          <ul>
-            <li>Everything in Partner</li>
-            <li>Pinned to the top of every list</li>
-            <li>Photo on your card + accent border &amp; badge</li>
-            <li>One-tap Directions link</li>
-            <li>A full entry on the newsletter's daily happy hour card — your specials and photo, not just your name</li>
-          </ul>
-        </div>
-        <div class="tier">
-          <h3>Presenting sponsor</h3>
-          <p class="price">$–– <small>/ month</small></p>
-          <ul>
-            <li>"Happy Hour Finder, presented by <em>you</em>" on every view</li>
-            <li>"Presented by <em>you</em>" on the happy hour card in our morning and afternoon newsletters</li>
-            <li>Exactly one slot — exclusive</li>
-            <li>Linked to your site</li>
-          </ul>
-        </div>
-      </div>
+      <section class="menu" aria-label="Placements and prices">
+        <h2 class="course">On the Happy Hour Finder</h2>
 
-      <h2>Newsletter spotlight</h2>
-      <div class="tiers">
-        <div class="tier">
-          <h3>Spotlight ad</h3>
-          <p class="price">$–– <small>/ send</small></p>
-          <ul>
-            <li>Your own ad in our morning or afternoon newsletter, on the dates you choose</li>
-            <li>Built from your confirmed listing — always your current specials, times and prices</li>
-            <li>Your name, address and up to three specials; your photo with a Featured listing</li>
-            <li>One click to your website</li>
-          </ul>
+        <div class="item">
+          <div class="item-head">
+            <h3 class="item-name">Partner listing</h3>
+            <span class="leader" aria-hidden="true"></span>
+            <p class="item-price">$–– <small>a month</small></p>
+          </div>
+          <p>
+            Your specials, live by day and hour, with “Pouring now” the moment your happy hour
+            starts. A&nbsp;✓&nbsp;Verified stamp with the date we confirmed them, your own link for socials
+            and table tents, and your name on the newsletter’s daily happy hour card on your days.<span class="settle">To settle: card lists 8 a day</span>
+          </p>
         </div>
-        <img class="spotlight-sample" src="./digest/spotlight-demo.png"
-             alt="Sample spotlight ad: an Advertisement label, the bar's name and address, and its specials with times" />
-      </div>
 
-      <h2>Every placement includes</h2>
-      <div class="includes">
-        <ul>
-          <li><strong>Accuracy, guaranteed.</strong> We confirm your specials with you by phone and stamp the card with its verification date.</li>
-          <li><strong>Real numbers.</strong> Monthly reporting on views and clicks from privacy-friendly analytics.</li>
-          <li><strong>Updates any time.</strong> Specials change? One email and the listing is updated.</li>
-          <li><strong>Simple billing.</strong> Invoiced directly by Wausau Pilot &amp; Review. <span class="mono">[terms TBD]</span></li>
-        </ul>
-      </div>
+        <div class="item featured">
+          <span class="badge">Featured</span>
+          <div class="item-head">
+            <h3 class="item-name">Featured listing</h3>
+            <span class="leader" aria-hidden="true"></span>
+            <p class="item-price">$–– <small>a month</small></p>
+          </div>
+          <p>
+            Everything in Partner, plus: first in every list, your photo, this badge and border, a
+            one-tap Directions link, and a full entry, specials and photo, on the newsletter’s
+            daily card.
+          </p>
+        </div>
 
-      <div class="founding">
-        <strong>Founding partner offer:</strong> the first bars to join lock in their launch
-        rate and are credited as founding partners. <span class="mono">[Details TBD]</span>
-      </div>
+        <div class="item">
+          <div class="item-head">
+            <h3 class="item-name">Presenting sponsor</h3>
+            <span class="item-note">One slot</span>
+            <span class="leader" aria-hidden="true"></span>
+            <p class="item-price">$–– <small>a month</small></p>
+          </div>
+          <p>
+            “Presented by <em>you</em>” on every view of the finder and on the happy hour card in
+            both daily newsletters, linked to your site.
+          </p>
+        </div>
 
-      <p class="contact">
-        Ready to get listed? Contact <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing">Chris Weber</a><br />
-        weber.chris@wausaupilotandreview.com
-        <span class="fine"><br />Wausau Pilot &amp; Review is a nonprofit newsroom — partner placements support free local journalism.</span>
+        <h2 class="course">In the daily newsletter</h2>
+
+        <div class="item with-sample">
+          <div>
+            <div class="item-head">
+              <h3 class="item-name">Newsletter spotlight</h3>
+              <span class="leader" aria-hidden="true"></span>
+              <p class="item-price">$–– <small>a send</small></p>
+            </div>
+            <p>
+              Your own ad in the 7&nbsp;a.m. or 5&nbsp;p.m. edition, to 41,000 subscribers, on the
+              dates you choose. Built from your confirmed listing, so it always shows your current
+              specials, times and prices.
+            </p>
+          </div>
+          <img class="sample" src="./digest/spotlight-sample.png" alt="Sample spotlight ad: an Advertisement label, a sample bar's name and address, and its specials with days and times" width="1072" height="504" />
+        </div>
+      </section>
+
+      <section class="includes" aria-label="Every placement includes">
+        <div>
+          <h2>Confirmed by phone</h2>
+          <p>Checked with you; your card shows the date.</p>
+        </div>
+        <div>
+          <h2>Changes any time</h2>
+          <p>One call or email and the listing follows.</p>
+        </div>
+        <div>
+          <h2>Monthly stats<span class="settle">To settle</span></h2>
+          <p>Views and clicks, privately counted.</p>
+        </div>
+        <div>
+          <h2>Simple billing<span class="settle">To settle</span></h2>
+          <p>Invoiced by WPR directly.</p>
+        </div>
+      </section>
+
+      <p class="founding">
+        <strong>Founding partners:</strong> the first bars to join lock in their launch rate.<span class="settle">To settle: details</span>
       </p>
-    </div>
+
+      <section class="book">
+        <p class="book-title">Get listed</p>
+        <p class="book-who">
+          Chris Weber,
+          <a href="mailto:weber.chris@wausaupilotandreview.com?subject=Happy%20Hour%20Finder%20listing">weber.chris@wausaupilotandreview.com</a>,
+          <a class="nowrap" href="tel:+17153015539">715-301-5539</a>
+        </p>
+      </section>
+
+      <footer>
+        <img src="./wpr-typewriter-badge.png" alt="" width="36" height="36" />
+        <p>
+          Wausau Pilot &amp; Review · 715-301-5539 · a nonprofit newsroom: partner placements support free local journalism.<br />
+          Newsletter audience: wausaupilotandreview.com/sponsorship-and-advertising, January 2026.
+        </p>
+      </footer>
+    </main>
   </body>
 </html>
