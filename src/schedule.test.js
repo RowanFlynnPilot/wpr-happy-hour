@@ -8,6 +8,7 @@ import {
   SPOTLIGHT_MAX_ROWS,
   dayListings,
   digestFor,
+  digestSchedule,
   fmtDays,
   fmtTime,
   fmtWindows,
@@ -156,6 +157,26 @@ test('digestFor caps featured entries and the name list, counting the rest', () 
   assert.equal(d.listed[0].bar.id, `f${DIGEST_MAX_FEATURED}`); // overflow featured leads the list
   assert.equal(d.listed.length, DIGEST_MAX_LISTED);
   assert.equal(d.more, d.count - DIGEST_MAX_FEATURED - DIGEST_MAX_LISTED);
+});
+
+test('digestSchedule groups by first start, in time order, with ends and later windows', () => {
+  const listed = [
+    { bar: bar('feat-late'), specials: [special({ start: '16:00', end: '18:00' })] },
+    { bar: bar('a'), specials: [special({ start: '15:00', end: '17:00' })] },
+    {
+      bar: bar('b'),
+      specials: [
+        special({ start: '20:00', end: '22:00' }),
+        special({ start: '15:00', end: '18:00', type: 'food' }),
+        special({ start: '15:00', end: '18:00' }), // same window, counted once
+      ],
+    },
+  ];
+  const groups = digestSchedule(listed);
+  assert.deepEqual(groups.map((g) => g.start), ['15:00', '16:00']);
+  assert.deepEqual(groups[0].rows.map((r) => [r.bar.id, r.end, r.later.length]), [['a', '17:00', 0], ['b', '18:00', 1]]);
+  assert.equal(groups[0].rows[1].later[0].start, '20:00');
+  assert.equal(groups[1].rows[0].bar.id, 'feat-late');
 });
 
 test('spotlightFor: verified only, one row per window, Monday first, capped', () => {

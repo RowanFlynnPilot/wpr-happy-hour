@@ -32,7 +32,10 @@ function Spotlight({ bar, cta }) {
       {RIBBON && <p className="digest-ribbon mono">Sales preview · sample listing</p>}
       <div className="spotlight-head">
         <span className="spotlight-chip">Advertisement</span>
-        <span className="spotlight-kicker mono">Happy Hour Finder</span>
+        <span className="spotlight-kicker">
+          <img className="spotlight-mark" src="./favicon.svg" alt="" width="20" height="20" />
+          Happy Hour Finder
+        </span>
       </div>
       <div className="spotlight-id">
         <div>

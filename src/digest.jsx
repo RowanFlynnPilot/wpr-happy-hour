@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { DAY_KEYS, validate } from './data/validate.js';
-import { digestFor, fmtWindow, fmtWindows, groupSpecials, weekdayLabel } from './schedule.js';
+import { digestFor, digestSchedule, fmtTime, fmtWindow, groupSpecials, weekdayLabel } from './schedule.js';
 import './index.css';
 import './digest.css';
 
@@ -28,9 +28,12 @@ function Digest() {
 
   return (
     <div className="digest">
-      {DEMO && <p className="digest-ribbon mono">Sales preview · sample listings</p>}
+      {DEMO && <p className="digest-ribbon">Sales preview, with sample listings</p>}
       <header className="digest-head">
-        <p className="digest-kicker mono">Happy Hour Finder</p>
+        <p className="digest-kicker">
+          <img className="digest-mark" src="./favicon.svg" alt="" width="24" height="24" />
+          Happy Hour Finder
+        </p>
         <h1 className="digest-title">{weekdayLabel(DAY)}’s happy hours</h1>
         <p className="digest-sub">
           {count === 0
@@ -41,14 +44,14 @@ function Digest() {
 
       {sponsor && (
         <p className="digest-sponsor">
-          <span className="digest-sponsor-eyebrow mono">Presented by</span>
+          <span className="digest-sponsor-eyebrow">Presented by</span>
           <span className="digest-sponsor-name">{sponsor.name}</span>
         </p>
       )}
 
       {featured.map(({ bar, specials }) => (
         <article className="digest-featured" key={bar.id}>
-          <span className="digest-badge mono">Featured</span>
+          <span className="digest-badge">Featured</span>
           {bar.photo && <img className="digest-photo" src={bar.photo} alt="" />}
           <h2 className="digest-name">{bar.name}</h2>
           <p className="digest-address">{bar.address}</p>
@@ -67,15 +70,27 @@ function Digest() {
 
       {listed.length > 0 && (
         <section className="digest-roll">
-          <h3 className="digest-label mono">{featured.length > 0 ? 'Also today' : 'Today'}</h3>
-          <ul className="digest-list">
-            {listed.map(({ bar, specials }) => (
-              <li key={bar.id}>
-                <span className="digest-list-name">{bar.name}</span>
-                <span className="digest-list-time mono">{fmtWindows(specials)}</span>
-              </li>
-            ))}
-          </ul>
+          <h3 className="digest-label">{featured.length > 0 ? 'Also today' : 'Today'}</h3>
+          {digestSchedule(listed).map((slot) => (
+            <div className="digest-slot" key={slot.start}>
+              <p className="digest-slot-time">{fmtTime(slot.start)}</p>
+              <ul className="digest-slot-bars">
+                {slot.rows.map(({ bar, end, later }) => (
+                  <li key={bar.id}>
+                    <span className="digest-list-name">{bar.name}</span>
+                    <span className="digest-list-time">
+                      until <span className="mono">{fmtTime(end)}</span>
+                      {later.length > 0 && (
+                        <>
+                          , then <span className="mono">{later.map(fmtWindow).join(', ')}</span>
+                        </>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
           {more > 0 && <p className="digest-more">+ {more} more on the Happy Hour Finder</p>}
         </section>
       )}

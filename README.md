@@ -148,8 +148,9 @@ the same pattern as the Packers, gas-price and meeting digests. `digest.html` is
 536px card; `scripts/render-digest.mjs` screenshots it with Playwright at deploy time:
 
 - `digest/<day>.png` — one per weekday. **Verified bars only**: featured partners get
-  a full entry (up to 3, with specials and photo), every other verified partner open
-  that day gets a name + time line (up to 8, then "+N more"). The presenting
+  a full entry (up to 3, with specials and photo); every other verified partner open
+  that day is listed as a schedule, grouped under the time its happy hour starts, with
+  when it ends (up to 8, then "+N more"). The presenting
   `sponsor` is baked in — one sponsorship covers the tool and the newsletter.
 - `digest/digest.json` — per-day `count`, `image`, `alt`. `image` is `null` on days
   with no verified partners; the newsletter omits the section on those days.

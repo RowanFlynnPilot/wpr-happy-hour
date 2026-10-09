@@ -150,6 +150,25 @@ export function digestFor(bars, day) {
   };
 }
 
+// The card's "also today" list as a schedule: partners grouped under the time
+// their first window starts, each with when that window ends and any later
+// windows that day. Groups run in time order; rows keep digestFor's order
+// (featured overflow first) within a group. Shared windows (a drinks and a food
+// special, 3–6) count once.
+export function digestSchedule(listed) {
+  const groups = [];
+  for (const { bar, specials } of listed) {
+    const windows = [...new Map(specials.map((s) => [`${s.start}|${s.end}`, s])).values()].sort(
+      (a, b) => toMinutes(a.start) - toMinutes(b.start) || toMinutes(a.end) - toMinutes(b.end)
+    );
+    const [first, ...later] = windows;
+    let group = groups.find((g) => g.start === first.start);
+    if (!group) groups.push((group = { start: first.start, rows: [] }));
+    group.rows.push({ bar, end: first.end, later });
+  }
+  return groups.sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
+}
+
 // Newsletter spotlight: one VERIFIED partner's own small sponsored ad, built from
 // its listing — its week of specials, one row per window, Monday first. Capped
 // (with a line budget per row, in digest.css) so the ad stays small; the rest count as "more".

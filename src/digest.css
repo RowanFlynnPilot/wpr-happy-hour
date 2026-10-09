@@ -1,7 +1,10 @@
 /* Newsletter images — the day card (digest.html) and the spotlight ad
    (spotlight.html, at the bottom). Screenshotted at 536 CSS px wide, 2x, by
    scripts/render-digest.mjs. Phones shrink email images to ~60%, so type runs
-   larger than the app's. Square corners: the newsletter rounds the image. */
+   larger than the app's: nothing under 14px that a reader needs. Square
+   corners (the newsletter rounds the image), opaque, with a hairline edge so
+   dark-mode mail clients still frame it. Labels in sentence case; mono only
+   for times, per the design system. */
 body.digest-page {
   background: #fff;
 }
@@ -9,44 +12,56 @@ body.digest-page {
 .digest {
   width: 536px;
   background: var(--cream);
+  border: 1px solid var(--line);
   border-top: 4px solid var(--teal); /* house convention: cards mark their top edge */
-  padding: 22px 24px 20px;
+  padding: 20px 24px 20px;
 }
 
+/* Demo only (?demo): says it's a preview, so a forwarded image explains itself */
 .digest-ribbon {
   background: var(--amber-tint);
   color: var(--amber);
   border: 1px dashed var(--amber);
   border-radius: 8px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
   text-align: center;
   padding: 6px 10px;
   margin-bottom: 16px;
 }
 
+/* The finder's own mark (favicon.svg) and name, then the day */
 .digest-kicker {
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--teal-dark);
+}
+
+.digest-mark {
+  width: 24px;
+  height: 24px;
+  flex: none;
 }
 
 .digest-title {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 34px;
-  line-height: 1.1;
-  margin-top: 4px;
+  font-size: 38px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-top: 8px;
 }
 
 .digest-sub {
   font-size: 17px;
   color: var(--ink-soft);
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
+/* Presenting sponsor — "Presented by" small, the name in the display serif */
 .digest-sponsor {
   display: flex;
   align-items: baseline;
@@ -57,16 +72,14 @@ body.digest-page {
 }
 
 .digest-sponsor-eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--teal-dark);
+  font-size: 14px;
+  color: var(--ink-soft);
 }
 
 .digest-sponsor-name {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 21px;
 }
 
 /* Featured partner — mirrors the app's featured card */
@@ -81,14 +94,13 @@ body.digest-page {
 
 .digest-badge {
   position: absolute;
-  top: -11px;
+  top: -12px;
   right: 14px;
   background: var(--teal-dark);
   color: var(--on-teal);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 2px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 2px 12px;
   border-radius: 999px;
 }
 
@@ -104,7 +116,7 @@ body.digest-page {
 .digest-name {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 25px;
   line-height: 1.15;
 }
 
@@ -145,43 +157,75 @@ body.digest-page {
   font-weight: 700;
 }
 
-/* Name list — every other verified partner open that day */
+/* Everyone else, as a schedule: grouped under the time their happy hour
+   starts, each with when it ends — the question a reader is asking at 5 p.m. */
 .digest-roll {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .digest-label {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--teal-dark);
-  margin-bottom: 4px;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 20px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ink);
 }
 
-.digest-list {
+.digest-slot {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  align-items: baseline; /* the start time sits on its first bar's line */
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.digest-slot:last-of-type {
+  border-bottom: 0; /* the fine print's rule closes the list */
+}
+
+.digest-slot-time {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--teal-dark);
+  white-space: nowrap;
+}
+
+.digest-slot-bars {
   list-style: none;
   padding: 0;
 }
 
-.digest-list li {
+.digest-slot-bars li {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
-  padding: 7px 0;
-  border-bottom: 1px dotted var(--line);
+  padding: 3px 0;
+}
+
+.digest-slot-bars li + li {
+  border-top: 1px dotted var(--line);
 }
 
 .digest-list-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
 }
 
+/* "until" in the body face, the time itself in mono (the system's time face) */
 .digest-list-time {
   font-size: 15px;
   color: var(--ink-soft);
-  white-space: nowrap;
+  text-align: right;
+}
+
+.digest-list-time .mono {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
 }
 
 .digest-more {
@@ -192,9 +236,9 @@ body.digest-page {
 }
 
 .digest-fine {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink-soft);
-  margin-top: 18px;
+  margin-top: 16px;
   padding-top: 10px;
   border-top: 1px solid var(--line);
 }
@@ -231,11 +275,20 @@ body.digest-page {
   border-radius: 3px;
 }
 
+/* The finder's mark and name, as on the day card */
 .spotlight-kicker {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--teal-dark);
+}
+
+.spotlight-mark {
+  width: 20px;
+  height: 20px;
+  flex: none;
 }
 
 /* Name block, with the featured-tier photo beside it */
@@ -286,9 +339,7 @@ body.digest-page {
 }
 
 .spotlight-days {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--teal-dark);
 }
 
