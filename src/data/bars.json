@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-26",
+  "updated": "2026-10-09",
   "sponsor": null,
   "bars": [
     {
@@ -651,30 +651,30 @@
       "city": "Weston",
       "address": "5912 Business Hwy 51, Weston",
       "website": "https://thepalmswausau.com/",
-      "tier": "partner",
+      "tier": "featured",
       "verifiedOn": null,
-      "photo": null,
+      "photo": "https://thepalmswausau.com/wp-content/uploads/2023/07/prime-rib-shrooms.jpeg",
       "specials": [
         {
           "days": [
             "wed"
           ],
-          "start": "16:00",
+          "start": "11:00",
           "end": "21:00",
           "type": "drinks",
           "items": [
-            "Wine Down Wednesday — $5 off any wine bottle"
+            "PLACEHOLDER — time being confirmed: Wine Down Wednesday — $5 off any bottle on the wine list"
           ]
         },
         {
           "days": [
             "fri"
           ],
-          "start": "16:00",
+          "start": "11:00",
           "end": "21:00",
           "type": "food",
           "items": [
-            "Friday fish menu — beer-battered cod from $15, walleye, perch, snow crab"
+            "Friday fish — cod or Poor Man’s Lobster from $15 · walleye $23 · perch $18 · snow crab $36"
           ]
         },
         {
@@ -685,7 +685,7 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "PLACEHOLDER — Saturday prime rib being confirmed (no longer advertised on site)"
+            "Saturday prime rib until sold out — 12 oz Queen $42 · 15 oz King $48"
           ]
         }
       ]
