@@ -173,10 +173,16 @@ export function digestSchedule(listed) {
 // its listing — its week of specials, one row per window, Monday first. Capped
 // (with a line budget per row, in digest.css) so the ad stays small; the rest count as "more".
 export const SPOTLIGHT_MAX_ROWS = 3;
-export function spotlightFor(bar) {
-  if (bar.verifiedOn === null) throw new Error(`spotlight: "${bar.id}" is not verified — unconfirmed specials never go to subscribers`);
+// { preview: true } is the sales preview (spotlight.html?preview=<id>): a listed
+// bar's ad before it's verified, for collateral and pitches — never sent to
+// subscribers. It shows only the bar's sourced specials; PLACEHOLDER ones are left
+// out rather than shown as fact.
+export function spotlightFor(bar, { preview = false } = {}) {
+  if (!preview && bar.verifiedOn === null) throw new Error(`spotlight: "${bar.id}" is not verified — unconfirmed specials never go to subscribers`);
+  const specials = preview ? bar.specials.filter((s) => !s.items.some(isPlaceholder)) : bar.specials;
+  if (specials.length === 0) throw new Error(`spotlight preview: "${bar.id}" has no sourced specials to show`);
   const firstDay = (g) => Math.min(...g.days.map((d) => WEEK_ORDER.indexOf(d)));
-  const rows = groupSpecials(bar.specials).sort((a, b) => firstDay(a) - firstDay(b) || toMinutes(a.start) - toMinutes(b.start));
+  const rows = groupSpecials(specials).sort((a, b) => firstDay(a) - firstDay(b) || toMinutes(a.start) - toMinutes(b.start));
   return { rows: rows.slice(0, SPOTLIGHT_MAX_ROWS), more: Math.max(0, rows.length - SPOTLIGHT_MAX_ROWS) };
 }
 

@@ -183,9 +183,13 @@ The cheap placement: one partner's own small ad in a newsletter, sold by the sen
 - `digest/spotlight.json` — per ad: `image`, `alt` (the whole ad, for readers who
   block images) and `link` (the bar's site with `utm_medium=newsletter`; `null` when
   it has no site — link its finder listing, `?bar=<id>`, instead).
-- `digest/spotlight-demo.png` — sales preview; live with a prospect's name:
-  `spotlight.html?demo=Bar%20Name`. `digest/spotlight-sample.png` is the same without
-  its "Sales preview" ribbon (`?demo&sample`), for the one-pager, which labels it itself.
+- `digest/spotlight-demo.png` — sales preview with sample rows; live with a prospect's
+  name: `spotlight.html?demo=Bar%20Name`.
+- `spotlight.html?preview=<id>` — a listed bar's own ad before it's verified, for pitches:
+  its sourced specials only (PLACEHOLDER ones are left out), with a "Sales preview"
+  ribbon; never sent to subscribers. `digest/spotlight-sample.png` is the showcase bar's
+  preview without the ribbon (`&sample`), used by the one-pager and rate card — The Palms
+  Supper Club, whose owner agreed to be the showcase (2026-10-09).
 
 **Running one.** Bookings (dates, edition) stay offline with the sale, never in
 bars.json. The newsletter already runs date-ranged ads through Broadstreet and shows a

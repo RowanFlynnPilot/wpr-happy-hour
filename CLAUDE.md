@@ -36,7 +36,9 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Newsletter spotlight (the cheap per-send ad): spotlight.html renders one PNG per
   verified bar from its listing (dist/digest/spotlight/ + spotlight.json), labeled
   "Advertisement". Bookings stay offline (Broadstreet / the sale) — no ad dates or
-  booking fields in bars.json.
+  booking fields in bars.json. Sales previews (`?preview=<id>`) show a listed bar's
+  sourced specials only and are never sent; the collateral sample is The Palms Supper
+  Club (owner-approved showcase, featured with its own photo).
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
 - Verification lands through `npm run calls -- <call-sheet.csv> [--write]`
   (scripts/apply-calls.mjs): Chris's "Verified" rows set specials, tier and

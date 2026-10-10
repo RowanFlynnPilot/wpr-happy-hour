@@ -11,6 +11,16 @@
   --line: #e3ddd0;
   --amber: #8a6119; /* darkened 2026-07-16 for WCAG AA on --amber-tint (4.7:1) */
   --amber-tint: #f6edda;
+
+  /* Evening — the night-out surfaces: the finder's hero band and featured cards,
+     the spotlight ad, the newsletter card's featured entry. A deep teal from the
+     brand teal, cream type, and warm gold for times and accents. On --night:
+     cream 11.1:1, --on-night-soft 7.3:1, --gold 7.0:1. */
+  --night: #173a35;
+  --night-line: rgba(246, 242, 233, 0.16);
+  --on-night: #f6f2e9;
+  --on-night-soft: #b7cbc6;
+  --gold: #e9bd5b;
 }
 
 /* Type scale: 11 · 13 · 15 · 19 px + the hero. Spacing: multiples of 4px. */
@@ -32,6 +42,45 @@ body {
   font-family: 'JetBrains Mono', monospace;
 }
 
+/* Drinks and food marks — a glass and a fork and knife, drawn as CSS masks so
+   they take the text color. <span class="type-icon type-drinks|food|both"> */
+.type-icon {
+  display: inline-flex;
+  gap: 2px;
+  flex: none;
+  vertical-align: -0.125em;
+}
+
+.type-icon::before,
+.type-icon::after {
+  content: '';
+  width: 1em;
+  height: 1em;
+  background: currentColor;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+}
+
+.type-icon::after {
+  display: none;
+}
+
+.type-drinks::before,
+.type-both::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 3h18l-8 9v7h4v2H7v-2h4v-7z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 3h18l-8 9v7h4v2H7v-2h4v-7z'/%3E%3C/svg%3E");
+}
+
+.type-food::before,
+.type-both::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 2h1.5v6h1V2H9v6h1V2h1.5v7a2.5 2.5 0 0 1-2 2.45V22h-2V11.45a2.5 2.5 0 0 1-2-2.45z'/%3E%3Cpath d='M15.5 2C18 3 19 6 19 9.5V13h-1.5v9h-2z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 2h1.5v6h1V2H9v6h1V2h1.5v7a2.5 2.5 0 0 1-2 2.45V22h-2V11.45a2.5 2.5 0 0 1-2-2.45z'/%3E%3Cpath d='M15.5 2C18 3 19 6 19 9.5V13h-1.5v9h-2z'/%3E%3C/svg%3E");
+}
+
+.type-both::after {
+  display: block;
+}
+
 .app {
   max-width: 960px;
   margin: 0 auto;
@@ -48,34 +97,44 @@ body {
   padding-bottom: 12px;
 }
 
+/* WPR's flag: the press seal and the real wordmark (public/wpr-wordmark.png) */
 .masthead-brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-family: 'Fraunces', serif;
-  font-weight: 700;
-  font-size: 19px;
-  color: var(--ink);
+  gap: 12px;
   text-decoration: none;
+}
+
+/* Both images are drawn on white; multiply drops the white out on the cream page */
+.masthead-badge,
+.masthead-wordmark,
+.footer-badge {
+  mix-blend-mode: multiply;
+}
+
+.masthead-badge {
+  width: 36px;
+  height: 36px;
+}
+
+.masthead-wordmark {
+  display: block;
+  height: 18px;
+  width: auto;
 }
 
 /* Hover styles are gated to real pointers throughout: on phones a tap leaves
    :hover stuck until the next tap elsewhere */
 @media (hover: hover) and (pointer: fine) {
-  .masthead-brand:hover {
-    color: var(--teal-dark);
+  .masthead-brand:hover .masthead-wordmark {
+    opacity: 0.8;
   }
 }
 
-.masthead-badge {
-  width: 32px;
-  height: 32px;
-}
-
+/* The tagline, set the way WPR sets its own: small, uppercase, letter-spaced */
 .masthead-tag {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -94,34 +153,64 @@ body {
   margin-bottom: 8px;
 }
 
-/* Hero */
+/* Hero — the evening band: the finder's name and the clock it's reading, then
+   what that clock means right now, the live count lit in gold like a marquee */
 .hero {
-  text-align: center;
-  padding: 8px 0 24px;
+  background: var(--night);
+  color: var(--on-night);
+  border-radius: 16px;
+  padding: 20px 28px 28px;
+}
+
+.hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px 16px;
+}
+
+.hero-tool {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hero-mark {
+  width: 22px;
+  height: 22px;
+  flex: none;
 }
 
 .hero-clock {
   font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--teal-dark);
-  margin-bottom: 8px;
+  color: var(--on-night-soft);
+}
+
+.hero-clock .mono {
+  color: var(--on-night);
+  font-weight: 500;
 }
 
 .hero-title {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: clamp(26px, 5vw, 40px);
-  line-height: 1.15;
+  font-size: clamp(28px, 5.4vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-top: 12px;
+  text-wrap: balance;
 }
 
 .hero-count {
-  color: var(--teal);
-  font-weight: 700;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums; /* the count ticks as windows open and close */
 }
 
 .hero-sub {
-  color: var(--ink-soft);
+  color: var(--on-night-soft);
   margin-top: 8px;
 }
 
@@ -146,7 +235,8 @@ body {
 
 .day-btn {
   position: relative;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Public Sans', sans-serif;
+  font-weight: 600;
   font-size: 13px;
   padding: 8px 12px;
   border: 1px solid var(--line);
@@ -253,6 +343,23 @@ a:focus-visible {
     flex: 1;
     min-width: 0; /* at 16px the two selects would otherwise overflow a narrow frame */
   }
+
+  .masthead-tag {
+    letter-spacing: 0.12em; /* keeps the tagline on one line on a phone */
+  }
+
+  .hero {
+    border-radius: 12px;
+    padding: 16px 18px 22px;
+  }
+}
+
+/* The smallest frames (320px phones, wide WordPress margins): eight day labels
+   in the body face need one size down to clear their buttons */
+@media (max-width: 360px) {
+  .day-btn {
+    font-size: 11px;
+  }
 }
 
 /* Sections */
@@ -262,6 +369,24 @@ a:focus-visible {
   font-size: 19px;
   margin: 24px 0 12px;
   color: var(--teal-dark);
+}
+
+.section-live::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--teal);
+  vertical-align: 2px;
+  animation: live-pulse 2s ease-in-out infinite; /* stilled by prefers-reduced-motion below */
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .grid {
@@ -281,26 +406,70 @@ a:focus-visible {
   padding: 16px;
 }
 
+/* Featured — the evening card: night ground, cream type, gold for times and
+   accents. The paid tier reads at a glance, and matches the spotlight ad. */
 .card-featured {
-  border: 2px solid var(--teal);
+  background: var(--night);
+  color: var(--on-night);
+  border-color: var(--night);
 }
 
-/* ?bar= deep-link target — subtle wash, distinct from the featured border */
+.card-featured .card-address,
+.card-featured .item-placeholder,
+.card-featured .item-placeholder::before,
+.card-featured .card-verified.pending {
+  color: var(--on-night-soft);
+}
+
+.card-featured .card-address a,
+.card-featured .special-time,
+.card-featured .special-days,
+.card-featured .special-meta .type-icon,
+.card-featured .special-items li::before,
+.card-featured .card-verified {
+  color: var(--gold);
+}
+
+.card-featured .special,
+.card-featured .card-verified {
+  border-top-color: var(--night-line);
+}
+
+.card-featured .chip-now {
+  background: var(--gold);
+  color: var(--night);
+}
+
+.card-featured .chip-placeholder {
+  border-color: var(--on-night-soft);
+  color: var(--on-night-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-featured .card-name a:hover {
+    color: var(--gold);
+  }
+}
+
+/* ?bar= deep-link target — subtle wash, distinct from the featured card */
 .card-linked {
   background: var(--teal-tint);
+}
+
+.card-featured.card-linked {
+  background: var(--night);
+  box-shadow: 0 0 0 3px var(--gold);
 }
 
 .featured-badge {
   position: absolute;
   top: -10px;
   right: 12px;
-  background: var(--teal-dark);
-  color: var(--on-teal);
-  font-family: 'JetBrains Mono', monospace;
+  background: var(--gold);
+  color: var(--night);
   font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 2px 8px;
+  font-weight: 700;
+  padding: 2px 10px;
   border-radius: 999px;
 }
 
@@ -310,6 +479,7 @@ a:focus-visible {
   border-radius: 10px 10px 0 0;
   aspect-ratio: 16 / 7;
   object-fit: cover;
+  object-position: 50% 85%; /* food photos sit low in the frame: favor the plate */
 }
 
 .card-name {
@@ -368,13 +538,20 @@ a:focus-visible {
 
 .special-time {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
+.special-meta .type-icon {
+  font-size: 15px;
+  color: var(--teal);
+}
+
+/* Chips are words, so the body face; the time beside them is the mono */
 .chip {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  padding: 2px 8px;
+  font-weight: 600;
+  padding: 2px 9px;
   border-radius: 999px;
   white-space: nowrap;
 }
@@ -382,6 +559,17 @@ a:focus-visible {
 .chip-now {
   background: var(--teal-dark);
   color: var(--on-teal);
+}
+
+.chip-now::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 1px;
 }
 
 .chip-later {
@@ -426,10 +614,12 @@ a:focus-visible {
   padding-top: 8px;
   border-top: 1px dashed var(--line);
   font-size: 11px;
+  font-weight: 600;
   color: var(--teal-dark);
 }
 
 .card-verified.pending {
+  font-weight: 400;
   color: var(--ink-soft);
 }
 

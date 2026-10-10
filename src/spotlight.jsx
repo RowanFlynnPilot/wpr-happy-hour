@@ -3,10 +3,12 @@
 // finder shows. scripts/render-digest.mjs screenshots one PNG per verified bar
 // at deploy time; WPR books it into a newsletter ad zone for the dates sold.
 //   spotlight.html?bar=<id>          the real ad (verified bars only — throws otherwise)
+//   spotlight.html?preview=<id>      sales preview of a listed bar's ad before it's
+//                                    verified: its sourced specials only, never sent
 //   spotlight.html?demo              sales preview with a sample listing
 //   spotlight.html?demo=Bar%20Name   same, with the prospect's name
-//   spotlight.html?demo&sample       same, minus the ribbon — for collateral that
-//                                    already says it's a sample (the one-pager)
+//   &sample (with preview or demo)   drops the ribbon — for collateral that already
+//                                    labels the image (the one-pager, the rate card)
 // Internal page, not linked from the app.
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -18,18 +20,20 @@ import './digest.css';
 
 const DATA = validate(data);
 const PARAMS = new URLSearchParams(window.location.search);
-const DEMO = PARAMS.has('demo');
-const BAR_ID = PARAMS.get('bar');
-// A forwarded demo link must explain itself, so the ribbon stays unless the
-// image is going into a page that labels it (spotlight-one-pager.html)
-const RIBBON = DEMO && !PARAMS.has('sample');
-if (DEMO === (BAR_ID !== null)) throw new Error('spotlight.html: pass exactly one of ?bar=<id> or ?demo');
+const MODES = ['bar', 'preview', 'demo'].filter((m) => PARAMS.has(m));
+if (MODES.length !== 1) throw new Error('spotlight.html: pass exactly one of ?bar=<id>, ?preview=<id> or ?demo');
+const MODE = MODES[0];
+// A forwarded preview link must explain itself, so the ribbon stays unless the
+// image is going into a page that labels it
+const RIBBON = MODE !== 'bar' && !PARAMS.has('sample');
 
 function Spotlight({ bar, cta }) {
-  const { rows, more } = spotlightFor(bar);
+  const { rows, more } = spotlightFor(bar, { preview: MODE === 'preview' });
   return (
     <div className="spotlight">
-      {RIBBON && <p className="digest-ribbon mono">Sales preview · sample listing</p>}
+      {RIBBON && (
+        <p className="digest-ribbon">{MODE === 'demo' ? 'Sales preview, with a sample listing' : 'Sales preview'}</p>
+      )}
       <div className="spotlight-head">
         <span className="spotlight-chip">Advertisement</span>
         <span className="spotlight-kicker">
@@ -47,9 +51,13 @@ function Spotlight({ bar, cta }) {
       <ul className="spotlight-rows" data-rows={rows.length}>
         {rows.map((g, i) => (
           <li key={i}>
-            <span className="spotlight-days mono">{fmtDays(g.days)}</span>
-            <span className="spotlight-time mono">{fmtWindow(g)}</span>
-            <span className="spotlight-what">{g.items.join(' · ')}</span>
+            <p className="spotlight-when mono">
+              <span className="spotlight-days">{fmtDays(g.days)}</span>
+              {fmtWindow(g)}
+            </p>
+            <p className="spotlight-what">
+              <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {g.items.join(' · ')}
+            </p>
           </li>
         ))}
       </ul>
@@ -63,9 +71,10 @@ function Spotlight({ bar, cta }) {
 const domain = (url) => new URL(url).hostname.replace(/^www\./, '');
 
 function Page() {
-  if (DEMO) return <Spotlight bar={demoBar(PARAMS.get('demo'))} cta="Your website" />;
-  const bar = DATA.bars.find((b) => b.id === BAR_ID);
-  if (!bar) throw new Error(`spotlight.html: no bar with id "${BAR_ID}"`);
+  if (MODE === 'demo') return <Spotlight bar={demoBar(PARAMS.get('demo'))} cta="Your website" />;
+  const id = PARAMS.get(MODE);
+  const bar = DATA.bars.find((b) => b.id === id);
+  if (!bar) throw new Error(`spotlight.html: no bar with id "${id}"`);
   return <Spotlight bar={bar} cta={bar.website && domain(bar.website)} />;
 }
 

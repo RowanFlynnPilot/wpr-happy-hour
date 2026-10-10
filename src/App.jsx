@@ -77,12 +77,15 @@ function StatusChip({ group, now }) {
   return null;
 }
 
-// One window (days + hours) of a bar's specials; see groupSpecials()
+// One window (days + hours) of a bar's specials; see groupSpecials(). In a day
+// view every special runs that day, so its days only say something when it
+// also runs on others ("Tue · Thu · Sat–Sun"), not a "Sat" on every card.
 function SpecialRow({ group, now, showDays }) {
   return (
     <div className="special">
       <div className="special-meta">
-        {showDays && <span className="special-days mono">{fmtDays(group.days)}</span>}
+        <span className={`type-icon type-${group.type}`} aria-hidden="true" />
+        {showDays && group.days.length > 1 && <span className="special-days mono">{fmtDays(group.days)}</span>}
         <span className="special-time mono">{fmtWindow(group)}</span>
         {now && <StatusChip group={group} now={now} />}
         {group.placeholder && <span className="chip chip-placeholder">Placeholder</span>}
@@ -161,7 +164,7 @@ function BarCard({ bar, specials, now, showDays }) {
           <SpecialRow key={i} group={g} now={now} showDays={showDays} />
         ))}
       </div>
-      <p className={`card-verified mono${bar.verifiedOn ? '' : ' pending'}`}>
+      <p className={`card-verified${bar.verifiedOn ? '' : ' pending'}`}>
         {bar.verifiedOn ? `✓ Verified ${fmtVerified(bar.verifiedOn)}` : 'Details being confirmed'}
       </p>
     </article>
@@ -265,8 +268,8 @@ export default function App() {
     <div className="app">
       <div className="masthead">
         <a className="masthead-brand" href="https://wausaupilotandreview.com" target="_top">
-          <img className="masthead-badge" src="./wpr-typewriter-badge.png" alt="" />
-          Wausau Pilot &amp; Review
+          <img className="masthead-badge" src="./wpr-typewriter-badge.png" alt="" width="36" height="36" />
+          <img className="masthead-wordmark" src="./wpr-wordmark.png" alt="Wausau Pilot & Review" width="141" height="18" />
         </a>
         <span className="masthead-tag">Independent. Local. Nonprofit news.</span>
       </div>
@@ -274,19 +277,26 @@ export default function App() {
       <div className="masthead-rule" />
       <main>
         <header className="hero">
-          <p className="hero-clock mono">
-            {weekday} · {clock}
-          </p>
+          {/* The tool's own name sits under WPR's flag, never above it */}
+          <div className="hero-top">
+            <p className="hero-tool">
+              <img className="hero-mark" src="./favicon.svg" alt="" width="22" height="22" />
+              Happy Hour Finder
+            </p>
+            <p className="hero-clock">
+              {weekday}, <span className="mono">{clock}</span>
+            </p>
+          </div>
           <h1 className="hero-title">
             {view === 'now' ? (
               pouring.length > 0 ? (
                 <>
-                  <span className="hero-count mono">{pouring.length}</span> happy hour
+                  <span className="hero-count">{pouring.length}</span> happy hour
                   {pouring.length === 1 ? ' is' : 's are'} pouring right now
                 </>
               ) : laterToday.length > 0 ? (
                 <>
-                  <span className="hero-count mono">{laterToday.length}</span> happy hour
+                  <span className="hero-count">{laterToday.length}</span> happy hour
                   {laterToday.length === 1 ? '' : 's'} starting later today
                 </>
               ) : (
@@ -296,7 +306,7 @@ export default function App() {
               `${weekdayLabel(view)} happy hours`
             )}
           </h1>
-          <p className="hero-sub">Happy hour specials at partner bars across the Wausau area</p>
+          <p className="hero-sub">Drink and food specials at partner bars across the Wausau area</p>
         </header>
 
         <div className="controls">
@@ -345,7 +355,7 @@ export default function App() {
           <>
             {pouring.length > 0 && (
               <section>
-                <h2 className="section-label">Pouring now</h2>
+                <h2 className="section-label section-live">Pouring now</h2>
                 <div className="grid">
                   {pouring.map(({ bar, specials }) => (
                     <BarCard key={bar.id} bar={bar} specials={specials} now={now} showDays={false} />

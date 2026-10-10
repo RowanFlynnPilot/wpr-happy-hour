@@ -14,7 +14,7 @@
 //   dist/digest/spotlight/<id>.png  one spotlight ad per verified partner,
 //                            ready to book into a newsletter ad zone
 //   dist/digest/spotlight-demo.png  spotlight sales preview (sample listing)
-//   dist/digest/spotlight-sample.png  the same without its ribbon, for the one-pager
+//   dist/digest/spotlight-sample.png  the showcase bar's ad (a preview), for the one-pager and rate card
 //   dist/digest/spotlight.json      per-ad image, alt text and tracked link
 // Fails loud (non-zero exit, deploy stops) on any page error, missing web font
 // or broken image: a wrong image in thousands of inboxes is worse than a
@@ -102,7 +102,10 @@ try {
     });
   }
   await shoot('spotlight.html?demo', 'spotlight-demo.png');
-  await shoot('spotlight.html?demo&sample', 'spotlight-sample.png'); // for the one-pager
+  // The collateral sample (one-pager, rate card) is The Palms Supper Club, whose
+  // owner agreed to be the showcase (2026-10-09): a preview of its real, sourced
+  // listing. If it ever leaves bars.json this fails loudly — pick a new showcase.
+  await shoot('spotlight.html?preview=palms-supper-club&sample', 'spotlight-sample.png');
   await writeFile(new URL('spotlight.json', OUT), `${JSON.stringify({ updated: data.updated, spotlights }, null, 2)}\n`);
   console.log(`Wrote dist/digest/spotlight.json (${spotlights.length} ad${spotlights.length === 1 ? '' : 's'})`);
 } finally {

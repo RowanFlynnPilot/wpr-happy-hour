@@ -201,6 +201,19 @@ test('spotlightFor: verified only, one row per window, Monday first, capped', ()
   assert.equal(more, 2);
 });
 
+test('spotlightFor preview: unverified allowed, sourced specials only, none fails', () => {
+  const b = bar('listed', {
+    specials: [
+      special({ days: ['wed'], items: ['PLACEHOLDER — time being confirmed: Wine down'] }),
+      special({ days: ['sat'], start: '16:00', end: '21:00', type: 'food', items: ['Prime rib'] }),
+    ],
+  });
+  assert.throws(() => spotlightFor(b), /not verified/);
+  const { rows } = spotlightFor(b, { preview: true });
+  assert.deepEqual(rows.map((r) => r.days[0]), ['sat']);
+  assert.throws(() => spotlightFor(bar('guesses', { specials: [special({ items: ['PLACEHOLDER — x'] })] }), { preview: true }), /no sourced/);
+});
+
 test('trackedUrl adds UTM tags and keeps the existing query', () => {
   const u = new URL(trackedUrl('https://example.com/menu?x=1&utm_source=old'));
   assert.equal(u.searchParams.get('x'), '1');

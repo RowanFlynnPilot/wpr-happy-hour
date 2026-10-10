@@ -17,8 +17,11 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    (`partner`/`featured`), `verifiedOn: <call date>` — and bump the top-level
    `updated` (CI rejects a verified bar that still has `PLACEHOLDER` items). Target: ~8 signed founding partners before going public, so the
    tracker is useful on day one.
-2. **Dress the featured showcase.** Faraway Place needs a street address, website,
-   and `photo` URL before Chris demos the featured tier to anyone.
+2. **Dress the featured showcase.** The Palms Supper Club is the showcase (owner
+   agreed 2026-10-09): featured, with its own prime rib photo, and the sample in the
+   sales sheets. Its Wine Down Wednesday end time is still unconfirmed, and its specials
+   need a recorded confirmation call before it counts as verified. Faraway Place (also
+   featured) still needs a street address, website and `photo` URL.
 3. **Set pricing → finish the rate card.** Fill real numbers into
    `public/partners.html` and `public/spotlight-one-pager.html` (currently "$––"
    placeholders), settle the rate card's amber "To settle" tags, and remove each

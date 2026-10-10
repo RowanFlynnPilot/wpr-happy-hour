@@ -57,7 +57,9 @@ function Digest() {
           <p className="digest-address">{bar.address}</p>
           {groupSpecials(specials).map((g, i) => (
             <div className="digest-special" key={i}>
-              <p className="digest-time mono">{fmtWindow(g)}</p>
+              <p className="digest-time mono">
+                <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {fmtWindow(g)}
+              </p>
               <ul className="digest-items">
                 {g.items.map((item, j) => (
                   <li key={j}>{item}</li>

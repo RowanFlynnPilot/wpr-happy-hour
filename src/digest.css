@@ -82,22 +82,35 @@ body.digest-page {
   font-size: 21px;
 }
 
-/* Featured partner — mirrors the app's featured card */
+/* Featured partner — the evening card, as in the finder and the spotlight ad */
 .digest-featured {
   position: relative;
-  background: var(--card);
-  border: 2px solid var(--teal);
+  background: var(--night);
+  color: var(--on-night);
   border-radius: 12px;
   padding: 16px 18px;
   margin-top: 22px;
+}
+
+.digest-featured .digest-address {
+  color: var(--on-night-soft);
+}
+
+.digest-featured .digest-special {
+  border-top-color: var(--night-line);
+}
+
+.digest-featured .digest-time,
+.digest-featured .digest-items li::before {
+  color: var(--gold);
 }
 
 .digest-badge {
   position: absolute;
   top: -12px;
   right: 14px;
-  background: var(--teal-dark);
-  color: var(--on-teal);
+  background: var(--gold);
+  color: var(--night);
   font-size: 14px;
   font-weight: 700;
   padding: 2px 12px;
@@ -108,9 +121,10 @@ body.digest-page {
   display: block;
   width: calc(100% + 36px);
   margin: -16px -18px 12px;
-  border-radius: 10px 10px 0 0;
+  border-radius: 12px 12px 0 0;
   aspect-ratio: 16 / 7;
   object-fit: cover;
+  object-position: 50% 85%; /* food photos sit low in the frame: favor the plate */
 }
 
 .digest-name {
@@ -134,7 +148,7 @@ body.digest-page {
 
 .digest-time {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .digest-items {
@@ -243,19 +257,25 @@ body.digest-page {
   border-top: 1px solid var(--line);
 }
 
-/* Spotlight ad — one partner's own paid strip. The yellow rule and chip are
-   the newsletter's sponsored convention (#FED850, dark text), baked into the
-   image so the disclosure travels wherever the ad runs. The chip says
-   "Advertisement": the FTC's native-ad guide names it as clearly understood,
-   while bare "Sponsored" can read as underwriting. Opaque, with a hairline
-   edge, so dark-mode mail clients (which recolor the page around images)
-   still frame it. */
+/* Spotlight ad — one partner's own paid strip, in the evening look it shares
+   with the finder's featured cards: night ground, cream type, gold for times
+   and accents. The yellow rule and chip are the newsletter's sponsored
+   convention (#FED850, dark text), baked into the image so the disclosure
+   travels wherever the ad runs; the chip says "Advertisement", which the FTC's
+   native-ad guide names as clearly understood (bare "Sponsored" can read as
+   underwriting). Opaque, so dark-mode mail clients can't recolor it. */
 .spotlight {
   width: 536px;
-  background: var(--cream);
-  border: 1px solid var(--line);
+  background: var(--night);
+  color: var(--on-night);
   border-top: 4px solid #fed850;
-  padding: 16px 24px 18px;
+  padding: 18px 24px 20px;
+}
+
+.spotlight .digest-ribbon {
+  background: rgba(233, 189, 91, 0.12);
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .spotlight-head {
@@ -282,7 +302,7 @@ body.digest-page {
   gap: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--teal-dark);
+  color: var(--on-night-soft);
 }
 
 .spotlight-mark {
@@ -297,55 +317,66 @@ body.digest-page {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .spotlight-photo {
   flex: none;
-  width: 88px;
-  height: 88px;
+  width: 116px;
+  height: 116px;
   object-fit: cover;
-  border-radius: 8px;
+  object-position: 50% 85%; /* food photos sit low in the frame: favor the plate */
+  border-radius: 12px;
+  border: 2px solid var(--gold);
 }
 
 .spotlight-name {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 26px;
-  line-height: 1.1;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 .spotlight-address {
   font-size: 15px;
-  color: var(--ink-soft);
-  margin-top: 2px;
+  color: var(--on-night-soft);
+  margin-top: 4px;
 }
 
+/* The gold rule opens the specials */
 .spotlight-rows {
   list-style: none;
   padding: 0;
-  margin-top: 10px;
-  border-top: 1px solid var(--line);
+  margin-top: 14px;
+  border-top: 2px solid var(--gold);
 }
 
-/* One line per window: days · hours · what's on */
+/* One row per window: when (days over hours, in gold like a marquee), then
+   what's on. Stacking the when column leaves the specials room for a full
+   price line — a row gets two lines either way — so a price isn't the thing
+   the clamp cuts. */
 .spotlight-rows li {
   display: grid;
-  grid-template-columns: 76px 124px 1fr;
+  grid-template-columns: 112px 1fr;
   gap: 12px;
-  align-items: baseline;
-  padding: 7px 0;
-  border-bottom: 1px dotted var(--line);
+  align-items: start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--night-line);
+}
+
+.spotlight-when {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--gold);
 }
 
 .spotlight-days {
+  display: block;
   font-size: 13px;
-  color: var(--teal-dark);
-}
-
-.spotlight-time {
-  font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--on-night-soft);
 }
 
 /* A line budget, so a wordy menu can't stretch the ad: six lines of specials at
@@ -360,6 +391,10 @@ body.digest-page {
   line-height: 1.35;
 }
 
+.spotlight-what .type-icon {
+  color: var(--gold);
+}
+
 .spotlight-rows[data-rows='1'] .spotlight-what {
   -webkit-line-clamp: 4;
 }
@@ -370,13 +405,13 @@ body.digest-page {
 
 .spotlight-more {
   font-size: 15px;
-  color: var(--ink-soft);
+  color: var(--on-night-soft);
   margin-top: 8px;
 }
 
 .spotlight-cta {
   font-size: 16px;
-  font-weight: 600;
-  color: var(--teal-dark);
-  margin-top: 10px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-top: 12px;
 }
