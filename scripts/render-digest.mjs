@@ -11,9 +11,9 @@
 //   dist/digest/demo.png     sales preview with sample listings
 //   dist/digest/digest.json  per-day count, image path and alt text — the
 //                            newsletter omits the section when "image" is null
-//   dist/digest/spotlight/<id>.png  one spotlight ad per verified partner with ad
+//   dist/digest/spotlight/<id>.jpg  one spotlight ad per verified partner with ad
 //                            copy, 970 x 500, ready to book into a newsletter ad zone
-//   dist/digest/spotlight-sample.png  the showcase bar's ad (a preview), for the one-pager and rate card
+//   dist/digest/spotlight-sample.jpg  the showcase bar's ad (a preview), for the one-pager and rate card
 //   dist/digest/spotlight.json      per-ad image, alt text and tracked link
 // Fails loud (non-zero exit, deploy stops) on any page error, missing web font
 // or broken image, and on a spotlight whose text doesn't fit or whose photo
@@ -33,6 +33,9 @@ const FONTS = ['Fraunces', 'Public Sans', 'JetBrains Mono'];
 const AD = { width: 970, height: 500 };
 const AD_FONTS = ['Anton', 'Yellowtail', 'Barlow Condensed'];
 const AD_GAP = 12; // px of clear space between any two parts of the ad
+// A photo ad is a JPEG: ~120 KB against 450 as a PNG. At 90 its colored type
+// stays clean (80 starts to mottle it); the day cards stay PNG (flat color, small).
+const AD_QUALITY = 90;
 
 const data = validate(JSON.parse(await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8')));
 
@@ -107,7 +110,7 @@ try {
   const adPage = await open({ viewport: { width: AD.width, height: 700 }, deviceScaleFactor: 1 });
 
   // path: 'digest.html?day=thu' etc. The image is the page's one root element.
-  async function shoot(page, path, file, fonts) {
+  async function shoot(page, path, file, fonts, options = {}) {
     await page.goto(`${base}${path}`, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     if (errors.length) throw new Error(`${path}: ${errors[0].message}`);
@@ -119,7 +122,7 @@ try {
     if (missing.length) throw new Error(`${path}: web font(s) not loaded: ${missing.join(', ')}`);
     const broken = await page.evaluate(() => [...document.images].filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.src));
     if (broken.length) throw new Error(`${path}: image(s) failed to load: ${broken.join(', ')}`);
-    await page.locator('#root > *').screenshot({ path: fileURLToPath(new URL(file, OUT)) });
+    await page.locator('#root > *').screenshot({ path: fileURLToPath(new URL(file, OUT)), ...options });
     console.log(`Wrote dist/digest/${file}`);
   }
 
@@ -128,7 +131,7 @@ try {
     await adPage.evaluate(() => document.fonts.ready);
     const problems = await adPage.evaluate(adProblems, AD_GAP);
     if (problems.length) throw new Error(`${path}: ${problems.join('; ')} — shorten the ad copy (or change the photo) in bars.json`);
-    await shoot(adPage, path, file, AD_FONTS);
+    await shoot(adPage, path, file, AD_FONTS, { quality: AD_QUALITY });
   }
 
   const days = {};
@@ -157,11 +160,11 @@ try {
       console.log(`Skipped spotlight for ${bar.id} — no ad copy`);
       continue;
     }
-    await shootAd(`spotlight.html?bar=${bar.id}`, `spotlight/${bar.id}.png`);
+    await shootAd(`spotlight.html?bar=${bar.id}`, `spotlight/${bar.id}.jpg`);
     spotlights.push({
       id: bar.id,
       name: bar.name,
-      image: `digest/spotlight/${bar.id}.png`,
+      image: `digest/spotlight/${bar.id}.jpg`,
       alt: spotlightAlt(bar),
       link: bar.website ? trackedUrl(bar.website, 'newsletter') : null,
     });
@@ -169,7 +172,7 @@ try {
   // The collateral sample (one-pager, rate card) is The Palms Supper Club, whose
   // owner agreed to be the showcase (2026-10-09): a preview of its real, sourced
   // listing. If it ever leaves bars.json this fails loudly — pick a new showcase.
-  await shootAd('spotlight.html?preview=palms-supper-club&sample', 'spotlight-sample.png');
+  await shootAd('spotlight.html?preview=palms-supper-club&sample', 'spotlight-sample.jpg');
   await writeFile(new URL('spotlight.json', OUT), `${JSON.stringify({ updated: data.updated, spotlights }, null, 2)}\n`);
   console.log(`Wrote dist/digest/spotlight.json (${spotlights.length} ad${spotlights.length === 1 ? '' : 's'})`);
 } finally {

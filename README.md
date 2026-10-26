@@ -213,7 +213,7 @@ newsletter's yellow "Advertisement" chip. `spotlight.html` builds it from the ba
 advertising, agreed at the sale. `scripts/render-digest.mjs` renders it with the
 newsletter card:
 
-- `digest/spotlight/<id>.png` — one per **verified** bar that has `ad` copy, so a sale
+- `digest/spotlight/<id>.jpg` — one per **verified** bar that has `ad` copy, so a sale
   is a bars.json edit, not a code change.
 - `digest/spotlight.json` — per ad: `image`, `alt` (the whole ad, for readers who
   block images) and `link` (the bar's site with `utm_medium=newsletter`; `null` when
@@ -221,7 +221,7 @@ newsletter card:
   "Details on the Happy Hour Finder").
 - `spotlight.html?preview=<id>` — a listed bar's own ad before it's verified, for
   pitches, with a "Sales preview" ribbon; never sent to subscribers. A prospect's
-  preview needs its `photo`, `logo` and `ad` in bars.json. `digest/spotlight-sample.png`
+  preview needs its `photo`, `logo` and `ad` in bars.json. `digest/spotlight-sample.jpg`
   is the showcase bar's preview without the ribbon (`&sample`), used by the one-pager
   and rate card — The Palms Supper Club, whose owner agreed to be the showcase
   (2026-10-09).
@@ -231,12 +231,12 @@ product, and stock photos are out. The render fails the deploy when any part of 
 runs off its edge or comes within 12px of another part (the tilted script line
 included), when a board line doesn't fit, or when the photo is smaller than its
 640 × 500 panel (it would be stretched); the message says what to shorten. Look at the
-PNG before booking it.
+image before booking it.
 
 **Running one.** Bookings (dates, edition) stay offline with the sale, never in
 bars.json. The newsletter already runs date-ranged ads through Broadstreet and shows a
 zone only while it has a placement (`conditional_zone_block` in wpr-newsletter), so
-the spotlight can run the same way: upload the bar's PNG as the creative for the sold
+the spotlight can run the same way: upload the bar's JPEG as the creative for the sold
 dates, with `link` and `alt` from spotlight.json. Broadstreet holds a copy — if the
 bar's specials change mid-run, update its `ad` and re-upload the new image. (A wpr-newsletter block that
 reads spotlight.json directly would need a cache-busting `?v=` on the image URL:
@@ -261,7 +261,7 @@ drinking-game copy out.
 - `public/spotlight-one-pager.html` — Chris's leave-behind for the newsletter
   spotlight: one Letter page (browser → Print → Save as PDF), or send the URL
   (.../spotlight-one-pager.html). Its centerpiece is the ad on a phone in the 5 p.m.
-  edition, using the live `digest/spotlight-sample.png` (stories are drawn as lines, not
+  edition, using the live `digest/spotlight-sample.jpg` (stories are drawn as lines, not
   invented headlines). WPR's wordmark is committed as `public/wpr-wordmark.png`.
   Audience numbers are WPR's published figures (sponsorship page, Jan 2026) — update
   them there first. Same "$––" + DRAFT-ribbon rule as the rate card.

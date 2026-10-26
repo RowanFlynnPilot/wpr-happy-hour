@@ -36,7 +36,7 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   The email side lives in the wpr-newsletter repo (auto-sends; confirm before
   touching it).
 - Newsletter spotlight (the cheap per-send ad): spotlight.html renders one 970×500
-  PNG per verified bar with `ad` copy (dist/digest/spotlight/ + spotlight.json) in
+  JPEG per verified bar with `ad` copy (dist/digest/spotlight/ + spotlight.json) in
   WPR's house ad style (the wpr-ad-creative skill): the bar's own photo and logo,
   copy from its own advertising agreed at the sale, labeled "Advertisement". No
   generic or stock-photo demo ad. The render fails on text that runs off or

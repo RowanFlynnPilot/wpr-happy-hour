@@ -2,7 +2,7 @@
 // house ad style (approved Oct 11, 2026), built at the newsletter ad unit's real
 // size, 970 x 500. Its photo, logo and words come from the bar (bars.json "photo",
 // "logo", "ad"); the button names its site, where the image links.
-// scripts/render-digest.mjs screenshots one PNG per verified bar with ad copy at
+// scripts/render-digest.mjs screenshots one JPEG per verified bar with ad copy at
 // deploy time; WPR books it into a newsletter ad zone for the dates sold.
 //   spotlight.html?bar=<id>        the real ad (verified bars only — throws otherwise)
 //   spotlight.html?preview=<id>    sales preview of a listed bar's ad before it's
