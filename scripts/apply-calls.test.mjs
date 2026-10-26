@@ -76,7 +76,7 @@ const doc = () => ({
   bars: [
     {
       id: 'x-bar', name: 'X Bar', city: 'Wausau', address: '1 Main St, Wausau', website: '', tier: 'partner',
-      verifiedOn: null, photo: null,
+      verifiedOn: null, checked: null, tags: [], note: null, photo: null, logo: null, ad: null,
       specials: [{ days: ['mon'], start: '15:00', end: '18:00', type: 'drinks', items: ['PLACEHOLDER — guess'] }],
     },
   ],
@@ -94,6 +94,13 @@ test('applyCalls: a Verified row replaces placeholders and stamps the listing', 
   assert.deepEqual(bar.specials[0].items, ['$2 off rails']);
   assert.equal(next.updated, '2026-09-30');
   assert.equal(report.applied.length, 1);
+});
+
+test('applyCalls: optional Tags / Note columns land with the call', () => {
+  const { doc: next } = applyCalls(doc(), [row({ 'Tags (final)': 'Patio, game-day', 'Note (final)': 'Not during Packers games' })], '2026-09-30');
+  assert.deepEqual(next.bars[0].tags, ['patio', 'game-day']);
+  assert.equal(next.bars[0].note, 'Not during Packers games');
+  assert.throws(() => applyCalls(doc(), [row({ 'Tags (final)': 'rooftop' })], '2026-09-30'), /"tags"/);
 });
 
 test('applyCalls: re-running the same sheet changes nothing', () => {

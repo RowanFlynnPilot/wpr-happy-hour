@@ -36,6 +36,10 @@ export function fmtTime(hm) {
 
 export const fmtWindow = (special) => `${fmtTime(special.start)}–${fmtTime(special.end)}`;
 
+// For tight columns: no-break spaces, so "5:30 PM" never splits and a window can
+// only wrap at its dash (never "2:30 PM–5:30 / PM")
+export const unbroken = (text) => text.replaceAll(' ', '\u00a0');
+
 // One bar's windows for a day, in time order, each once — drinks and food
 // specials often share a window (3–6)
 export function fmtWindows(specials, sep = ', ') {
@@ -50,16 +54,20 @@ export function specialStatus(special, date) {
   if (!special.days.includes(today)) return null;
   const mins = date.getHours() * 60 + date.getMinutes();
   if (mins < toMinutes(special.start)) return 'later';
-  if (mins < toMinutes(special.end)) return 'now';
+  if (mins < endMinutes(special.end)) return 'now';
   return 'done';
 }
 
+// An end of 23:59 is the data's "midnight" (no cross-midnight windows), so it ends
+// at 24:00: still on at 11:59 PM, and the countdown at 11:30 says 30 min, not 29
+const endMinutes = (hm) => (hm === '23:59' ? 1440 : toMinutes(hm));
+
 export function minutesUntil(hm, date) {
-  return toMinutes(hm) - (date.getHours() * 60 + date.getMinutes());
+  return endMinutes(hm) - (date.getHours() * 60 + date.getMinutes());
 }
 
 // A card shows one header per window: specials sharing days + hours (a drinks
-// and a food special, 11–9:30) merge, items in data order. Type is 'drinks' or
+// and a food special, 11–9:30) merge, items in data order, windows in time order. Type is 'drinks' or
 // 'food' when all agree, else 'both'. placeholder: any item is a PLACEHOLDER.
 export function groupSpecials(specials) {
   const groups = new Map();
@@ -71,7 +79,10 @@ export function groupSpecials(specials) {
       if (g.type !== s.type) g.type = 'both';
     } else groups.set(key, { days: s.days, start: s.start, end: s.end, type: s.type, items: [...s.items] });
   }
-  return [...groups.values()].map((g) => ({ ...g, placeholder: g.items.some(isPlaceholder) }));
+  // Windows in time order — data order put "2:30–5:30 PM" above "11 AM–11 PM"
+  return [...groups.values()]
+    .sort((a, b) => toMinutes(a.start) - toMinutes(b.start) || toMinutes(a.end) - toMinutes(b.end))
+    .map((g) => ({ ...g, placeholder: g.items.some(isPlaceholder) }));
 }
 
 // Research placeholders carry a "PLACEHOLDER — " prefix in the data (a guessed item or
@@ -161,7 +172,10 @@ export function digestSchedule(listed) {
     const windows = [...new Map(specials.map((s) => [`${s.start}|${s.end}`, s])).values()].sort(
       (a, b) => toMinutes(a.start) - toMinutes(b.start) || toMinutes(a.end) - toMinutes(b.end)
     );
-    const [first, ...later] = windows;
+    const [first, ...rest] = windows;
+    // "until X, then Y" only reads right for windows after the first one ends; a
+    // happy hour inside an all-day special doesn't become a misleading "then"
+    const later = rest.filter((w) => toMinutes(w.start) >= toMinutes(first.end));
     let group = groups.find((g) => g.start === first.start);
     if (!group) groups.push((group = { start: first.start, rows: [] }));
     group.rows.push({ bar, end: first.end, later });
@@ -169,21 +183,17 @@ export function digestSchedule(listed) {
   return groups.sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
 }
 
-// Newsletter spotlight: one VERIFIED partner's own small sponsored ad, built from
-// its listing — its week of specials, one row per window, Monday first. Capped
-// (with a line budget per row, in digest.css) so the ad stays small; the rest count as "more".
-export const SPOTLIGHT_MAX_ROWS = 3;
+// Newsletter spotlight: one partner's own ad in WPR's house ad style — its photo,
+// logo and words (bar.ad, written with the bar at the sale from its own
+// advertising), with a button naming where the ad links: the bar's site, or its
+// finder listing when it has none. Real ads are for VERIFIED bars only.
 // { preview: true } is the sales preview (spotlight.html?preview=<id>): a listed
-// bar's ad before it's verified, for collateral and pitches — never sent to
-// subscribers. It shows only the bar's sourced specials; PLACEHOLDER ones are left
-// out rather than shown as fact.
+// bar's ad before it's verified, for collateral and pitches — never sent to subscribers.
 export function spotlightFor(bar, { preview = false } = {}) {
   if (!preview && bar.verifiedOn === null) throw new Error(`spotlight: "${bar.id}" is not verified — unconfirmed specials never go to subscribers`);
-  const specials = preview ? bar.specials.filter((s) => !s.items.some(isPlaceholder)) : bar.specials;
-  if (specials.length === 0) throw new Error(`spotlight preview: "${bar.id}" has no sourced specials to show`);
-  const firstDay = (g) => Math.min(...g.days.map((d) => WEEK_ORDER.indexOf(d)));
-  const rows = groupSpecials(specials).sort((a, b) => firstDay(a) - firstDay(b) || toMinutes(a.start) - toMinutes(b.start));
-  return { rows: rows.slice(0, SPOTLIGHT_MAX_ROWS), more: Math.max(0, rows.length - SPOTLIGHT_MAX_ROWS) };
+  if (bar.ad === null) throw new Error(`spotlight: "${bar.id}" has no ad copy — write its "ad" in bars.json with the bar`);
+  const cta = bar.website ? `Details at ${new URL(bar.website).hostname.replace(/^www\./, '')}` : 'Details on the Happy Hour Finder';
+  return { ...bar.ad, cta };
 }
 
 // Paid outbound links (bar websites, the presenting sponsor). The links carry
@@ -197,4 +207,90 @@ export function trackedUrl(url, medium = 'widget') {
   u.searchParams.set('utm_medium', medium);
   u.searchParams.set('utm_campaign', 'happy-hour');
   return u.href;
+}
+
+// The finder's timetable: a list grouped under one time each — when the happy
+// hour ends (Now: "Until 8 PM") or starts (later and day views: "From 4 PM") —
+// in time order; entries keep their order within a group.
+export const endsAt = ({ specials }) => Math.max(...specials.map((s) => endMinutes(s.end)));
+export const startsAt = ({ specials }) => Math.min(...specials.map((s) => toMinutes(s.start)));
+export function timetable(entries, keyFn) {
+  const groups = new Map();
+  for (const e of entries) {
+    const k = keyFn(e);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(e);
+  }
+  return [...groups.entries()].sort((a, b) => a[0] - b[0]).map(([minutes, list]) => ({ minutes, entries: list }));
+}
+
+// Minutes since midnight → "HH:MM" for fmtTime (1440 is the data's midnight)
+export const hmOf = (m) => (m >= 1440 ? '23:59' : `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`);
+
+// The hero's second line: what the list means right now. Sourced windows only —
+// a PLACEHOLDER time is never stated as fact. '' when there's nothing to say.
+export function heroFinding(pouring, laterToday) {
+  const sourced = (list) => list.filter(({ specials }) => !specials.some((s) => s.items.some(isPlaceholder)));
+  const names = (list) =>
+    list.length <= 2 ? list.map((e) => e.bar.name).join(' and ') : `${list[0].bar.name}, ${list[1].bar.name} and ${list.length - 2} more`;
+  const parts = [];
+  const p = sourced(pouring);
+  if (p.length) {
+    const soonest = Math.min(...p.map(endsAt));
+    parts.push(`First to wrap up: ${names(p.filter((e) => endsAt(e) === soonest))}, at ${unbroken(fmtTime(hmOf(soonest)))}.`);
+  }
+  const l = sourced(laterToday);
+  if (l.length) {
+    const next = Math.min(...l.map(startsAt));
+    parts.push(`Next to start: ${names(l.filter((e) => startsAt(e) === next))}, at ${unbroken(fmtTime(hmOf(next)))}.`);
+  }
+  return parts.join(' ');
+}
+
+// "Add to calendar": a bar's weekly specials as repeating events (RFC 5545), in
+// the reader's local time (floating — no timezone library), sourced specials
+// only: a guessed window never lands in someone's calendar. null if none.
+const ICS_DAY = { sun: 'SU', mon: 'MO', tue: 'TU', wed: 'WE', thu: 'TH', fri: 'FR', sat: 'SA' };
+export function icsFor(bar, date) {
+  const windows = groupSpecials(bar.specials).filter((g) => !g.placeholder);
+  if (!windows.length) return null;
+  const pad = (n) => String(n).padStart(2, '0');
+  const ymd = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+  const at = (hm) => `${hm.replace(':', '')}00`;
+  const esc = (s) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  // Lines over 75 octets fold onto a continuation line (a leading space)
+  const fold = (line) => {
+    const out = [];
+    let rest = line;
+    while (new TextEncoder().encode(rest).length > 74) {
+      let cut = 70;
+      while (new TextEncoder().encode(rest.slice(0, cut)).length > 74) cut--;
+      out.push(rest.slice(0, cut));
+      rest = ` ${rest.slice(cut)}`;
+    }
+    return [...out, rest].join('\r\n');
+  };
+  const stamp = `${date.toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`;
+  const events = windows.flatMap((g, i) => {
+    // The first day on or after today that this window runs
+    let first = null;
+    for (let off = 0; off < 7 && !first; off++) {
+      const d = new Date(date.getFullYear(), date.getMonth(), date.getDate() + off);
+      if (g.days.includes(DAY_KEYS[d.getDay()])) first = d;
+    }
+    return [
+      'BEGIN:VEVENT',
+      `UID:${bar.id}-${i}@happy-hour-finder.wausaupilotandreview.com`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${ymd(first)}T${at(g.start)}`,
+      `DTEND:${ymd(first)}T${at(g.end)}`,
+      `RRULE:FREQ=WEEKLY;BYDAY=${g.days.map((d) => ICS_DAY[d]).join(',')}`,
+      `SUMMARY:${esc(`${bar.name}: ${g.type === 'food' ? 'food special' : 'happy hour'}`)}`,
+      `LOCATION:${esc(`${bar.address}, WI`)}`,
+      `DESCRIPTION:${esc(`${g.items.join(' · ')}\nFrom Wausau Pilot & Review's Happy Hour Finder. Specials can change — check with the bar.`)}`,
+      'END:VEVENT',
+    ];
+  });
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Wausau Pilot & Review//Happy Hour Finder//EN', 'CALSCALE:GREGORIAN', ...events, 'END:VCALENDAR'];
+  return `${lines.map(fold).join('\r\n')}\r\n`;
 }

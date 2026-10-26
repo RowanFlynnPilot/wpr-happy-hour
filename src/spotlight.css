@@ -1,0 +1,220 @@
+/* Newsletter spotlight (spotlight.html) — one partner's ad in WPR's house ad
+   style, approved Oct 11, 2026: the bar's photo on the right under a scrim, its
+   logo on a cream plate, an Anton headline, a Yellowtail script line in the
+   bar's accent color, a chalkboard of the details hung from the top edge, and a
+   button naming its site. Built at the ad unit's real size, 970 x 500; the
+   newsletter shows it at 414 px wide on a computer and 326 on a phone, so no
+   text under 24 px here. Its own type, not the finder's: this is the bar's ad.
+   scripts/render-digest.mjs fails the deploy on text that overflows or collides. */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/anton-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Yellowtail';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/yellowtail-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('/fonts/barlow-condensed-700-latin.woff2') format('woff2');
+}
+
+body.spotlight-page {
+  background: #fff;
+}
+
+.spotlight {
+  width: 970px;
+  background: #fff;
+}
+
+/* Previews only: says it's a sales preview, so a forwarded image explains itself */
+.spotlight-ribbon {
+  background: var(--amber-tint);
+  color: var(--amber);
+  border: 1px dashed var(--amber);
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+/* --ink and --accent are set on the element from bars.json (src/spotlight.jsx) */
+.ad {
+  position: relative;
+  width: 970px;
+  height: 500px;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
+}
+
+/* The bar's photo, never stretched: the render fails on one smaller than this box */
+.ad-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 640px;
+  height: 500px;
+  object-fit: cover;
+  object-position: 50% 78%; /* food photos sit low in the frame: favor the plate */
+  filter: saturate(1.15) contrast(1.05);
+}
+
+/* Dark from the left, so white type reads and the photo's subject stays bright */
+.ad-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      var(--ink) 0%,
+      color-mix(in srgb, var(--ink) 97%, transparent) 33%,
+      color-mix(in srgb, var(--ink) 72%, transparent) 46%,
+      transparent 66%
+    ),
+    linear-gradient(0deg, color-mix(in srgb, var(--ink) 60%, transparent) 0%, transparent 32%);
+}
+
+/* Any logo, one color or many, reads on a cream plate */
+.ad-plate {
+  position: absolute;
+  left: 36px;
+  top: 22px;
+  width: 178px;
+  height: 104px;
+  border-radius: 12px;
+  background: #fbf8ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.ad-plate img {
+  max-width: 158px;
+  max-height: 86px;
+}
+
+/* Text boxes are sized to their letters (Anton's capitals here; Yellowtail's
+   ascenders to descenders below), so the render's collision check measures ink */
+.ad-headline {
+  position: absolute;
+  left: 34px;
+  top: 142px;
+  white-space: nowrap;
+  font: 400 140px/0.86 'Anton', Impact, sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ad-line {
+  position: absolute;
+  left: 150px;
+  top: 321px;
+  padding-bottom: 15px;
+  white-space: nowrap;
+  font: 400 64px/53px 'Yellowtail', cursive;
+  color: var(--accent);
+  transform: rotate(-5deg);
+  transform-origin: left center; /* the left end stays put, however long the line */
+  text-shadow: 0 3px 0 color-mix(in srgb, var(--ink) 60%, transparent);
+}
+
+.ad-cta {
+  position: absolute;
+  left: 36px;
+  bottom: 32px;
+  white-space: nowrap;
+  background: var(--accent);
+  color: var(--ink);
+  font: 700 34px/1 'Barlow Condensed', Arial, sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 14px 22px 15px;
+  border-radius: 6px;
+}
+
+/* The supporting piece: a supper-club chalkboard, hung from the top edge */
+.ad-board {
+  position: absolute;
+  right: 26px;
+  top: 0;
+  width: 250px;
+  padding-top: 30px;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
+}
+
+.ad-rope {
+  position: absolute;
+  top: 0;
+  left: 40px;
+  width: 4px;
+  height: 46px;
+  background: #e4cfa4;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.ad-rope + .ad-rope {
+  left: auto;
+  right: 40px;
+}
+
+.ad-slate {
+  position: relative;
+  border: 9px solid #7d4d22;
+  border-radius: 8px;
+  background: #26302d;
+  padding: 12px 14px 14px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.ad-slate p {
+  color: #f4f0e4;
+  font: 700 26px/1.15 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden; /* so the render can see a line that doesn't fit */
+}
+
+.ad-slate .ad-when {
+  color: var(--accent);
+  font-size: 28px;
+}
+
+.ad-slate hr {
+  border: 0;
+  border-top: 2px dashed rgba(244, 240, 228, 0.35);
+  margin: 8px 6px;
+}
+
+/* The disclosure, baked into the image so it travels wherever the ad runs: the
+   newsletter's sponsored chip (#FED850, dark text). "Advertisement" is the label
+   the FTC's native-ad guide names as clearly understood. */
+.ad-label {
+  position: absolute;
+  right: 26px;
+  bottom: 45px; /* centered on the button */
+  font: 700 24px/1 'Barlow Condensed', Arial, sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  background: #fed850;
+  padding: 6px 10px 7px;
+  border-radius: 4px;
+}

@@ -24,6 +24,8 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   external scripts.
 - Time logic: start inclusive, end exclusive, no cross-midnight windows,
   visitor's local browser time. Do not introduce timezone libraries.
+- Finder layout is a timetable (rows grouped "Until X" / "From X" with a time track),
+  adopted 2026-10-26 after the competitive review.
 - Single component file (App.jsx) is intentional at this size. Split only
   when a file genuinely has multiple responsibilities. Time/listing logic lives
   in src/schedule.js because three consumers share it (App.jsx, the newsletter
@@ -33,12 +35,20 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   unconfirmed reaches subscribers. No cron: the card changes only with bars.json.
   The email side lives in the wpr-newsletter repo (auto-sends; confirm before
   touching it).
-- Newsletter spotlight (the cheap per-send ad): spotlight.html renders one PNG per
-  verified bar from its listing (dist/digest/spotlight/ + spotlight.json), labeled
-  "Advertisement". Bookings stay offline (Broadstreet / the sale) — no ad dates or
-  booking fields in bars.json. Sales previews (`?preview=<id>`) show a listed bar's
-  sourced specials only and are never sent; the collateral sample is The Palms Supper
-  Club (owner-approved showcase, featured with its own photo).
+- Newsletter spotlight (the cheap per-send ad): spotlight.html renders one 970×500
+  PNG per verified bar with `ad` copy (dist/digest/spotlight/ + spotlight.json) in
+  WPR's house ad style (the wpr-ad-creative skill): the bar's own photo and logo,
+  copy from its own advertising agreed at the sale, labeled "Advertisement". No
+  generic or stock-photo demo ad. The render fails on text that runs off or
+  collides, or a photo it would stretch — fix the copy, don't loosen the check.
+  Bookings stay offline (Broadstreet / the sale) — no ad dates or booking fields in
+  bars.json. Sales previews (`?preview=<id>`) are never sent; the collateral sample
+  is The Palms Supper Club (owner-approved showcase, featured with its own photo).
+- Every listing shows where its specials came from and when (`verifiedOn`, or
+  `checked` for sourced-but-unverified). `checked` is set only after actually
+  re-reading the bar's own site/posts. Tags and notes come from the call, never guessed.
+- Fonts and photos are self-hosted (public/fonts, public/photos): no Google Fonts or
+  other third-party requests at load.
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
 - Verification lands through `npm run calls -- <call-sheet.csv> [--write]`
   (scripts/apply-calls.mjs): Chris's "Verified" rows set specials, tier and
@@ -50,7 +60,10 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Surgical changes only — minimal diffs, fix root causes not symptoms.
 - No overengineering: no state libraries, no routing, no CSS frameworks.
 - Design system is fixed: teal #3A867C, cream #F6F2E9, Fraunces display,
-  Public Sans body, JetBrains Mono for times/prices/data. Tokens in index.css.
+  Public Sans body, JetBrains Mono for times/prices/data. Tokens in index.css; the
+  evening tokens (night, gold) carry featured cards. The spotlight ad is the bar's
+  ad, not the finder's, so it uses the house ad type (Anton, Yellowtail, Barlow
+  Condensed) in spotlight.css.
 
 ## Environment
 Windows / PowerShell 5.1. Use `;` for command chaining, `python -m pip` if

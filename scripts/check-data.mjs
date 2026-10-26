@@ -15,6 +15,7 @@ const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
 const future = [
   ...(json.updated > today ? [`"updated" ${json.updated}`] : []),
   ...json.bars.filter((b) => b.verifiedOn !== null && b.verifiedOn > today).map((b) => `${b.id} verifiedOn ${b.verifiedOn}`),
+  ...json.bars.filter((b) => b.checked !== null && b.checked.on > today).map((b) => `${b.id} checked.on ${b.checked.on}`),
 ];
 if (future.length) {
   throw new Error(`bars.json: date(s) in the future (today is ${today}): ${future.join(', ')}`);
@@ -34,4 +35,11 @@ const STALE_DAYS = 90;
 const stale = verified.filter((b) => (Date.now() - new Date(`${b.verifiedOn}T00:00:00`)) / 86_400_000 > STALE_DAYS);
 if (stale.length) {
   console.log(`WARN — verified over ${STALE_DAYS} days ago (renewal call due): ${stale.map((b) => b.id).join(', ')}`);
+}
+// Readers see these as "may have changed" — recheck the bar's own site, or call
+const staleChecks = json.bars.filter(
+  (b) => b.verifiedOn === null && b.checked !== null && (Date.now() - new Date(`${b.checked.on}T00:00:00`)) / 86_400_000 > STALE_DAYS
+);
+if (staleChecks.length) {
+  console.log(`WARN — sources checked over ${STALE_DAYS} days ago (recheck): ${staleChecks.map((b) => b.id).join(', ')}`);
 }

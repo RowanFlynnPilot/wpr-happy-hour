@@ -142,6 +142,11 @@ export function parseCsv(text) {
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+// "Tags (final)" cell: comma-separated, e.g. "patio, game-day" (validate() checks the names)
+export function parseTags(cell) {
+  return [...new Set(cell.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))];
+}
+
 // Pure: returns a new document plus a report. Throws (naming the bar) on any bad row.
 export function applyCalls(doc, rows, today) {
   const next = structuredClone(doc);
@@ -163,14 +168,18 @@ export function applyCalls(doc, rows, today) {
       const verifiedOn = parseCallDate(row['Call date']);
       if (verifiedOn > today) throw new Error(`call date ${verifiedOn} is in the future`);
       const specials = parseSpecials(row['Verified specials (final)']);
-      const after = { ...bar, tier, verifiedOn, specials, photo: tier === 'featured' ? bar.photo : null };
+      // The photo stays at any tier: the finder shows it on featured listings, and
+      // the spotlight ad is built on it
+      const after = { ...bar, tier, verifiedOn, specials };
+      // Optional columns, collected on the same call: tags and a restriction note
+      if ('Tags (final)' in row) after.tags = parseTags(row['Tags (final)']);
+      if ('Note (final)' in row) after.note = row['Note (final)'] || null;
       if (same(after, bar)) {
         report.unchanged.push(id);
         continue;
       }
       const notes = [];
       if (bar.tier !== tier) notes.push(`tier ${bar.tier} → ${tier}`);
-      if (bar.photo && !after.photo) notes.push('photo dropped (featured perk)');
       Object.assign(bar, after);
       report.applied.push({ id, verifiedOn, tier, specials, notes });
     } catch (e) {

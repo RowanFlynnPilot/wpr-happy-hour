@@ -13,7 +13,12 @@ const bar = (over = {}) => ({
   website: '',
   tier: 'partner',
   verifiedOn: null,
+  checked: { on: '2026-09-26', via: 'website' },
+  tags: [],
+  note: null,
   photo: null,
+  logo: null,
+  ad: null,
   specials: [special()],
   ...over,
 });
@@ -57,10 +62,47 @@ test('website: "" or a full http(s) URL', () => {
   rejects(doc([bar({ website: 'javascript:alert(1)' })]), /"website"/);
 });
 
-test('photo: https only, featured tier only', () => {
-  rejects(doc([bar({ tier: 'featured', photo: 'http://example.com/a.jpg' })]), /"photo" must be a full https/);
-  rejects(doc([bar({ photo: 'https://example.com/a.jpg' })]), /featured-tier perk/);
-  assert.doesNotThrow(() => validate(doc([bar({ tier: 'featured', photo: 'https://example.com/a.jpg' })])));
+test('photo and logo: https or self-hosted, any tier', () => {
+  rejects(doc([bar({ photo: 'http://example.com/a.jpg' })]), /"photo" must be null, a full https/);
+  rejects(doc([bar({ photo: 'photos/a.gif' })]), /"photo"/);
+  rejects(doc([bar({ photo: 'photosXa.jpg' })]), /"photo"/);
+  assert.doesNotThrow(() => validate(doc([bar({ photo: 'https://example.com/a.jpg' })])));
+  assert.doesNotThrow(() => validate(doc([bar({ photo: 'photos/test-bar.jpg', logo: 'logos/test-bar.png' })])));
+  rejects(doc([bar({ logo: 'photos/test-bar.png' })]), /"logo"/);
+});
+
+test('checked: how and when a sourced listing was checked', () => {
+  rejects(doc([bar({ checked: null })]), /sourced specials but no "checked"/);
+  rejects(doc([bar({ checked: { on: '2026-09-26', via: 'yelp' } })]), /"checked.via"/);
+  rejects(doc([bar({ checked: { on: 'soon', via: 'website' } })]), /"checked.on"/);
+  assert.doesNotThrow(() => validate(doc([bar({ checked: null, specials: [special({ items: ['PLACEHOLDER — x'] })] })])));
+  assert.doesNotThrow(() => validate(doc([bar({ checked: null, verifiedOn: '2026-09-01' })])));
+});
+
+test('tags and note', () => {
+  assert.doesNotThrow(() => validate(doc([bar({ tags: ['patio', 'game-day'], note: 'Not during Packers games' })])));
+  rejects(doc([bar({ tags: ['rooftop'] })]), /"tags"/);
+  rejects(doc([bar({ tags: ['patio', 'patio'] })]), /"tags"/);
+  rejects(doc([bar({ note: '' })]), /"note"/);
+});
+
+test('ad: copy with a photo and logo, within the ad sizes', () => {
+  const ad = { headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
+  const art = { photo: 'photos/test-bar.jpg', logo: 'logos/test-bar.png' };
+  assert.doesNotThrow(() => validate(doc([bar({ ...art, ad })])));
+  rejects(doc([bar({ ad })]), /no photo and logo/);
+  rejects(doc([bar({ ...art, ad: { ...ad, headline: 'A headline far too long' } })]), /"ad.headline"/);
+  rejects(doc([bar({ ...art, ad: { ...ad, board: ['1', '2', '3', '4', '5'] } })]), /"ad.board"/);
+  rejects(doc([bar({ ...art, ad: { ...ad, price: '$5' } })]), /unknown field/);
+});
+
+test('ad.accent: a light #rrggbb that reads on the ad ink', () => {
+  const art = { photo: 'photos/test-bar.jpg', logo: 'logos/test-bar.png' };
+  const ad = (accent) => ({ headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent });
+  assert.doesNotThrow(() => validate(doc([bar({ ...art, ad: ad('#fcd150') })])));
+  rejects(doc([bar({ ...art, ad: ad('#3a867c') })]), /"ad.accent"/); // the finder's teal: too dark on the ink
+  rejects(doc([bar({ ...art, ad: ad('#FCD150') })]), /"ad.accent"/);
+  rejects(doc([bar({ ...art, ad: ad('gold') })]), /"ad.accent"/);
 });
 
 test('sponsor: null or { name, url } with url "" or http(s)', () => {

@@ -5,10 +5,15 @@ import assert from 'node:assert/strict';
 import {
   DIGEST_MAX_FEATURED,
   DIGEST_MAX_LISTED,
-  SPOTLIGHT_MAX_ROWS,
   dayListings,
   digestFor,
   digestSchedule,
+  endsAt,
+  heroFinding,
+  hmOf,
+  icsFor,
+  startsAt,
+  timetable,
   fmtDays,
   fmtTime,
   fmtWindows,
@@ -47,6 +52,20 @@ test('fmtTime renders 12-hour times', () => {
   assert.equal(fmtTime('15:30'), '3:30 PM');
   assert.equal(fmtTime('23:30'), '11:30 PM');
   assert.equal(fmtTime('23:59'), 'midnight'); // the data's cap for past-midnight windows
+});
+
+test('groupSpecials sorts windows by start, then end', () => {
+  const groups = groupSpecials([
+    special({ start: '14:30', end: '17:30', items: ['Happy hour'] }),
+    special({ start: '11:00', end: '23:00', items: ['All day'] }),
+  ]);
+  assert.deepEqual(groups.map((g) => g.start), ['11:00', '14:30']);
+});
+
+test('a window ending 23:59 runs to midnight', () => {
+  const late = special({ start: '20:00', end: '23:59' });
+  assert.equal(specialStatus(late, thu(23, 59)), 'now');
+  assert.equal(minutesUntil('23:59', thu(23, 30)), 30);
 });
 
 test('groupSpecials merges same days + hours, keeps order, derives type', () => {
@@ -174,44 +193,22 @@ test('digestSchedule groups by first start, in time order, with ends and later w
   ];
   const groups = digestSchedule(listed);
   assert.deepEqual(groups.map((g) => g.start), ['15:00', '16:00']);
+  // a window inside the first one is not a "then"
+  const nested = digestSchedule([{ bar: bar('all-day'), specials: [special({ start: '11:00', end: '23:59' }), special({ start: '14:30', end: '17:30' })] }]);
+  assert.equal(nested[0].rows[0].later.length, 0);
   assert.deepEqual(groups[0].rows.map((r) => [r.bar.id, r.end, r.later.length]), [['a', '17:00', 0], ['b', '18:00', 1]]);
   assert.equal(groups[0].rows[1].later[0].start, '20:00');
   assert.equal(groups[1].rows[0].bar.id, 'feat-late');
 });
 
-test('spotlightFor: verified only, one row per window, Monday first, capped', () => {
-  const v = { verifiedOn: '2026-09-01' };
-  assert.throws(() => spotlightFor(bar('unverified')), /not verified/);
-  const { rows, more } = spotlightFor(
-    bar('busy', {
-      ...v,
-      specials: [
-        special({ days: ['fri'], start: '16:00', end: '21:00', type: 'food', items: ['Fish fry'] }),
-        special({ days: ['mon', 'tue', 'wed', 'thu', 'fri'], start: '15:00', end: '18:00', items: ['$2 off rails'] }),
-        special({ days: ['mon', 'tue', 'wed', 'thu', 'fri'], start: '15:00', end: '18:00', type: 'food', items: ['$6 apps'] }),
-        special({ days: ['sun'], start: '11:00', end: '14:00' }),
-        special({ days: ['sat'], start: '11:00', end: '14:00' }),
-        special({ days: ['tue'], start: '18:00', end: '21:00' }),
-      ],
-    })
-  );
-  assert.equal(rows.length, SPOTLIGHT_MAX_ROWS);
-  assert.deepEqual(rows[0].items, ['$2 off rails', '$6 apps']); // merged window
-  assert.deepEqual(rows.map((r) => r.days[0]), ['mon', 'tue', 'fri']);
-  assert.equal(more, 2);
-});
-
-test('spotlightFor preview: unverified allowed, sourced specials only, none fails', () => {
-  const b = bar('listed', {
-    specials: [
-      special({ days: ['wed'], items: ['PLACEHOLDER — time being confirmed: Wine down'] }),
-      special({ days: ['sat'], start: '16:00', end: '21:00', type: 'food', items: ['Prime rib'] }),
-    ],
-  });
-  assert.throws(() => spotlightFor(b), /not verified/);
-  const { rows } = spotlightFor(b, { preview: true });
-  assert.deepEqual(rows.map((r) => r.days[0]), ['sat']);
-  assert.throws(() => spotlightFor(bar('guesses', { specials: [special({ items: ['PLACEHOLDER — x'] })] }), { preview: true }), /no sourced/);
+test('spotlightFor: the ad copy and a button to the bar, verified only unless a preview', () => {
+  const ad = { headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
+  const listed = bar('listed', { website: 'https://www.example.com/menu', ad });
+  assert.throws(() => spotlightFor(listed), /not verified/);
+  assert.deepEqual(spotlightFor(listed, { preview: true }), { ...ad, cta: 'Details at example.com' });
+  assert.equal(spotlightFor({ ...listed, verifiedOn: '2026-09-01' }).headline, 'Prime Rib');
+  assert.equal(spotlightFor({ ...listed, website: '' }, { preview: true }).cta, 'Details on the Happy Hour Finder');
+  assert.throws(() => spotlightFor(bar('no-copy', { verifiedOn: '2026-09-01', ad: null })), /no ad copy/);
 });
 
 test('trackedUrl adds UTM tags and keeps the existing query', () => {
@@ -221,4 +218,46 @@ test('trackedUrl adds UTM tags and keeps the existing query', () => {
   assert.equal(u.searchParams.get('utm_medium'), 'widget');
   assert.equal(u.searchParams.get('utm_campaign'), 'happy-hour');
   assert.equal(new URL(trackedUrl('https://example.com/', 'newsletter')).searchParams.get('utm_medium'), 'newsletter');
+});
+
+test('timetable groups by a time key, in time order', () => {
+  const entries = [
+    { bar: bar('late'), specials: [special({ start: '16:00', end: '21:00' })] },
+    { bar: bar('early'), specials: [special({ start: '15:00', end: '18:00' })] },
+    { bar: bar('also-early'), specials: [special({ start: '15:00', end: '23:59' })] },
+  ];
+  const byStart = timetable(entries, startsAt);
+  assert.deepEqual(byStart.map((g) => [g.minutes, g.entries.map((e) => e.bar.id)]), [[900, ['early', 'also-early']], [960, ['late']]]);
+  assert.equal(endsAt(entries[2]), 1440); // 23:59 is midnight
+  assert.equal(hmOf(1440), '23:59');
+  assert.equal(hmOf(1230), '20:30');
+});
+
+test('heroFinding names the soonest to end and the next to start, sourced only', () => {
+  const pouring = [
+    { bar: bar('a', { name: 'A' }), specials: [special({ end: '20:00' })] },
+    { bar: bar('guess', { name: 'Guess' }), specials: [special({ end: '19:00', items: ['PLACEHOLDER — x'] })] },
+  ];
+  const later = [{ bar: bar('b', { name: 'B' }), specials: [special({ start: '21:00', end: '23:00' })] }];
+  assert.equal(heroFinding(pouring, later), 'First to wrap up: A, at 8\u00a0PM. Next to start: B, at 9\u00a0PM.');
+  assert.equal(heroFinding([], []), '');
+});
+
+test('icsFor: weekly repeating events for sourced specials, local time', () => {
+  const b = bar('palms', {
+    name: 'The Palms',
+    address: '1 Main St, Weston',
+    specials: [
+      special({ days: ['fri', 'sat'], start: '16:00', end: '21:00', type: 'food', items: ['Fish, prime rib; more'] }),
+      special({ days: ['wed'], items: ['PLACEHOLDER — x'] }),
+    ],
+  });
+  const ics = icsFor(b, thu(12)); // Thursday Sep 24, 2026
+  assert.match(ics, /^BEGIN:VCALENDAR\r\n/);
+  assert.match(ics, /DTSTART:20260925T160000\r\n/); // the next Friday, floating local time
+  assert.match(ics, /RRULE:FREQ=WEEKLY;BYDAY=FR,SA\r\n/);
+  assert.match(ics, /DESCRIPTION:Fish\\, prime rib\\; more/);
+  assert.equal((ics.match(/BEGIN:VEVENT/g) || []).length, 1); // the guessed Wednesday is left out
+  assert.ok(ics.split('\r\n').every((l) => new TextEncoder().encode(l).length <= 75));
+  assert.equal(icsFor(bar('guesses', { specials: [special({ items: ['PLACEHOLDER — x'] })] }), thu(12)), null);
 });

@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-09",
+  "updated": "2026-10-26",
   "sponsor": null,
   "bars": [
     {
@@ -10,7 +10,12 @@
       "website": "https://farawaywausau.com/",
       "tier": "featured",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -38,7 +43,12 @@
       "website": "https://redeyebrewing.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -63,7 +73,12 @@
       "website": "https://bullfallsbrewingco.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -87,7 +102,15 @@
       "website": "http://www.sconnis.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-09-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -124,7 +147,12 @@
       "website": "https://westonlanes.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -150,7 +178,15 @@
       "website": "https://milwaukeeburgercompany.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -178,7 +214,12 @@
       "website": "https://intermissionwausau.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -202,7 +243,15 @@
       "website": "https://www.play-wow.net/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": "Happy hour is dine-in only",
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -230,7 +279,15 @@
       "website": "https://wausaumine.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -342,7 +399,15 @@
       "website": "https://richards-restaurant.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -398,7 +463,8 @@
           "end": "21:00",
           "type": "food",
           "items": [
-            "Cut-to-order prime rib"
+            "Cut-to-order prime rib with soup, salad bar & side",
+            "Prime rib buffet (Labor Day through Memorial Day)"
           ]
         }
       ]
@@ -411,7 +477,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -436,18 +507,26 @@
       "website": "https://www.olivasgullivers.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
             "fri"
           ],
-          "start": "15:00",
-          "end": "20:30",
+          "start": "11:00",
+          "end": "21:00",
           "type": "food",
           "items": [
-            "Beer-battered haddock — 1 pc $10.50 · 2 pc $12 · 3 pc $14 · 4 pc $16",
-            "Baked fish 2–4 pc $12–$16 · pan-fried haddock $12–$16 · battered shrimp $17"
+            "Beer-battered haddock — 1 pc $10.50 · 2 pc $12 · 3 pc $14.50 · 4 pc $17",
+            "Baked fish 2–4 pc $12–$17 · pan-fried haddock $12.50–$17 · battered shrimp $17"
           ]
         },
         {
@@ -458,7 +537,7 @@
           "end": "20:30",
           "type": "food",
           "items": [
-            "Prime rib — 12 oz $30 · 16 oz $34 · 20 oz $39 · 28 oz $48"
+            "Prime rib — 12 oz $30 · 16 oz $35 · 20 oz $40 · 28 oz $52"
           ]
         },
         {
@@ -482,7 +561,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -506,7 +590,15 @@
       "website": "https://www.meetatthebar.com/wausau.html",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -653,7 +745,25 @@
       "website": "https://thepalmswausau.com/",
       "tier": "featured",
       "verifiedOn": null,
-      "photo": "https://thepalmswausau.com/wp-content/uploads/2023/07/prime-rib-shrooms.jpeg",
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
+      "photo": "photos/palms-supper-club.jpg",
+      "logo": "logos/palms-supper-club.png",
+      "ad": {
+        "headline": "Prime Rib",
+        "line": "Saturdays at The Palms",
+        "board": [
+          "From 4 PM",
+          "12 oz Queen $42",
+          "15 oz King $48",
+          "Until sold out"
+        ],
+        "accent": "#c9e265"
+      },
       "specials": [
         {
           "days": [
@@ -698,7 +808,15 @@
       "website": "https://hoehnshuddlebarandgrill.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-09-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -721,7 +839,12 @@
       "website": "https://uncommonpints.ourmenu.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -748,7 +871,12 @@
       "website": "https://arrowsportsclubweston.weebly.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -775,7 +903,15 @@
       "website": "https://velveteenplum.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -798,7 +934,15 @@
       "website": "https://nevermoreonthird.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -821,7 +965,12 @@
       "website": "https://timekeeperdistillery.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -846,7 +995,12 @@
       "website": "https://juliettcocktails.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -871,7 +1025,12 @@
       "website": "https://www.limerickswausau.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -897,7 +1056,15 @@
       "website": "https://www.thegaragewausau.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -933,7 +1100,15 @@
       "website": "https://www.brewsbrothersweston.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -960,7 +1135,12 @@
       "website": "https://trail-side-bar-and-grill.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -985,7 +1165,12 @@
       "website": "https://emeraldnightclub.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1009,7 +1194,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1036,7 +1226,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1063,7 +1258,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1100,7 +1300,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1124,7 +1329,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1150,7 +1360,12 @@
       "website": "https://mosineebrewing.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1175,7 +1390,12 @@
       "website": "https://thepinewood.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1198,7 +1418,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1223,7 +1448,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1250,7 +1480,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1277,7 +1512,15 @@
       "website": "https://thecountryaire.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1356,7 +1599,15 @@
       "website": "https://themillyardwi.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-09-26",
+        "via": "facebook"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1404,7 +1655,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1441,7 +1697,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1464,7 +1725,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1498,7 +1764,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1521,7 +1792,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1544,7 +1820,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1567,7 +1848,15 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-09-26",
+        "via": "facebook"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1623,7 +1912,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1660,7 +1954,15 @@
       "website": "https://merrillballyhoos.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1719,7 +2021,12 @@
       "website": "https://lesandjims.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1746,7 +2053,12 @@
       "website": "https://www.pub1638.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1769,7 +2081,12 @@
       "website": "https://salvospizzeriaandpub.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1794,7 +2111,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1817,7 +2139,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1840,7 +2167,12 @@
       "website": "https://www.oasisarcadewausau.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1865,7 +2197,12 @@
       "website": "https://venado.us/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1891,7 +2228,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1918,7 +2260,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1955,7 +2302,12 @@
       "website": "http://burksbar.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -1982,7 +2334,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2019,7 +2376,15 @@
       "website": "https://www.theloadingzone.biz/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": "Prices listed are cash prices",
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2097,7 +2462,15 @@
       "website": "https://knowltonhouse.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2120,7 +2493,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2147,7 +2525,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2174,7 +2557,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2201,7 +2589,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2228,7 +2621,12 @@
       "website": "https://marathonsportscenter.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2251,7 +2649,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2278,7 +2681,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2315,7 +2723,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2342,7 +2755,12 @@
       "website": "",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": null,
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2369,7 +2787,15 @@
       "website": "http://www.vino-latte.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [
@@ -2396,7 +2822,15 @@
       "website": "https://hogcreekbarandgrill.com/",
       "tier": "partner",
       "verifiedOn": null,
+      "checked": {
+        "on": "2026-10-26",
+        "via": "website"
+      },
+      "tags": [],
+      "note": null,
       "photo": null,
+      "logo": null,
+      "ad": null,
       "specials": [
         {
           "days": [

@@ -13,8 +13,19 @@ const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 // info NEVER goes in bars.json" (a "phone" key fails) and catches typos.
 const TOP_KEYS = ['updated', 'sponsor', 'bars'];
 const SPONSOR_KEYS = ['name', 'url'];
-const BAR_KEYS = ['id', 'name', 'city', 'address', 'website', 'tier', 'verifiedOn', 'photo', 'specials'];
+const BAR_KEYS = ['id', 'name', 'city', 'address', 'website', 'tier', 'verifiedOn', 'checked', 'tags', 'note', 'photo', 'logo', 'ad', 'specials'];
 const SPECIAL_KEYS = ['days', 'start', 'end', 'type', 'items'];
+const CHECKED_KEYS = ['on', 'via'];
+const AD_KEYS = ['headline', 'line', 'board', 'accent'];
+// The spotlight ad's dark ink: its scrim behind white type, and the button text
+// on the bar's accent color (src/spotlight.jsx sets it on the ad)
+export const AD_INK = '#0f2421';
+
+// How an unverified listing's specials were last checked against the bar's own
+// advertising — shown on every row, so a reader can see how fresh it is
+export const CHECKED_VIA = ['website', 'facebook', 'instagram'];
+// Filterable tags. Chris collects them on the verification call; never guessed.
+export const TAGS = { patio: 'Patio', 'game-day': 'Packers game day', pool: 'Pool tables', darts: 'Darts' };
 
 export function toMinutes(hm) {
   const [h, m] = hm.split(':').map(Number);
@@ -39,6 +50,13 @@ function isUrl(value, protocols) {
   }
 }
 
+// A photo or logo: a full https:// URL, or a file this site serves
+// (public/photos/, public/logos/) — self-hosted means a bar's site going down
+// can't break the finder or stop a deploy
+function isAsset(value, dir) {
+  return isUrl(value, ['https:']) || new RegExp(`^${dir}/[a-z0-9-]+\\.(jpg|png|webp)$`).test(value);
+}
+
 function checkKeys(obj, allowed, where) {
   const unknown = Object.keys(obj).filter((k) => !allowed.includes(k));
   if (unknown.length) {
@@ -49,6 +67,19 @@ function checkKeys(obj, allowed, where) {
 }
 
 const nonEmpty = (v) => typeof v === 'string' && v.trim() !== '';
+
+// WCAG contrast ratio of two #rrggbb colors
+function contrast(a, b) {
+  const lum = (hex) => {
+    const [r, g, bl] = [1, 3, 5].map((i) => {
+      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
 
 export function validate(json) {
   checkKeys(json, TOP_KEYS, 'top level');
@@ -92,12 +123,46 @@ export function validate(json) {
     if (typeof bar.website !== 'string' || (bar.website !== '' && !isUrl(bar.website, ['https:', 'http:']))) {
       throw new Error(`bars.json: bar "${bar.id}" "website" must be "" (until verified) or a full http(s):// URL`);
     }
-    // https only: an http image on the https page is mixed content
-    if (bar.photo !== null && !isUrl(bar.photo, ['https:'])) {
-      throw new Error(`bars.json: bar "${bar.id}" "photo" must be a full https:// URL or null`);
+    // https only (an http image on the https page is mixed content), or self-hosted.
+    // Any tier may have one — the spotlight ad uses it — but the finder shows it on
+    // featured listings only (the featured perk).
+    if (bar.photo !== null && !isAsset(bar.photo, 'photos')) {
+      throw new Error(`bars.json: bar "${bar.id}" "photo" must be null, a full https:// URL, or photos/<name>.jpg|png|webp`);
     }
-    if (bar.tier !== 'featured' && bar.photo !== null) {
-      throw new Error(`bars.json: bar "${bar.id}" has a photo but tier "${bar.tier}" — photos are a featured-tier perk`);
+    if (bar.logo !== null && !isAsset(bar.logo, 'logos')) {
+      throw new Error(`bars.json: bar "${bar.id}" "logo" must be null, a full https:// URL, or logos/<name>.png|jpg|webp`);
+    }
+    if (bar.checked !== null) {
+      if (typeof bar.checked !== 'object') throw new Error(`bars.json: bar "${bar.id}" "checked" must be null or { "on", "via" }`);
+      checkKeys(bar.checked, CHECKED_KEYS, `bar "${bar.id}" checked`);
+      if (!isDate(bar.checked.on)) throw new Error(`bars.json: bar "${bar.id}" "checked.on" must be a real YYYY-MM-DD date`);
+      if (!CHECKED_VIA.includes(bar.checked.via)) {
+        throw new Error(`bars.json: bar "${bar.id}" "checked.via" must be one of ${CHECKED_VIA.join(', ')}`);
+      }
+    }
+    if (!Array.isArray(bar.tags) || bar.tags.some((t) => !(t in TAGS)) || new Set(bar.tags).size !== bar.tags.length) {
+      throw new Error(`bars.json: bar "${bar.id}" "tags" must be a list of distinct tags from: ${Object.keys(TAGS).join(', ')}`);
+    }
+    if (bar.note !== null && (!nonEmpty(bar.note) || bar.note.length > 120)) {
+      throw new Error(`bars.json: bar "${bar.id}" "note" must be null or a short line (≤ 120 characters), e.g. "Not during Packers games"`);
+    }
+    // The spotlight ad's copy, written with the bar at the sale (every word from its
+    // own advertising). A house-style ad is built on the bar's photo and logo. The
+    // lengths are a first check; the render (scripts/render-digest.mjs) fails on
+    // any text that doesn't fit.
+    if (bar.ad !== null) {
+      if (typeof bar.ad !== 'object') throw new Error(`bars.json: bar "${bar.id}" "ad" must be null or { "headline", "line", "board", "accent" }`);
+      checkKeys(bar.ad, AD_KEYS, `bar "${bar.id}" ad`);
+      if (bar.photo === null || bar.logo === null) throw new Error(`bars.json: bar "${bar.id}" has an "ad" but no photo and logo — the spotlight is built on both`);
+      if (!nonEmpty(bar.ad.headline) || bar.ad.headline.length > 12) throw new Error(`bars.json: bar "${bar.id}" "ad.headline" must be 1–12 characters`);
+      if (!nonEmpty(bar.ad.line) || bar.ad.line.length > 26) throw new Error(`bars.json: bar "${bar.id}" "ad.line" must be 1–26 characters`);
+      if (!Array.isArray(bar.ad.board) || bar.ad.board.length < 1 || bar.ad.board.length > 4 || !bar.ad.board.every((l) => nonEmpty(l) && l.length <= 18)) {
+        throw new Error(`bars.json: bar "${bar.id}" "ad.board" must be 1–4 lines of at most 18 characters`);
+      }
+      // The bar's brand color: the script line and button. It must read on the ad's ink.
+      if (typeof bar.ad.accent !== 'string' || !/^#[0-9a-f]{6}$/.test(bar.ad.accent) || contrast(bar.ad.accent, AD_INK) < 4.5) {
+        throw new Error(`bars.json: bar "${bar.id}" "ad.accent" must be a lowercase #rrggbb color with at least 4.5:1 contrast on ${AD_INK} (a light brand color)`);
+      }
     }
     if (bar.verifiedOn !== null && !isDate(bar.verifiedOn)) {
       throw new Error(`bars.json: bar "${bar.id}" "verifiedOn" must be a real YYYY-MM-DD date or null (null until confirmed by phone)`);
@@ -129,6 +194,11 @@ export function validate(json) {
       if (bar.verifiedOn !== null && s.items.some((i) => i.includes('PLACEHOLDER'))) {
         throw new Error(`bars.json: bar "${bar.id}" is verified but still has PLACEHOLDER items — replace them with the confirmed specials`);
       }
+    }
+    // A sourced, unconfirmed listing says where its specials came from and when
+    const sourced = bar.specials.some((sp) => !sp.items.some((i) => i.includes('PLACEHOLDER')));
+    if (bar.verifiedOn === null && sourced && bar.checked === null) {
+      throw new Error(`bars.json: bar "${bar.id}" has sourced specials but no "checked" — say how and when they were checked`);
     }
   }
   return json;

@@ -10,11 +10,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { DAY_KEYS, validate } from './data/validate.js';
-import { digestFor, digestSchedule, fmtTime, fmtWindow, groupSpecials, weekdayLabel } from './schedule.js';
+import { digestFor, digestSchedule, fmtTime, fmtWindow, groupSpecials, unbroken, weekdayLabel } from './schedule.js';
 import './index.css';
 import './digest.css';
 
 const DATA = validate(data);
+// A featured entry shows its first three windows, so one bar with a full day of
+// specials can't stretch the card
+const FEATURED_WINDOWS = 3;
 const PARAMS = new URLSearchParams(window.location.search);
 const DAY = PARAMS.get('day');
 if (!DAY_KEYS.includes(DAY)) throw new Error(`digest.html: ?day= must be one of ${DAY_KEYS.join(', ')}`);
@@ -55,10 +58,10 @@ function Digest() {
           {bar.photo && <img className="digest-photo" src={bar.photo} alt="" />}
           <h2 className="digest-name">{bar.name}</h2>
           <p className="digest-address">{bar.address}</p>
-          {groupSpecials(specials).map((g, i) => (
+          {groupSpecials(specials).slice(0, FEATURED_WINDOWS).map((g, i) => (
             <div className="digest-special" key={i}>
               <p className="digest-time mono">
-                <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {fmtWindow(g)}
+                <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {unbroken(fmtWindow(g))}
               </p>
               <ul className="digest-items">
                 {g.items.map((item, j) => (
@@ -67,6 +70,9 @@ function Digest() {
               </ul>
             </div>
           ))}
+          {groupSpecials(specials).length > FEATURED_WINDOWS && (
+            <p className="digest-more">+ {groupSpecials(specials).length - FEATURED_WINDOWS} more on the Happy Hour Finder</p>
+          )}
         </article>
       ))}
 
@@ -81,10 +87,10 @@ function Digest() {
                   <li key={bar.id}>
                     <span className="digest-list-name">{bar.name}</span>
                     <span className="digest-list-time">
-                      until <span className="mono">{fmtTime(end)}</span>
+                      until <span className="mono">{unbroken(fmtTime(end))}</span>
                       {later.length > 0 && (
                         <>
-                          , then <span className="mono">{later.map(fmtWindow).join(', ')}</span>
+                          , then <span className="mono">{later.map((w) => unbroken(fmtWindow(w))).join(', ')}</span>
                         </>
                       )}
                     </span>

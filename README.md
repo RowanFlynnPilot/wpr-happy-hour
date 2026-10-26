@@ -27,7 +27,12 @@ the per-bar source sheet lives with the owner, not in this public repo.
   "website": "",
   "tier": "partner",
   "verifiedOn": null,
+  "checked": { "on": "2026-10-26", "via": "website" },
+  "tags": ["patio"],
+  "note": null,
   "photo": null,
+  "logo": null,
+  "ad": null,
   "specials": [
     {
       "days": ["mon", "tue", "wed", "thu", "fri"],
@@ -44,23 +49,44 @@ Rules (enforced by `validate()` in `src/data/validate.js` — the app throws at
 load, and `npm run check` runs the same validator in CI before every deploy):
 
 - `tier` is `"partner"` or `"featured"` — every listing is a paid placement; there is no
-  free tier. Featured gets the badge, accent border, pinned sort, a Directions link
-  (derived from the address), and an optional `photo` URL. A `photo` on a partner-tier
-  bar fails validation — the photo is a featured perk.
+  free tier. Featured gets the evening card, pinned sort, a Directions link (derived
+  from the address), and its `photo` shown on the card.
 - `verifiedOn` is `null` until the specials are confirmed with the bar by phone, then the
-  `YYYY-MM-DD` of that call. Renders as "✓ Verified <Mon Year>" on the card (null shows
-  "Details being confirmed"); `npm run check` warns on unverified or >90-day-old listings.
+  `YYYY-MM-DD` of that call. Renders as "Verified by phone, <Mon Year>" on the card;
+  `npm run check` warns on unverified or >90-day-old listings.
+- `checked` says where an unverified listing's sourced specials came from and when:
+  `{ "on": "YYYY-MM-DD", "via": "website" | "facebook" | "instagram" }`. Required
+  once a bar has any sourced (non-`PLACEHOLDER`) special and isn't verified; the card
+  shows "From the bar's website, checked Oct 26", greyed with "may have changed" after
+  90 days. `npm run check` lists sources due for a recheck.
 - A verified bar may not carry `PLACEHOLDER` items — replace them with the confirmed
   specials in the same edit that sets `verifiedOn`.
+- `tags` — filterable features, from `patio`, `game-day` (Packers game day), `pool`,
+  `darts`; collected on the verification call, never guessed. The finder's tag filter
+  appears once any bar has one.
+- `note` — `null` or one short restriction (≤120 characters) shown on the card in
+  amber, e.g. "Happy hour is dine-in only".
+- `photo` and `logo` — `null`, a full `https://` URL, or a self-hosted file
+  (`photos/<name>.jpg|png|webp`, `logos/<name>.png|jpg|webp`, under `public/`).
+  Self-host where possible: a bar's site going down then can't break the finder or
+  stop a deploy. Any tier may have them (the spotlight ad uses both); the finder shows
+  the photo on featured cards only.
+- `ad` — `null`, or the newsletter spotlight's copy, written with the bar at the sale
+  from its own advertising: `{ "headline": "Prime Rib", "line": "Saturdays at The
+  Palms", "board": ["From 4 PM", "12 oz Queen $42"], "accent": "#c9e265" }`. Needs
+  `photo` and `logo`. Headline ≤12 characters, line ≤26, board 1–4 lines of ≤18 (the
+  render is the real fit check); `accent` is the bar's brand color as lowercase
+  `#rrggbb`, light enough for 4.5:1 on the ad's dark ink.
 - `address` ends with `, <city>` (`"123 Main St, Wausau"`) — cards print it alone.
 - `id` is lowercase kebab-case and never changes once shared — it's the partner's
   `?bar=` link.
 - `website` is `""` or a full `http(s)://` URL (prefer https; http only for sites
-  without it). `photo` is `null` or a full `https://` URL.
+  without it).
 - `days` values: `mon tue wed thu fri sat sun`, no repeats.
 - `start`/`end` are 24h `HH:MM`; `end` must be after `start`. No cross-midnight windows.
 - `type` is `"drinks"`, `"food"`, or `"both"` — drives the food/drinks filter.
-- Dates are real calendar dates; CI also rejects `updated`/`verifiedOn` in the future.
+- Dates are real calendar dates; CI also rejects `updated`/`verifiedOn`/`checked.on`
+  in the future.
 - Unknown fields are rejected. Contact info for bars lives in the Notion pipeline,
   **never** in this file — a `"phone"` key fails the build.
 
@@ -87,9 +113,13 @@ npm run calls -- "C:\Users\rpfly\OneDrive\Desktop\happy-hour-call-tracker-2026-0
 npm run calls -- "C:\Users\rpfly\OneDrive\Desktop\happy-hour-call-tracker-2026-09-26.csv" --write
 ```
 
+Two optional columns ride along: **Tags (final)** (comma-separated, e.g.
+`patio, game-day`) and **Note (final)** (one short restriction; blank clears it).
+
 The first command previews; `--write` applies. Every `Verified` row replaces that
-bar's specials, sets its tier and `verifiedOn` = the call date, and the whole file
-passes `validate()` before anything is written. A row it can't read stops the run
+bar's specials, sets its tier and `verifiedOn` = the call date (plus tags and note
+when those columns exist), and the whole file passes `validate()` before anything is
+written. A row it can't read stops the run
 and names the bar. Other outcomes are listed, never applied. Re-running the same
 sheet is safe.
 
@@ -172,31 +202,43 @@ in a fail-soft block like the featured pet, linking the image to the WP page wit
 
 ## Newsletter spotlight
 
-The cheap placement: one partner's own small ad in a newsletter, sold by the send.
-`spotlight.html` builds it from the bar's listing, so the ad always matches the finder;
-`scripts/render-digest.mjs` renders it with the newsletter card:
+The cheap placement: one partner's own ad in a newsletter, sold by the send. It's built
+in WPR's house ad style (the wpr-ad-creative look approved Oct 11, 2026) at the ad
+unit's real size, **970 × 500**, which the newsletter shows at 414px wide on a computer
+and 326 on a phone: the bar's photo on the right under a dark scrim, its logo on a cream
+plate, an Anton headline, a Yellowtail script line in the bar's accent color, a
+chalkboard of times and prices hung from the top edge, a button naming its site, and the
+newsletter's yellow "Advertisement" chip. `spotlight.html` builds it from the bar's
+`photo`, `logo` and `ad` (see Data model); every word comes from the bar's own
+advertising, agreed at the sale. `scripts/render-digest.mjs` renders it with the
+newsletter card:
 
-- `digest/spotlight/<id>.png` — one per **verified** bar, so a sale needs no code
-  change. Name, address, up to three windows (Monday first, at most six lines
-  of specials between them, then "+N more specials"), the bar's website as the call to action, and the photo for
-  featured partners. Labeled "Advertisement" inside the image.
+- `digest/spotlight/<id>.png` — one per **verified** bar that has `ad` copy, so a sale
+  is a bars.json edit, not a code change.
 - `digest/spotlight.json` — per ad: `image`, `alt` (the whole ad, for readers who
   block images) and `link` (the bar's site with `utm_medium=newsletter`; `null` when
-  it has no site — link its finder listing, `?bar=<id>`, instead).
-- `digest/spotlight-demo.png` — sales preview with sample rows; live with a prospect's
-  name: `spotlight.html?demo=Bar%20Name`.
-- `spotlight.html?preview=<id>` — a listed bar's own ad before it's verified, for pitches:
-  its sourced specials only (PLACEHOLDER ones are left out), with a "Sales preview"
-  ribbon; never sent to subscribers. `digest/spotlight-sample.png` is the showcase bar's
-  preview without the ribbon (`&sample`), used by the one-pager and rate card — The Palms
-  Supper Club, whose owner agreed to be the showcase (2026-10-09).
+  it has no site — link its finder listing, `?bar=<id>`, instead; the button then reads
+  "Details on the Happy Hour Finder").
+- `spotlight.html?preview=<id>` — a listed bar's own ad before it's verified, for
+  pitches, with a "Sales preview" ribbon; never sent to subscribers. A prospect's
+  preview needs its `photo`, `logo` and `ad` in bars.json. `digest/spotlight-sample.png`
+  is the showcase bar's preview without the ribbon (`&sample`), used by the one-pager
+  and rate card — The Palms Supper Club, whose owner agreed to be the showcase
+  (2026-10-09).
+
+There is no generic demo ad: an ad without the bar's own photo and logo isn't the
+product, and stock photos are out. The render fails the deploy when any part of an ad
+runs off its edge or comes within 12px of another part (the tilted script line
+included), when a board line doesn't fit, or when the photo is smaller than its
+640 × 500 panel (it would be stretched); the message says what to shorten. Look at the
+PNG before booking it.
 
 **Running one.** Bookings (dates, edition) stay offline with the sale, never in
 bars.json. The newsletter already runs date-ranged ads through Broadstreet and shows a
 zone only while it has a placement (`conditional_zone_block` in wpr-newsletter), so
 the spotlight can run the same way: upload the bar's PNG as the creative for the sold
 dates, with `link` and `alt` from spotlight.json. Broadstreet holds a copy — if the
-bar's specials change mid-run, re-upload the new image. (A wpr-newsletter block that
+bar's specials change mid-run, update its `ad` and re-upload the new image. (A wpr-newsletter block that
 reads spotlight.json directly would need a cache-busting `?v=` on the image URL:
 Gmail's image proxy caches by URL.)
 
@@ -239,14 +281,25 @@ localhost traffic is ignored automatically.
 ## Behavior
 
 - **Now view (default):** live clock, groups bars into "Pouring now" and "Later today"
-  using the visitor's local time. Refreshes every 30 seconds.
-- **Day picker:** Mon–Sun views for planning ahead.
-- **Filters:** city and food/drinks.
-- **Deep links:** `?view=fri&city=Weston&type=food` pre-selects day/city/type —
-  for article links and pre-filtered embeds. `?bar=red-eye-brewing` lands on a day that
+  using the visitor's local time, as a timetable: rows grouped "Until 6 PM" (pouring
+  now) or "From 8 PM" (later), each with a track of its windows from 10 AM to midnight
+  and a now line. The headline counts what's pouring and names the first to wrap up and
+  the next to start (sourced specials only). Refreshes every 30 seconds.
+- **Day picker:** Mon–Sun views for planning ahead, grouped "From <start>".
+- **Filters:** city, food/drinks, and tags (patio, Packers game day…) once any bar has one.
+- **Every listing says how fresh it is:** "Verified by phone, Oct 2026" or "From the
+  bar's website, checked Oct 26", with **Add to calendar** (an .ics file of the bar's
+  sourced specials, repeating weekly, in local time) and **Report a change** (an email
+  to Chris; nothing is published until he confirms it with the bar).
+- **Deep links:** `?view=fri&city=Weston&type=food&tag=patio` pre-selects
+  day/city/type/tag — for article links and pre-filtered embeds. `?bar=red-eye-brewing` lands on a day that
   bar is listed, scrolls to its card and tints it — each partner's shareable link for
   socials and table tents. Invalid values are ignored.
-- **Sort:** featured first, then by start time, then alphabetically.
+- **Sort:** featured first, then the timetable's time groups in order.
+- **Fonts and photos are self-hosted** (`public/fonts/`, `public/photos/`): no Google
+  Fonts request, no layout shift, and a bar's site going down can't blank a card. The
+  finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight ad, Anton,
+  Yellowtail and Barlow Condensed (all SIL Open Font License, latin subsets).
 - **Sponsor slot:** footer line reserved for the title sponsor.
 - **Paid links:** bar websites and the sponsor link carry `rel="sponsored"` (every
   listing is paid) and `utm_source=wausaupilotandreview&utm_medium=widget&utm_campaign=happy-hour`,
