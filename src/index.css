@@ -329,23 +329,23 @@ body {
   opacity: 0.22;
 }
 
-.hero[data-phase='day'] .hero-skyline .bin {
+[data-phase='day'] .hero-skyline .bin {
   background: var(--on-night-soft);
   opacity: 0.55;
 }
 
-.hero[data-phase='day'] .hero-skyline .bin.past {
+[data-phase='day'] .hero-skyline .bin.past {
   opacity: 0.22;
 }
 
 /* the golden hour: rooftops in silhouette, rim-lit by the low sun */
-.hero[data-phase='golden'] .hero-skyline .bin {
+[data-phase='golden'] .hero-skyline .bin {
   background: #0a1d1a;
   opacity: 1;
   box-shadow: inset 0 1px 0 rgba(233, 189, 91, 0.55);
 }
 
-.hero[data-phase='golden'] .hero-skyline .bin.past {
+[data-phase='golden'] .hero-skyline .bin.past {
   background: #0a1d1a;
   opacity: 0.55;
 }
@@ -359,12 +359,12 @@ body {
   background: radial-gradient(ellipse 26% 100% at var(--sun) 100%, rgba(233, 189, 91, 0.3), rgba(233, 189, 91, 0) 72%);
 }
 
-.hero[data-phase='golden'] .hero-skyline.has-sun::before {
+[data-phase='golden'] .hero-skyline.has-sun::before {
   background: radial-gradient(ellipse 42% 115% at var(--sun) 100%, rgba(240, 182, 74, 0.95), rgba(233, 140, 70, 0.4) 45%, rgba(233, 189, 91, 0) 78%);
 }
 
-.hero[data-phase='day'] .hero-skyline.has-sun::before,
-.hero[data-phase='late'] .hero-skyline.has-sun::before {
+[data-phase='day'] .hero-skyline.has-sun::before,
+[data-phase='late'] .hero-skyline.has-sun::before {
   display: none;
 }
 
@@ -390,7 +390,7 @@ body {
   background: var(--on-night);
 }
 
-.hero .hero-axis {
+.hero-day .hero-axis {
   margin-top: 6px;
   color: var(--on-night-soft);
 }

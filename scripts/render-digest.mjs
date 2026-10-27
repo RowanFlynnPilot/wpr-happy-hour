@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { validate } from '../src/data/validate.js';
-import { WEEK_ORDER, digestFor, fmtWindows, spotlightFor, trackedUrl, weekdayLabel } from '../src/schedule.js';
+import { WEEK_ORDER, dayAtAGlance, digestFor, fmtWindows, spotlightFor, trackedUrl, weekdayLabel } from '../src/schedule.js';
 
 const WIDTH = 536; // CSS px — the newsletter's image column, rendered at 2x
 const OUT = new URL('../dist/digest/', import.meta.url);
@@ -39,10 +39,12 @@ const AD_QUALITY = 90;
 
 const data = validate(JSON.parse(await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8')));
 
-// Alt text carries the card for readers whose mail client blocks images
+// Alt text carries the card for readers whose mail client blocks images: the
+// count, the seal's promise, the day's shape in a line, then every bar and its times
 function altText(day, d) {
   const rows = [...d.featured, ...d.listed].map(({ bar, specials }) => `${bar.name}, ${fmtWindows(specials, ' and ')}`);
-  return `${weekdayLabel(day)}’s happy hours on the Happy Hour Finder: ${rows.join('; ')}${d.more ? `; and ${d.more} more` : ''}.`;
+  const glance = dayAtAGlance(data.bars.filter((b) => b.verifiedOn !== null), day, () => true);
+  return `${weekdayLabel(day)} on the Happy Hour Finder: ${d.count} happy hour${d.count === 1 ? '' : 's'} today, every one verified by phone. ${glance.text.replaceAll('\u00a0', ' ')} ${rows.join('; ')}${d.more ? `; and ${d.more} more` : ''}.`;
 }
 
 function spotlightAlt(bar) {

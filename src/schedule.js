@@ -254,6 +254,23 @@ export function timetable(entries, keyFn) {
 // Minutes since midnight → "HH:MM" for fmtTime (1440 is the data's midnight)
 export const hmOf = (m) => (m >= 1440 ? '23:59' : `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`);
 
+// The newsletter card's picture of a day: its shape (dayShape), its busiest half
+// hour (only when at least two bars overlap — one bar has no "busiest"), and one
+// line: "First at 11 AM, busiest around 5 PM, the last until midnight." Sourced only.
+export function dayAtAGlance(bars, day, match) {
+  const shape = dayShape(bars, day, match);
+  const windows = bars.flatMap((b) => sourcedOf(b.specials.filter((s) => match(s) && s.days.includes(day))));
+  if (windows.length === 0) return { shape, peakAt: null, text: '' };
+  const first = Math.min(...windows.map((s) => toMinutes(s.start)));
+  const last = Math.max(...windows.map((s) => endMinutes(s.end)));
+  const top = Math.max(...shape);
+  const peakAt = top >= 2 ? SHAPE_START + shape.indexOf(top) * SHAPE_STEP : null;
+  const t = (m) => unbroken(fmtTime(hmOf(m)));
+  const text =
+    peakAt === null ? `From ${t(first)} until ${t(last)}.` : `First at ${t(first)}, busiest around ${t(peakAt)}, the last until ${t(last)}.`;
+  return { shape, peakAt, text };
+}
+
 // The hero's second line: what the list means right now. Sourced windows only —
 // a PLACEHOLDER time is never stated as fact. '' when there's nothing to say.
 export function heroFinding(pouring, laterToday) {

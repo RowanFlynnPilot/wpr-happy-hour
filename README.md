@@ -177,11 +177,16 @@ Email can't run the app (no iframes, no JavaScript), so the newsletter gets an i
 the same pattern as the Packers, gas-price and meeting digests. `digest.html` is a
 536px card; `scripts/render-digest.mjs` screenshots it with Playwright at deploy time:
 
-- `digest/<day>.png` — one per weekday. **Verified bars only**: featured partners get
-  a full entry (up to 3, with specials and photo); every other verified partner open
-  that day is listed as a schedule, grouped under the time its happy hour starts, with
-  when it ends (up to 8, then "+N more"). The presenting
-  `sponsor` is baked in — one sponsorship covers the tool and the newsletter.
+- `digest/<day>.png` — one per weekday. **Verified bars only**. It speaks the finder's
+  language: an evening band with the day's count as a drop numeral, one line on the
+  day's shape ("First at 11 AM, busiest around 5 PM, the last until midnight"), the
+  newsroom's "Verified by phone" seal (every bar on the card is), and the day drawn as
+  a golden-hour skyline — with no clock in an email, the sun sits on the busiest half
+  hour. Then featured partners get a full entry (up to 3, with specials and photo);
+  every other verified partner open that day is listed as a schedule, grouped under the
+  time its happy hour starts, with when it ends (up to 8). It ends on a band saying
+  where the image goes: "See every special and its price", with "+N more". The
+  presenting `sponsor` is baked in — one sponsorship covers the tool and the newsletter.
 - `digest/digest.json` — per-day `count`, `image`, `alt`. `image` is `null` on days
   with no verified partners; the newsletter omits the section on those days.
 - `digest/demo.png` — sales preview with sample listings. Any day, live:

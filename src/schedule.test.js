@@ -23,6 +23,7 @@ import {
   placeholderText,
   nextDay,
   dayShape,
+  dayAtAGlance,
   SHAPE_START,
   SHAPE_STEP,
   isConfirmed,
@@ -292,6 +293,22 @@ test('heroFinding names the soonest to end and the next to start, sourced only',
   // a guessed window in a confirmed row doesn't set the time
   const mixed = [{ bar: bar('m', { name: 'M' }), specials: [special({ end: '18:00' }), special({ end: '17:00', items: ['PLACEHOLDER \u2014 z'] })] }];
   assert.equal(heroFinding([...mixed, ...pouring], []), 'First to wrap up: M, at 6\u00a0PM.');
+});
+
+test('dayAtAGlance: first, busiest (when bars overlap) and last, sourced only', () => {
+  const bars = [
+    bar('a', { specials: [special({ start: '11:00', end: '14:00' })] }),
+    bar('b', { specials: [special({ start: '16:00', end: '18:00' })] }),
+    bar('c', { specials: [special({ start: '16:30', end: '23:59' })] }),
+    bar('guess', { specials: [special({ start: '10:00', end: '23:59', items: ['PLACEHOLDER — x'] })] }),
+  ];
+  const g = dayAtAGlance(bars, 'thu', all);
+  assert.equal(g.text, 'First at 11\u00a0AM, busiest around 4:30\u00a0PM, the last until midnight.');
+  assert.equal(g.peakAt, 16 * 60 + 30);
+  assert.equal(g.shape.length, 28);
+  const one = dayAtAGlance([bars[1]], 'thu', all);
+  assert.deepEqual([one.peakAt, one.text], [null, 'From 4\u00a0PM until 6\u00a0PM.']);
+  assert.deepEqual(dayAtAGlance([bars[3]], 'thu', all).text, '');
 });
 
 test('icsFor: weekly repeating events for sourced specials, local time', () => {

@@ -5,12 +5,17 @@
 //   digest.html?day=thu                 the real card: verified partners only
 //   digest.html?day=thu&demo            sales preview with sample listings
 //   digest.html?day=thu&demo=Bar%20Name same, with the prospect's name featured
+// It speaks the finder's language: the evening band with the count as a drop
+// numeral, the day drawn as a skyline — with no clock in an email, the sun sits
+// on the day's busiest half hour — and the newsroom's seal, since every bar on
+// the card is verified by phone. It ends on where to go next, not fine print.
 // Internal page, not linked from the app: a bad ?day= throws.
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { DAY_KEYS, validate } from './data/validate.js';
-import { digestFor, digestSchedule, fmtTime, fmtWindow, groupSpecials, unbroken, weekdayLabel } from './schedule.js';
+import { dayAtAGlance, digestFor, digestSchedule, fmtTime, fmtWindow, groupSpecials, unbroken, weekdayLabel } from './schedule.js';
+import { Arrow, DayShape, Seal } from './marks.jsx';
 import './index.css';
 import './digest.css';
 
@@ -28,82 +33,117 @@ function Digest() {
   // A sold slot is never overridden, even in demo mode
   const sponsor = DATA.sponsor ?? (DEMO ? DEMO_SPONSOR : null);
   const { count, featured, listed, more } = digestFor(bars, DAY);
+  // The card's day, drawn from the same verified listings it names
+  const glance = dayAtAGlance(
+    bars.filter((b) => b.verifiedOn !== null),
+    DAY,
+    () => true
+  );
 
   return (
     <div className="digest">
       {DEMO && <p className="digest-ribbon">Sales preview, with sample listings</p>}
-      <header className="digest-head">
-        <p className="digest-kicker">
-          <img className="digest-mark" src="./favicon.svg" alt="" width="24" height="24" />
-          Happy Hour Finder
-        </p>
-        <h1 className="digest-title">{weekdayLabel(DAY)}’s happy hours</h1>
-        <p className="digest-sub">
-          {count === 0
-            ? 'No verified partner listings for this day yet.'
-            : `${count} partner bar${count === 1 ? '' : 's'} with specials today`}
-        </p>
+      <header className="digest-band" data-phase="golden">
+        <div className="digest-band-top">
+          <p className="digest-kicker">
+            <img className="digest-mark" src="./favicon.svg" alt="" width="24" height="24" />
+            Happy Hour Finder
+          </p>
+          <p className="digest-day">{weekdayLabel(DAY)}</p>
+        </div>
+        {count > 0 ? (
+          <>
+            <h1 className="digest-title">
+              <span className="digest-count">{count}</span>
+              <span className="digest-words">
+                happy hour{count === 1 ? '' : 's'}
+                <br />
+                today
+              </span>
+            </h1>
+            <p className="digest-finding">{glance.text}</p>
+            <Seal />
+            {/* the sun on the middle of the busiest half hour */}
+            <DayShape counts={glance.shape} sunAt={glance.peakAt === null ? null : glance.peakAt + 15} />
+          </>
+        ) : (
+          <h1 className="digest-title digest-title-empty">No verified partner listings for {weekdayLabel(DAY)} yet</h1>
+        )}
       </header>
 
-      {sponsor && (
-        <p className="digest-sponsor">
-          <span className="digest-sponsor-eyebrow">Presented by</span>
-          <span className="digest-sponsor-name">{sponsor.name}</span>
-        </p>
-      )}
+      <div className="digest-body">
+        {sponsor && (
+          <p className="digest-sponsor">
+            <span className="digest-sponsor-eyebrow">Presented by</span>
+            <span className="digest-sponsor-name">{sponsor.name}</span>
+          </p>
+        )}
 
-      {featured.map(({ bar, specials }) => (
-        <article className="digest-featured" key={bar.id}>
-          <span className="digest-badge">Featured</span>
-          {bar.photo && <img className="digest-photo" src={bar.photo} alt="" />}
-          <h2 className="digest-name">{bar.name}</h2>
-          <p className="digest-address">{bar.address}</p>
-          {groupSpecials(specials).slice(0, FEATURED_WINDOWS).map((g, i) => (
-            <div className="digest-special" key={i}>
-              <p className="digest-time mono">
-                <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {unbroken(fmtWindow(g))}
-              </p>
-              <ul className="digest-items">
-                {g.items.map((item, j) => (
-                  <li key={j}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          {groupSpecials(specials).length > FEATURED_WINDOWS && (
-            <p className="digest-more">+ {groupSpecials(specials).length - FEATURED_WINDOWS} more on the Happy Hour Finder</p>
-          )}
-        </article>
-      ))}
+        {featured.map(({ bar, specials }) => (
+          <article className="digest-featured" key={bar.id}>
+            {bar.photo && <img className="digest-photo" src={bar.photo} alt="" />}
+            <h2 className="digest-name">{bar.name}</h2>
+            <p className="digest-address">{bar.address}</p>
+            <p className="digest-tier">Featured partner</p>
+            {groupSpecials(specials).slice(0, FEATURED_WINDOWS).map((g, i) => (
+              <div className="digest-special" key={i}>
+                <p className="digest-time mono">
+                  <span className={`type-icon type-${g.type}`} aria-hidden="true" /> {unbroken(fmtWindow(g))}
+                </p>
+                <ul className="digest-items">
+                  {g.items.map((item, j) => (
+                    <li key={j}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            {groupSpecials(specials).length > FEATURED_WINDOWS && (
+              <p className="digest-more">+ {groupSpecials(specials).length - FEATURED_WINDOWS} more on the Happy Hour Finder</p>
+            )}
+          </article>
+        ))}
 
-      {listed.length > 0 && (
-        <section className="digest-roll">
-          <h3 className="digest-label">{featured.length > 0 ? 'Also today' : 'Today'}</h3>
-          {digestSchedule(listed).map((slot) => (
-            <div className="digest-slot" key={slot.start}>
-              <p className="digest-slot-time">{fmtTime(slot.start)}</p>
-              <ul className="digest-slot-bars">
-                {slot.rows.map(({ bar, end, later }) => (
-                  <li key={bar.id}>
-                    <span className="digest-list-name">{bar.name}</span>
-                    <span className="digest-list-time">
-                      until <span className="mono">{unbroken(fmtTime(end))}</span>
-                      {later.length > 0 && (
-                        <>
-                          , then <span className="mono">{later.map((w) => unbroken(fmtWindow(w))).join(', ')}</span>
-                        </>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          {more > 0 && <p className="digest-more">+ {more} more on the Happy Hour Finder</p>}
-        </section>
-      )}
+        {listed.length > 0 && (
+          <section className="digest-roll">
+            <h3 className="digest-label">{featured.length > 0 ? 'Also today' : 'Today'}</h3>
+            {digestSchedule(listed).map((slot) => (
+              <div className="digest-slot" key={slot.start}>
+                <p className="digest-slot-time">{fmtTime(slot.start)}</p>
+                <ul className="digest-slot-bars">
+                  {slot.rows.map(({ bar, end, later }) => (
+                    <li key={bar.id}>
+                      <span className="digest-list-name">{bar.name}</span>
+                      <span className="digest-list-time">
+                        {/* a no-break space: "until" never parts from its time */}
+                        {'until\u00a0'}
+                        <span className="mono">{unbroken(fmtTime(end))}</span>
+                        {later.length > 0 && (
+                          <>
+                            , then <span className="mono">{later.map((w) => unbroken(fmtWindow(w))).join(', ')}</span>
+                          </>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        )}
 
-      <p className="digest-fine">Every listing is a paid partner placement, confirmed with the bar by phone.</p>
+        {/* The whole image links to the finder: the card ends by saying where it goes */}
+        {count > 0 && (
+          <p className="digest-cta">
+            <span className="digest-cta-title">See every special and its price</span>
+            <span className="digest-cta-line">
+              {more > 0 ? `Plus ${more} more bar${more === 1 ? '' : 's'}, on the Happy Hour Finder` : 'On the Happy Hour Finder'}
+            </span>
+            <Arrow />
+          </p>
+        )}
+
+        <p className="digest-fine">Every listing is a paid partner placement, confirmed with the bar by phone.</p>
+      </div>
     </div>
   );
 }

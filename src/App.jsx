@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import data from './data/bars.json';
 // Schema lives in validate.js — shared with scripts/check-data.mjs so CI
 // rejects bad data before it can deploy. The app still throws at load.
@@ -6,8 +6,6 @@ import { DAY_KEYS, TAGS, toMinutes, validate } from './data/validate.js';
 // Time + listing logic is shared with the newsletter card and unit-tested
 import {
   DAY_LABELS,
-  SHAPE_START,
-  SHAPE_STEP,
   WEEK_ORDER,
   dayListings,
   dayShape,
@@ -33,6 +31,8 @@ import {
   unbroken,
   weekdayLabel,
 } from './schedule.js';
+// The day's axis and skyline, the verified seal, the arrow — shared with the newsletter card
+import { Arrow, Axis, DayShape, Seal, onAxis, pctOf, spanOf } from './marks.jsx';
 
 /* ---------------- */
 /* Data (validated) */
@@ -216,13 +216,7 @@ function SpecialRow({ group, now, showDays, allDays }) {
 // The evening axis under each bar, 10 AM to midnight: its windows drawn on it,
 // the part already gone dimmed, and the same "now" line at the same spot on
 // every row — "how long do I have here?" is seen at scroll speed, not read
-const AXIS_START = SHAPE_START;
-const AXIS_END = 24 * 60;
-const frac = (m) => (Math.min(Math.max(m, AXIS_START), AXIS_END) - AXIS_START) / (AXIS_END - AXIS_START);
-const pctOf = (m) => `${(frac(m) * 100).toFixed(2)}%`;
-const spanOf = (a, b) => `${((frac(b) - frac(a)) * 100).toFixed(2)}%`;
 const endOf = (hm) => (hm === '23:59' ? 1440 : toMinutes(hm));
-const onAxis = (m) => m !== null && m >= AXIS_START && m < AXIS_END;
 const minuteOf = (date) => (date ? date.getHours() * 60 + date.getMinutes() : null);
 
 function Track({ specials, now }) {
@@ -245,87 +239,6 @@ function Track({ specials, now }) {
       })}
       {onAxis(nowMin) && <span className="track-now" style={{ left: pctOf(nowMin) }} />}
     </div>
-  );
-}
-
-const AXIS_LABELS = [
-  [10, '10 AM'],
-  [12, 'noon'],
-  [15, '3'],
-  [18, '6'],
-  [21, '9'],
-  [24, 'midnight'],
-];
-
-function Axis({ className = 'axis' }) {
-  return (
-    <div className={className} aria-hidden="true">
-      {AXIS_LABELS.map(([h, label]) => (
-        <span key={h} className={h === 12 ? 'axis-noon' : undefined} style={{ left: pctOf(h * 60) }}>
-          {label}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-// The hero's picture of the day, on the rows' own axis: how many bars have a
-// sourced special each half hour, the part of the day already gone dimmed, and the
-// clock as a sun on the horizon. It's also the key to every row's track. Hidden
-// from screen readers — the hero's sentences say what it shows.
-function DayShape({ counts, nowMin }) {
-  const max = Math.max(...counts);
-  if (max === 0) return null;
-  const sun = onAxis(nowMin) ? pctOf(nowMin) : null;
-  return (
-    <div className="hero-day" aria-hidden="true">
-      <div className={`hero-skyline${sun ? ' has-sun' : ''}`} style={sun ? { '--sun': sun } : undefined}>
-        {counts.map((c, i) => (
-          <span
-            key={i}
-            className={`bin${nowMin !== null && SHAPE_START + (i + 1) * SHAPE_STEP <= nowMin ? ' past' : ''}`}
-            style={{ height: c ? `${Math.max(10, (c / max) * 100)}%` : 0 }}
-          />
-        ))}
-        {sun && <span className="hero-now" style={{ left: sun }} />}
-      </div>
-      <Axis className="axis hero-axis" />
-    </div>
-  );
-}
-
-// The newsroom's stamp on a phone-verified listing: the check a review site can't
-// make. Decoration — "Verified by phone, Oct 2026" beside it is the real text.
-function Seal() {
-  const id = useId();
-  return (
-    <svg className="seal" viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <path id={`${id}t`} d="M 8.5 32 A 23.5 23.5 0 0 1 55.5 32" />
-        <path id={`${id}b`} d="M 4.5 32 A 27.5 27.5 0 0 0 59.5 32" />
-      </defs>
-      <circle cx="32" cy="32" r="30.5" fill="none" stroke="currentColor" strokeWidth="2" />
-      <circle cx="32" cy="32" r="20.5" fill="none" stroke="currentColor" strokeWidth="1" />
-      <text>
-        <textPath href={`#${id}t`} startOffset="50%" textAnchor="middle">
-          VERIFIED
-        </textPath>
-      </text>
-      <text>
-        <textPath href={`#${id}b`} startOffset="50%" textAnchor="middle">
-          BY PHONE
-        </textPath>
-      </text>
-      <path d="M23.5 32.5l6 6 11-12" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function Arrow() {
-  return (
-    <svg className="arrow" viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 

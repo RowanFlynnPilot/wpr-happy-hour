@@ -14,7 +14,6 @@ body.digest-page {
   background: var(--cream);
   border: 1px solid var(--line);
   border-top: 4px solid var(--teal); /* house convention: cards mark their top edge */
-  padding: 20px 24px 20px;
 }
 
 /* Demo only (?demo): says it's a preview, so a forwarded image explains itself */
@@ -27,17 +26,31 @@ body.digest-page {
   font-weight: 600;
   text-align: center;
   padding: 6px 10px;
-  margin-bottom: 16px;
+  margin: 16px 24px;
 }
 
-/* The finder's own mark (favicon.svg) and name, then the day */
+/* The evening band, as in the finder's hero: the finder's mark and the day, the
+   count as a drop numeral, one line on the day's shape, the newsroom's seal, and
+   the day drawn as a skyline at golden hour — the 5 p.m. edition's light */
+.digest-band {
+  position: relative;
+  background: var(--night);
+  color: var(--on-night);
+  padding: 16px 24px 16px;
+}
+
+.digest-band-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .digest-kicker {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
-  color: var(--teal-dark);
 }
 
 .digest-mark {
@@ -46,19 +59,76 @@ body.digest-page {
   flex: none;
 }
 
+.digest-day {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
 .digest-title {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.3em;
   font-family: 'Fraunces', serif;
   font-weight: 600;
   font-size: 38px;
-  line-height: 1.05;
+  line-height: 1.04;
   letter-spacing: -0.01em;
-  margin-top: 8px;
+  margin-top: 12px;
+  padding-right: 92px; /* clear of the seal */
 }
 
-.digest-sub {
+.digest-count {
+  color: var(--gold);
+  font-size: 2.45em;
+  line-height: 0.82;
+  font-variation-settings: 'opsz' 144;
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.03em;
+}
+
+.digest-title-empty {
+  display: block;
+  font-size: 30px;
+  padding-right: 0;
+}
+
+.digest-finding {
   font-size: 17px;
-  color: var(--ink-soft);
-  margin-top: 4px;
+  color: var(--on-night-soft);
+  margin-top: 10px;
+}
+
+.digest-band .seal {
+  top: 58px;
+  right: 22px;
+  width: 80px;
+  height: 80px;
+  color: var(--gold);
+}
+
+/* The skyline, sized for an image phones shrink to ~60%: taller, labels at 14px */
+.digest-band .hero-day {
+  margin-top: 14px;
+}
+
+.digest-band .hero-skyline {
+  height: 58px;
+  gap: 3px;
+}
+
+.digest-band .hero-axis {
+  height: 20px;
+  font-size: 14px;
+}
+
+.digest-band .axis .axis-noon {
+  display: block; /* the card is 536px wide: the finder's phone rule doesn't apply */
+}
+
+.digest-body {
+  padding: 0 24px 20px;
 }
 
 /* Presenting sponsor — "Presented by" small, the name in the display serif */
@@ -66,9 +136,8 @@ body.digest-page {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
 }
 
 .digest-sponsor-eyebrow {
@@ -90,7 +159,7 @@ body.digest-page {
   color: var(--on-night);
   border-radius: 12px;
   padding: 16px 18px;
-  margin-top: 22px;
+  margin-top: 20px;
 }
 
 .digest-featured .digest-address {
@@ -106,16 +175,12 @@ body.digest-page {
   color: var(--gold);
 }
 
-.digest-badge {
-  position: absolute;
-  top: -12px;
-  right: 14px;
-  background: var(--gold);
-  color: var(--night);
-  font-size: 14px;
-  font-weight: 700;
-  padding: 2px 12px;
-  border-radius: 999px;
+/* As in the finder: the paid tier said in words, in the gold */
+.digest-tier {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 4px;
 }
 
 .digest-photo {
@@ -251,10 +316,44 @@ body.digest-page {
   margin-top: 10px;
 }
 
+/* The card ends on where the image goes: the finder, in the band's ink */
+.digest-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 16px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--night);
+  color: var(--on-night-soft);
+}
+
+.digest-cta-title {
+  grid-column: 1;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--on-night);
+}
+
+.digest-cta-line {
+  grid-column: 1;
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+.digest-cta .arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 26px;
+  height: 26px;
+  color: var(--gold);
+}
+
 .digest-fine {
   font-size: 14px;
   color: var(--ink-soft);
-  margin-top: 16px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
+  margin-top: 14px;
 }
