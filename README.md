@@ -283,23 +283,44 @@ localhost traffic is ignored automatically.
 - **Now view (default):** live clock, groups bars into "Pouring now" and "Later today"
   using the visitor's local time, as a timetable: rows grouped "Until 6 PM" (pouring
   now) or "From 8 PM" (later), each with a track of its windows from 10 AM to midnight
-  and a now line. The headline counts what's pouring and names the first to wrap up and
-  the next to start (sourced specials only). Refreshes every 30 seconds.
+  and a now line. Refreshes every 30 seconds.
+- **Only sourced specials are stated as fact** (`sourcedOf` in schedule.js): the
+  headline count, "first to wrap up / next to start", a row's place in the timetable,
+  countdowns and the calendar file all ignore `PLACEHOLDER` windows. Rows with no
+  sourced special are tagged "Being confirmed" and fold into one line per time group
+  ("22 more, specials being confirmed"); the hero says how many ("Plus 48 more…").
+- **The hero follows the clock:** the count is a drop numeral that rolls when a filter
+  or the clock changes it (no roll under reduced motion), in the reader's filters
+  ("3 food specials are on in Athens right now"). Along its bottom, the day at a glance:
+  how many bars have a sourced special each half hour on the rows' own axis, hours gone
+  greyed, the clock as a sun on the horizon. Its light changes by phase — day, the
+  golden hour (3–7, rooftops in silhouette against the sun), evening, late (deeper
+  night, the count in cream). On Fridays it carries the fish fry line: the Fish Fry
+  Guide link and a one-tap food filter.
+- **Last call:** in a sourced window's final 15 minutes its "N min left" chip turns gold
+  ("Last call · 9 min") and the rest of its track burns brighter.
+- **It ends on what's next:** the Now view closes on tomorrow ("Tomorrow, Tuesday: 12
+  happy hours, first at 10 AM at …", one tap to that day). With nothing confirmed today
+  it's quiet: "Back at it tomorrow at 11 AM", the first three openers as buttons that
+  open that day at that bar, and "Clear filters" when filters caused it.
 - **Day picker:** Mon–Sun views for planning ahead, grouped "From <start>".
 - **Filters:** city, food/drinks, and tags (patio, Packers game day…) once any bar has one.
-- **Every listing says how fresh it is:** "Verified by phone, Oct 2026" or "From the
-  bar's website, checked Oct 26", with **Add to calendar** (an .ics file of the bar's
+- **Every listing says how fresh it is:** "Verified by phone, Oct 2026" (with the
+  newsroom's rubber-stamp seal) or "From the bar's website, checked Oct 26", with **Add to calendar** (an .ics file of the bar's
   sourced specials, repeating weekly, in local time) and **Report a change** (an email
   to Chris; nothing is published until he confirms it with the bar).
 - **Deep links:** `?view=fri&city=Weston&type=food&tag=patio` pre-selects
-  day/city/type/tag — for article links and pre-filtered embeds. `?bar=red-eye-brewing` lands on a day that
-  bar is listed, scrolls to its card and tints it — each partner's shareable link for
-  socials and table tents. Invalid values are ignored.
+  day/city/type/tag — for article links and pre-filtered embeds. `?bar=red-eye-brewing` lands on the next day
+  that bar has a sourced special (else the next day it's listed), brings its card to the
+  top, rings it, shows its days and moves focus to it — each partner's shareable link
+  for socials and table tents. Invalid values are ignored.
 - **Sort:** featured first, then the timetable's time groups in order.
 - **Fonts and photos are self-hosted** (`public/fonts/`, `public/photos/`): no Google
   Fonts request, no layout shift, and a bar's site going down can't blank a card. The
   finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight ad, Anton,
   Yellowtail and Barlow Condensed (all SIL Open Font License, latin subsets).
+- **Disclosure first:** "Every listing is a paid partner placement…" and the "Being
+  confirmed" key sit above the first listing, not in the footer.
 - **Sponsor slot:** footer line reserved for the title sponsor.
 - **Paid links:** bar websites and the sponsor link carry `rel="sponsored"` (every
   listing is paid) and `utm_source=wausaupilotandreview&utm_medium=widget&utm_campaign=happy-hour`,

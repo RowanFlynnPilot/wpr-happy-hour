@@ -186,12 +186,32 @@ body {
 }
 
 /* Hero — the evening band: the finder's name and the clock it's reading, then
-   what that clock means right now, the live count lit in gold like a marquee */
+   what that clock means right now, the live count lit in gold like a marquee,
+   and the day drawn along the bottom. Its light follows the clock (data-phase):
+   day, the golden hour (3–7: a sun on the horizon behind the day's skyline),
+   evening, and late (a deeper night, the count turned cream). */
 .hero {
+  position: relative;
   background: var(--night);
   color: var(--on-night);
   border-radius: 16px;
-  padding: 20px 28px 28px;
+  padding: 20px 28px 20px;
+  scroll-margin-top: 16px;
+  transition: background-color 600ms ease-out;
+}
+
+.hero[data-phase='late'] {
+  background: #0f2421; /* on it: cream 14:1, --on-night-soft 9.5:1, --gold 9.2:1 */
+}
+
+.hero a,
+.hero .link-btn {
+  color: var(--gold);
+}
+
+.hero a:focus-visible,
+.hero button:focus-visible {
+  outline-color: var(--gold);
 }
 
 .hero-top {
@@ -236,14 +256,143 @@ body {
   text-wrap: balance;
 }
 
+.hero-title:focus {
+  outline: none; /* focused only by a jump, to move screen readers to the new view */
+}
+
+/* The count as a newspaper drop numeral: Fraunces at its display optical size,
+   two lines tall beside the sentence it starts */
+.hero-title.has-count {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.32em;
+}
+
 .hero-count {
   color: var(--gold);
-  font-variant-numeric: tabular-nums; /* the count ticks as windows open and close */
+  font-size: 2.35em;
+  line-height: 0.82;
+  font-variation-settings: 'opsz' 144;
+  font-variant-numeric: lining-nums tabular-nums; /* the count rolls as windows open and close */
+  letter-spacing: -0.03em;
+}
+
+.hero[data-phase='late'] .hero-count {
+  color: var(--on-night);
+}
+
+.hero-words {
+  max-width: 17ch;
 }
 
 .hero-sub {
   color: var(--on-night-soft);
-  margin-top: 8px;
+  margin-top: 10px;
+  max-width: 62ch;
+}
+
+.hero-fishfry {
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* The day at a glance: bars with a confirmed special each half hour, on the rows'
+   10 AM–midnight axis, the hours already gone dimmed. Lit gold through the
+   evening; at the golden hour the bars stand in silhouette against the sun. */
+.hero-day {
+  margin-top: 18px;
+}
+
+.hero-skyline {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 40px;
+  border-bottom: 1px solid var(--night-line);
+}
+
+.hero-skyline .bin {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
+  border-radius: 2px 2px 0 0;
+  background: var(--gold);
+  opacity: 0.85;
+}
+
+/* the hours already gone go grey, not a dimmer gold */
+.hero-skyline .bin.past {
+  background: var(--on-night-soft);
+  opacity: 0.22;
+}
+
+.hero[data-phase='day'] .hero-skyline .bin {
+  background: var(--on-night-soft);
+  opacity: 0.55;
+}
+
+.hero[data-phase='day'] .hero-skyline .bin.past {
+  opacity: 0.22;
+}
+
+/* the golden hour: rooftops in silhouette, rim-lit by the low sun */
+.hero[data-phase='golden'] .hero-skyline .bin {
+  background: #0a1d1a;
+  opacity: 1;
+  box-shadow: inset 0 1px 0 rgba(233, 189, 91, 0.55);
+}
+
+.hero[data-phase='golden'] .hero-skyline .bin.past {
+  background: #0a1d1a;
+  opacity: 0.55;
+}
+
+/* The sun: a low glow behind the skyline at the clock's place on the axis. It
+   stays inside the band, under no text. */
+.hero-skyline.has-sun::before {
+  content: '';
+  position: absolute;
+  inset: -14px 0 0;
+  background: radial-gradient(ellipse 26% 100% at var(--sun) 100%, rgba(233, 189, 91, 0.3), rgba(233, 189, 91, 0) 72%);
+}
+
+.hero[data-phase='golden'] .hero-skyline.has-sun::before {
+  background: radial-gradient(ellipse 42% 115% at var(--sun) 100%, rgba(240, 182, 74, 0.95), rgba(233, 140, 70, 0.4) 45%, rgba(233, 189, 91, 0) 78%);
+}
+
+.hero[data-phase='day'] .hero-skyline.has-sun::before,
+.hero[data-phase='late'] .hero-skyline.has-sun::before {
+  display: none;
+}
+
+.hero-now {
+  position: absolute;
+  z-index: 2;
+  bottom: -4px;
+  height: calc(100% + 8px);
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--on-night);
+}
+
+.hero-now::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--on-night);
+}
+
+.hero .hero-axis {
+  margin-top: 6px;
+  color: var(--on-night-soft);
 }
 
 /* Controls — the days as one track (the chosen day in the evening ink), the
@@ -353,11 +502,32 @@ a:focus-visible {
 }
 
 /* iOS zooms the page (here: the whole WordPress page) on focus of any control
-   under 16px and never zooms back — the one deliberate exception to the type scale */
+   under 16px and never zooms back — the one deliberate exception to the type scale.
+   Thumbs get 44px-tall targets. */
 @media (pointer: coarse) {
   .filters select {
     font-size: 16px;
   }
+
+  .day-btn {
+    min-height: 44px;
+  }
+}
+
+/* The disclosure and the "Being confirmed" key, before the first listing */
+.list-key {
+  font-size: 13px;
+  color: var(--ink-soft);
+  max-width: 72ch;
+}
+
+.list-key .chip {
+  vertical-align: 1px;
+}
+
+::selection {
+  background: rgba(233, 189, 91, 0.45); /* the gold, as a highlighter */
+  color: var(--ink);
 }
 
 /* Sections */
@@ -406,10 +576,65 @@ a:focus-visible {
   position: relative;
   padding: 14px 0;
   border-top: 1px solid var(--line);
+  scroll-margin-top: 16px;
 }
 
 .slot-rows > .card:first-child {
   border-top: 0;
+}
+
+/* A group's rows still being confirmed, folded into one line under the certain ones */
+.slot-more {
+  border-top: 1px solid var(--line);
+}
+
+.slot-rows > .slot-more:first-child {
+  border-top: 0;
+}
+
+.slot-more > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.slot-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A drawn chevron (a mask, so it takes the text color) that turns down when open */
+.slot-more > summary::before {
+  content: '';
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4 2l4 4-4 4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4 2l4 4-4 4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 200ms ease-out;
+}
+
+.slot-more[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.slot-more > summary:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slot-more > summary:hover {
+    color: var(--teal-dark);
+  }
 }
 
 /* The shared axis over each list: 10 AM to midnight */
@@ -454,6 +679,11 @@ a:focus-visible {
 
 .track-past {
   opacity: 0.3;
+}
+
+/* Last call: the sliver of a window that's left burns gold */
+.track-fill.last-call {
+  background: #d9a23a;
 }
 
 .track-now {
@@ -539,6 +769,14 @@ a:focus-visible {
   background: var(--on-night);
 }
 
+.card-featured .track-fill.last-call {
+  background: var(--on-night);
+}
+
+.card-featured .seal {
+  color: var(--gold);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .card-featured .card-name a:hover {
     color: var(--gold);
@@ -556,6 +794,10 @@ a:focus-visible {
   background: var(--night);
   box-shadow: 0 0 0 3px var(--gold);
   border-radius: 12px;
+}
+
+.card-name:focus {
+  outline: none; /* focused only by a deep link or a jump; the card's ring marks it */
 }
 
 .card-name {
@@ -595,6 +837,28 @@ a:focus-visible {
   font-weight: 600;
   color: var(--teal-dark);
   margin-top: 4px;
+}
+
+/* The newsroom's "Verified by phone" stamp, set at an angle like a rubber stamp */
+.card-head.has-seal {
+  position: relative;
+  padding-right: 64px;
+}
+
+.seal {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  width: 54px;
+  height: 54px;
+  color: var(--teal-dark);
+  transform: rotate(-9deg);
+}
+
+.seal text {
+  font: 700 7.2px 'Public Sans', sans-serif;
+  letter-spacing: 1.1px;
+  fill: currentColor;
 }
 
 /* Specials */
@@ -641,6 +905,12 @@ a:focus-visible {
   color: var(--amber);
 }
 
+/* ...and its last 15 minutes are last call: the gold, full strength (night on gold, 7:1) */
+.chip-lastcall {
+  background: var(--gold);
+  color: var(--night);
+}
+
 /* Research placeholder (guessed item or window) until the verification call — says so, quietly */
 .chip-placeholder {
   padding: 1px 8px;
@@ -683,11 +953,9 @@ a:focus-visible {
   margin-top: 6px;
 }
 
-/* Where the specials came from and when, then what a reader can do with them */
+/* Where the specials came from and when, then what a reader can do with them —
+   two real targets, far enough apart that a thumb can't hit the download by mistake */
 .card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
   margin-top: 10px;
   font-size: 11px;
   color: var(--ink-soft);
@@ -702,26 +970,42 @@ a:focus-visible {
   color: var(--amber);
 }
 
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  font-size: 13px;
+}
+
+.card-actions a,
+.card-actions .link-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+@media (pointer: coarse) {
+  .card-actions a,
+  .card-actions .link-btn {
+    min-height: 44px;
+  }
+}
+
 .card-meta a,
 .link-btn {
   font: inherit;
   font-weight: 600;
   color: var(--teal-dark);
+  text-underline-offset: 3px;
 }
 
-/* A button that reads as a link: it makes a file, it doesn't go anywhere */
+/* A button that reads as a link: it makes a file or changes the view, it doesn't go anywhere */
 .link-btn {
   padding: 0;
   border: 0;
   background: none;
   text-decoration: underline;
   cursor: pointer;
-}
-
-.list-note {
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-top: 24px;
 }
 
 /* Phones: all eight day buttons in one track, filters share the next row; the
@@ -759,9 +1043,30 @@ a:focus-visible {
     font-size: 22px;
     margin-top: 24px;
   }
+
+  .opener {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .opener-town {
+    grid-column: 2;
+  }
+
+  .tomorrow {
+    padding: 16px 18px;
+  }
+
+  .tomorrow-day {
+    font-size: 19px;
+  }
 }
 
 @media (max-width: 560px) {
+  /* "10 AM" and "noon" would touch on a phone's axis */
+  .axis .axis-noon {
+    display: none;
+  }
+
   .day-picker {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -806,15 +1111,130 @@ a:focus-visible {
   padding: 48px 0;
 }
 
-.cross-promo {
-  text-align: center;
-  margin-top: 32px;
+/* Quiet hours: somewhere to go — tomorrow's first happy hours, one tap each */
+.openers {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.opener {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 12px;
+  min-height: 56px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .opener:hover {
+    border-color: var(--teal);
+  }
+}
+
+.opener:active {
+  background: var(--teal-tint);
+}
+
+.opener-time {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+
+.opener-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.opener-town {
   font-size: 13px;
   color: var(--ink-soft);
 }
 
-.cross-promo a {
-  color: var(--teal-dark);
+.quiet-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.quiet-more .link-btn {
+  min-height: 44px;
+}
+
+/* The page ends on what's next: tomorrow's evening in the hero's ink, one tap away */
+.tomorrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 16px;
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px 24px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--night);
+  color: var(--on-night-soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tomorrow-day {
+  grid-column: 1;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--on-night);
+}
+
+.tomorrow-line {
+  grid-column: 1;
+  margin-top: 2px;
+}
+
+.tomorrow-line .mono {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.tomorrow .arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 22px;
+  height: 22px;
+  color: var(--gold);
+  transition: transform 200ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tomorrow:hover .arrow {
+    transform: translateX(4px);
+  }
+}
+
+.tomorrow:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 3px;
 }
 
 .footer {

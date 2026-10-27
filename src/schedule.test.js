@@ -21,7 +21,12 @@ import {
   isPlaceholder,
   minutesUntil,
   placeholderText,
-  nextPour,
+  nextDay,
+  dayShape,
+  SHAPE_START,
+  SHAPE_STEP,
+  isConfirmed,
+  sourcedOf,
   nowListings,
   specialStatus,
   spotlightFor,
@@ -136,17 +141,51 @@ test('nowListings applies the type filter', () => {
   assert.deepEqual(names(nowListings(bars, thu(16), drinks).pouring), ['both']);
 });
 
-test('nextPour finds the earliest start on the next day that has one', () => {
-  const bars = [
-    bar('sat-late', { specials: [special({ days: ['sat'], start: '16:00', end: '18:00' })] }),
-    bar('sat-early', { specials: [special({ days: ['sat'], start: '14:00', end: '16:00' })] }),
-  ];
-  assert.deepEqual(nextPour(bars, thu(23), all), { offset: 2, dayKey: 'sat', start: '14:00' });
+test('nowListings: a confirmed happy hour later beats a guessed one now', () => {
+  const b = bar('mixed', {
+    specials: [special({ start: '15:00', end: '18:00', items: ['PLACEHOLDER — x'] }), special({ start: '17:00', end: '19:00' })],
+  });
+  const { pouring, laterToday } = nowListings([b, bar('guess', { specials: [special({ items: ['PLACEHOLDER — y'] })] })], thu(16), all);
+  assert.deepEqual(names(laterToday), ['mixed']);
+  assert.deepEqual(names(pouring), ['guess']); // still listed, as being confirmed
+  assert.equal(isConfirmed(pouring[0]), false);
+  assert.deepEqual(sourcedOf(b.specials).map((s) => s.start), ['17:00']);
 });
 
-test('nextPour wraps to the same weekday next week, null when nothing matches', () => {
-  assert.deepEqual(nextPour([bar('thu-only')], thu(23), all), { offset: 7, dayKey: 'thu', start: '15:00' });
-  assert.equal(nextPour([bar('thu-only')], thu(23), () => false), null);
+test('nextDay: the next day with sourced specials, its bars first to start first', () => {
+  const bars = [
+    bar('sat-late', { name: 'Late', specials: [special({ days: ['sat'], start: '16:00', end: '18:00' })] }),
+    bar('sat-early', { name: 'Early', specials: [special({ days: ['sat'], start: '14:00', end: '16:00' })] }),
+    bar('fri-guess', { specials: [special({ days: ['fri'], items: ['PLACEHOLDER — x'] })] }), // never "next"
+  ];
+  const d = nextDay(bars, thu(23), all);
+  assert.deepEqual([d.offset, d.dayKey], [2, 'sat']);
+  assert.deepEqual(d.openers.map((o) => [o.bar.id, o.start]), [['sat-early', '14:00'], ['sat-late', '16:00']]);
+});
+
+test('nextDay wraps to the same weekday next week, null when nothing matches', () => {
+  const d = nextDay([bar('thu-only')], thu(23), all);
+  assert.deepEqual([d.offset, d.dayKey, d.openers[0].start], [7, 'thu', '15:00']);
+  assert.equal(nextDay([bar('thu-only')], thu(23), () => false), null);
+});
+
+test('dayShape counts bars with sourced specials per half hour, 10 AM to midnight', () => {
+  const shape = dayShape(
+    [
+      bar('a', { specials: [special({ start: '15:00', end: '17:00' }), special({ start: '15:00', end: '16:00', type: 'food' })] }),
+      bar('b', { specials: [special({ start: '16:00', end: '23:59' })] }),
+      bar('guess', { specials: [special({ start: '15:00', end: '18:00', items: ['PLACEHOLDER — x'] })] }),
+    ],
+    'thu',
+    all
+  );
+  const at = (h, m = 0) => shape[(h * 60 + m - SHAPE_START) / SHAPE_STEP];
+  assert.equal(shape.length, 28);
+  assert.equal(at(14, 30), 0);
+  assert.equal(at(15), 1); // one bar, however many of its specials
+  assert.equal(at(16, 30), 2);
+  assert.equal(at(17), 1); // end exclusive
+  assert.equal(at(23, 30), 1); // 23:59 runs to midnight
 });
 
 test('dayListings: featured first, then earliest start, then name', () => {
@@ -220,15 +259,21 @@ test('trackedUrl adds UTM tags and keeps the existing query', () => {
   assert.equal(new URL(trackedUrl('https://example.com/', 'newsletter')).searchParams.get('utm_medium'), 'newsletter');
 });
 
-test('timetable groups by a time key, in time order', () => {
+test('timetable groups by a time key, in time order, confirmed rows apart', () => {
   const entries = [
     { bar: bar('late'), specials: [special({ start: '16:00', end: '21:00' })] },
+    { bar: bar('guess'), specials: [special({ start: '15:00', end: '18:00', items: ['PLACEHOLDER — x'] })] },
     { bar: bar('early'), specials: [special({ start: '15:00', end: '18:00' })] },
     { bar: bar('also-early'), specials: [special({ start: '15:00', end: '23:59' })] },
+    // placed by its sourced window (16:00), not its guessed one (15:00)
+    { bar: bar('mixed'), specials: [special({ start: '15:00', end: '17:00', items: ['PLACEHOLDER — y'] }), special({ start: '16:00', end: '18:00' })] },
   ];
   const byStart = timetable(entries, startsAt);
-  assert.deepEqual(byStart.map((g) => [g.minutes, g.entries.map((e) => e.bar.id)]), [[900, ['early', 'also-early']], [960, ['late']]]);
-  assert.equal(endsAt(entries[2]), 1440); // 23:59 is midnight
+  assert.deepEqual(
+    byStart.map((g) => [g.minutes, g.confirmed.map((e) => e.bar.id), g.guessed.map((e) => e.bar.id)]),
+    [[900, ['early', 'also-early'], ['guess']], [960, ['late', 'mixed'], []]]
+  );
+  assert.equal(endsAt(entries[3]), 1440); // 23:59 is midnight
   assert.equal(hmOf(1440), '23:59');
   assert.equal(hmOf(1230), '20:30');
 });
@@ -241,6 +286,12 @@ test('heroFinding names the soonest to end and the next to start, sourced only',
   const later = [{ bar: bar('b', { name: 'B' }), specials: [special({ start: '21:00', end: '23:00' })] }];
   assert.equal(heroFinding(pouring, later), 'First to wrap up: A, at 8\u00a0PM. Next to start: B, at 9\u00a0PM.');
   assert.equal(heroFinding([], []), '');
+  // one left and nothing after it: say so
+  const last = [{ bar: bar('n', { name: 'Night Owl' }), specials: [special({ start: '21:00', end: '23:59' })] }];
+  assert.equal(heroFinding(last, []), 'The last one going: Night Owl, until midnight.');
+  // a guessed window in a confirmed row doesn't set the time
+  const mixed = [{ bar: bar('m', { name: 'M' }), specials: [special({ end: '18:00' }), special({ end: '17:00', items: ['PLACEHOLDER \u2014 z'] })] }];
+  assert.equal(heroFinding([...mixed, ...pouring], []), 'First to wrap up: M, at 6\u00a0PM.');
 });
 
 test('icsFor: weekly repeating events for sourced specials, local time', () => {

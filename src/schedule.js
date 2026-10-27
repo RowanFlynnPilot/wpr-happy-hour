@@ -93,6 +93,12 @@ export function placeholderText(item) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
+// A listing's sourced specials: its own advertising or a call, never a research
+// guess. Only these are counted, timed or stated as fact; a listing with none is
+// shown as "being confirmed".
+export const sourcedOf = (specials) => specials.filter((s) => !s.items.some(isPlaceholder));
+export const isConfirmed = ({ specials }) => sourcedOf(specials).length > 0;
+
 export const tierRank = (bar) => (bar.tier === 'featured' ? 0 : 1);
 const featuredFirst = (a, b) => tierRank(a) - tierRank(b) || a.name.localeCompare(b.name);
 // Time-ordered lists sort on the earliest qualifying special, regardless of data order
@@ -102,7 +108,9 @@ const byTierStartName = (a, b) =>
   earliestStart(a.specials) - earliestStart(b.specials) ||
   a.bar.name.localeCompare(b.bar.name);
 
-// Now view: bars grouped by whether any matching special is active this minute
+// Now view: bars grouped by whether any matching special is active this minute.
+// Sourced specials decide first: a bar whose confirmed happy hour starts at 5 is
+// "later today", even while a guessed special of its would be on now.
 export function nowListings(bars, date, match) {
   const pouring = [];
   const laterToday = [];
@@ -110,7 +118,9 @@ export function nowListings(bars, date, match) {
     const qualifying = bar.specials.filter(match);
     const active = qualifying.filter((s) => specialStatus(s, date) === 'now');
     const upcoming = qualifying.filter((s) => specialStatus(s, date) === 'later');
-    if (active.length > 0) pouring.push({ bar, specials: active });
+    if (sourcedOf(active).length > 0) pouring.push({ bar, specials: active });
+    else if (sourcedOf(upcoming).length > 0) laterToday.push({ bar, specials: upcoming });
+    else if (active.length > 0) pouring.push({ bar, specials: active });
     else if (upcoming.length > 0) laterToday.push({ bar, specials: upcoming });
   }
   pouring.sort((a, b) => featuredFirst(a.bar, b.bar));
@@ -118,22 +128,36 @@ export function nowListings(bars, date, match) {
   return { pouring, laterToday };
 }
 
-// Quiet night: the earliest matching pour on the next day that has one,
-// looking up to a week ahead (offset 7 = same weekday next week). Null if none.
-export function nextPour(bars, date, match) {
+// What's next after today: the next day (1–7 ahead; 7 = same weekday next week)
+// with a sourced matching special — its bars, first to start first (then by name).
+// Feeds the Now view's closing line and its quiet state. Null if none all week.
+export function nextDay(bars, date, match) {
   for (let offset = 1; offset <= 7; offset++) {
     const dayKey = DAY_KEYS[(date.getDay() + offset) % 7];
-    let start = null;
-    for (const bar of bars) {
-      for (const s of bar.specials) {
-        if (match(s) && s.days.includes(dayKey) && (start === null || toMinutes(s.start) < toMinutes(start))) {
-          start = s.start;
-        }
-      }
-    }
-    if (start !== null) return { offset, dayKey, start };
+    const openers = bars
+      .map((bar) => ({ bar, specials: sourcedOf(bar.specials.filter((s) => match(s) && s.days.includes(dayKey))) }))
+      .filter((e) => e.specials.length > 0)
+      .map(({ bar, specials }) => ({ bar, start: hmOf(Math.min(...specials.map((s) => toMinutes(s.start)))) }))
+      .sort((a, b) => toMinutes(a.start) - toMinutes(b.start) || a.bar.name.localeCompare(b.bar.name));
+    if (openers.length > 0) return { offset, dayKey, openers };
   }
   return null;
+}
+
+// The day's shape, for the hero: how many bars have a sourced matching special
+// running at each half hour from 10 AM to midnight (28 counts, the rows' axis)
+export const SHAPE_START = 10 * 60;
+export const SHAPE_STEP = 30;
+export function dayShape(bars, dayKey, match) {
+  const counts = Array.from({ length: (24 * 60 - SHAPE_START) / SHAPE_STEP }, () => 0);
+  for (const bar of bars) {
+    const windows = sourcedOf(bar.specials.filter((s) => match(s) && s.days.includes(dayKey)));
+    counts.forEach((_, i) => {
+      const t = SHAPE_START + i * SHAPE_STEP;
+      if (windows.some((s) => toMinutes(s.start) <= t && t < endMinutes(s.end))) counts[i] += 1;
+    });
+  }
+  return counts;
 }
 
 // Day view: every bar with a matching special on `day`, featured first, then start, then name
@@ -211,17 +235,20 @@ export function trackedUrl(url, medium = 'widget') {
 
 // The finder's timetable: a list grouped under one time each — when the happy
 // hour ends (Now: "Until 8 PM") or starts (later and day views: "From 4 PM") —
-// in time order; entries keep their order within a group.
+// in time order. A row is placed by its sourced specials (by its guessed ones only
+// when it has none), and each group keeps confirmed rows apart from the ones still
+// being confirmed, which the finder folds away. Rows keep their order.
 export const endsAt = ({ specials }) => Math.max(...specials.map((s) => endMinutes(s.end)));
 export const startsAt = ({ specials }) => Math.min(...specials.map((s) => toMinutes(s.start)));
 export function timetable(entries, keyFn) {
   const groups = new Map();
   for (const e of entries) {
-    const k = keyFn(e);
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k).push(e);
+    const sourced = sourcedOf(e.specials);
+    const k = keyFn({ specials: sourced.length > 0 ? sourced : e.specials });
+    if (!groups.has(k)) groups.set(k, { minutes: k, confirmed: [], guessed: [] });
+    groups.get(k)[sourced.length > 0 ? 'confirmed' : 'guessed'].push(e);
   }
-  return [...groups.entries()].sort((a, b) => a[0] - b[0]).map(([minutes, list]) => ({ minutes, entries: list }));
+  return [...groups.values()].sort((a, b) => a.minutes - b.minutes);
 }
 
 // Minutes since midnight → "HH:MM" for fmtTime (1440 is the data's midnight)
@@ -230,16 +257,18 @@ export const hmOf = (m) => (m >= 1440 ? '23:59' : `${String(Math.floor(m / 60)).
 // The hero's second line: what the list means right now. Sourced windows only —
 // a PLACEHOLDER time is never stated as fact. '' when there's nothing to say.
 export function heroFinding(pouring, laterToday) {
-  const sourced = (list) => list.filter(({ specials }) => !specials.some((s) => s.items.some(isPlaceholder)));
+  const sourced = (list) => list.filter(isConfirmed).map(({ bar, specials }) => ({ bar, specials: sourcedOf(specials) }));
   const names = (list) =>
     list.length <= 2 ? list.map((e) => e.bar.name).join(' and ') : `${list[0].bar.name}, ${list[1].bar.name} and ${list.length - 2} more`;
   const parts = [];
   const p = sourced(pouring);
-  if (p.length) {
+  const l = sourced(laterToday);
+  if (p.length === 1 && l.length === 0) {
+    parts.push(`The last one going: ${p[0].bar.name}, until ${unbroken(fmtTime(hmOf(endsAt(p[0]))))}.`);
+  } else if (p.length) {
     const soonest = Math.min(...p.map(endsAt));
     parts.push(`First to wrap up: ${names(p.filter((e) => endsAt(e) === soonest))}, at ${unbroken(fmtTime(hmOf(soonest)))}.`);
   }
-  const l = sourced(laterToday);
   if (l.length) {
     const next = Math.min(...l.map(startsAt));
     parts.push(`Next to start: ${names(l.filter((e) => startsAt(e) === next))}, at ${unbroken(fmtTime(hmOf(next)))}.`);

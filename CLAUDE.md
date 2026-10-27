@@ -47,6 +47,11 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Every listing shows where its specials came from and when (`verifiedOn`, or
   `checked` for sourced-but-unverified). `checked` is set only after actually
   re-reading the bar's own site/posts. Tags and notes come from the call, never guessed.
+- Only sourced specials are stated as fact (`sourcedOf` in schedule.js): counts, the
+  hero's sentences, timetable placement, countdowns, "next up" and the calendar file
+  skip PLACEHOLDER windows; those rows show as "Being confirmed" and fold per group.
+- The hero's light follows the visitor's clock (day / golden 3–7 / evening / late);
+  its one motion is the count rolling, skipped under reduced motion.
 - Fonts and photos are self-hosted (public/fonts, public/photos): no Google Fonts or
   other third-party requests at load.
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
