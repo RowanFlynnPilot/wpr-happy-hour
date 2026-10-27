@@ -243,7 +243,9 @@ newsletter card:
   preview needs its `photo`, `logo` and `ad` in bars.json. `digest/spotlight-sample.jpg`
   is the showcase bar's preview without the ribbon (`&sample`), used by the one-pager
   and rate card — The Palms Supper Club, whose owner agreed to be the showcase
-  (2026-10-09).
+  (2026-10-09). `digest/spotlight-looks/<style>.jpg` is that preview in every look, for
+  the one-pager's "Pick the look" strip; the same checks run on each, so a look the
+  showcase copy doesn't fit stops the deploy.
 
 There is no generic demo ad: an ad without the bar's own photo and logo isn't the
 product, and stock photos are out. The render fails the deploy when any part of an ad
@@ -282,13 +284,17 @@ drinking-game copy out.
   spotlight: one Letter page (browser → Print → Save as PDF), or send the URL
   (.../spotlight-one-pager.html). Its centerpiece is the ad on a phone in the 5 p.m.
   edition, using the live `digest/spotlight-sample.jpg` (stories are drawn as lines, not
-  invented headlines). WPR's wordmark is committed as `public/wpr-wordmark.png`.
+  invented headlines), and under it a "Pick the look that fits your place" strip of the
+  same ad in all four looks, rendered at deploy (`digest/spotlight-looks/<style>.jpg`). WPR's wordmark is committed as `public/wpr-wordmark.png`.
   Audience numbers are WPR's published figures (sponsorship page, Jan 2026) — update
   them there first. Same "$––" + DRAFT-ribbon rule as the rate card.
 - `public/spotlight-objections.html` — Chris's one-page quick reference for spotlight
   calls: what bar owners say, a line to say back, a follow-up question, the hard noes
   (supplier-paid ads, "bottomless" copy) and when not to sell. Written to be fine if a
   prospect read it. Lines tagged "Check" need a yes from Shereen / DOR first.
+- All three sheets use the site's self-hosted fonts (`public/fonts/`), like the finder:
+  no third-party requests. Each must print on one Letter page — re-check after any
+  copy change (`npm run build; npm run render`, then Print → Save as PDF).
 - `LAUNCH.md` — the ordered launch checklist.
 
 ## Analytics

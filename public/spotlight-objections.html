@@ -6,12 +6,12 @@
     <meta name="robots" content="noindex" />
     <title>Spotlight Objections — Wausau Pilot &amp; Review</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts self-hosted, as on the finder (public/fonts): no third-party requests -->
+    <style>
+      @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('./fonts/fraunces-latin.woff2') format('woff2'); }
+      @font-face { font-family: 'Public Sans'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('./fonts/public-sans-latin.woff2') format('woff2'); }
+      @font-face { font-family: 'Public Sans'; font-style: italic; font-weight: 400 700; font-display: swap; src: url('./fonts/public-sans-italic-latin.woff2') format('woff2'); }
+    </style>
     <!-- Chris's quick reference for spotlight calls, the companion to
          spotlight-one-pager.html. Set as a script: the owner's line on the left,
          Chris's reply in the serif on the right, and the question that keeps the
@@ -47,7 +47,7 @@
         max-width: 8.5in;
         margin: 24px auto;
         background: var(--paper);
-        padding: 0.4in 0.5in 0.32in;
+        padding: 0.4in 0.5in 0.28in;
         box-shadow: 0 1px 2px rgba(34, 48, 44, 0.08), 0 12px 32px -16px rgba(34, 48, 44, 0.25);
       }
 
@@ -64,12 +64,12 @@
       .dek { font-family: 'Fraunces', serif; font-size: 16px; color: var(--teal-dark); margin-top: 4px; }
 
       /* The script: their line, then yours, then the question */
-      .script { list-style: none; padding: 0; margin-top: 14px; border-top: 2px solid var(--ink); }
+      .script { list-style: none; padding: 0; margin-top: 10px; border-top: 2px solid var(--ink); }
       .exchange {
         display: grid;
         grid-template-columns: 176px 1fr;
         gap: 18px;
-        padding: 6px 0 7px;
+        padding: 4px 0 5px;
         border-bottom: 1px solid var(--line);
       }
       .they {
@@ -90,7 +90,7 @@
         color: var(--teal);
       }
       .you { font-family: 'Fraunces', serif; font-size: 14px; line-height: 1.35; }
-      .ask { margin-top: 1px; font-size: 12.5px; font-style: italic; color: var(--teal-dark); }
+      .ask { margin-top: 1px; font-size: 12.5px; line-height: 1.4; font-style: italic; color: var(--teal-dark); }
       .ask b { font-style: normal; font-weight: 600; }
 
       .check {
@@ -184,6 +184,13 @@
           <div>
             <p class="you">Food specials work the same: Friday fish fry, prime rib night, early-bird menus.</p>
             <p class="ask"><b>Ask:</b> What’s your best night for food?</p>
+          </div>
+        </li>
+        <li class="exchange">
+          <p class="they">That looks too fancy for&nbsp;us.”</p>
+          <div>
+            <p class="you">Pick the look that fits: supper-club menu, neon sign, marquee board, or your photo.</p>
+            <p class="ask"><b>Ask:</b> What’s on your sign out front?</p>
           </div>
         </li>
         <li class="exchange">

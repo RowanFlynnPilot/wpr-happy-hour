@@ -6,16 +6,16 @@
     <meta name="robots" content="noindex" />
     <title>Newsletter Spotlight — Wausau Pilot &amp; Review</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts self-hosted, as on the finder (public/fonts): no third-party requests -->
+    <style>
+      @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('./fonts/fraunces-latin.woff2') format('woff2'); }
+      @font-face { font-family: 'Public Sans'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('./fonts/public-sans-latin.woff2') format('woff2'); }
+    </style>
     <!-- Chris's leave-behind for the newsletter spotlight (the cheap per-send ad).
          One Letter page: print or save to PDF from the browser, or send the URL.
          The centerpiece is the ad where readers meet it — the 5 p.m. edition on a
-         phone. The ad inside is the live render (digest/spotlight-sample.jpg) — The
+         phone. The ad inside is the live render (digest/spotlight-sample.jpg), as are the four
+         looks under it (digest/spotlight-looks/) — The
          Palms Supper Club, whose owner agreed to be the showcase — so it
          can't drift from the real thing; the stories around it are drawn as lines,
          not invented headlines. Every claim is one Chris can defend: audience
@@ -171,27 +171,16 @@
       }
       .proof strong { font-weight: 700; color: var(--teal-dark); }
 
-      /* How it works: a real sequence, so it's numbered — in a quieter panel, so
-         it reads as a process rather than a second set of reasons */
-      .how { margin-top: 20px; background: var(--cream); border-radius: 10px; padding: 14px 20px; }
-      .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; position: relative; isolation: isolate; }
-      .steps::before { content: ''; position: absolute; z-index: -1; top: 13px; left: 14px; right: 33%; height: 1px; background: var(--teal); }
-      .steps li { font-size: 12.5px; line-height: 1.5; }
-      .steps h3 { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
-      .step-num {
-        display: grid;
-        place-items: center;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: var(--cream);
-        border: 1.5px solid var(--teal);
-        color: var(--teal-dark);
-        font-family: 'Fraunces', serif;
-        font-weight: 700;
-        font-size: 14px;
-        margin-bottom: 6px;
-      }
+      /* The looks: the showcase ad rendered live in each one at deploy
+         (digest/spotlight-looks/), so the sheet shows the product, not a promise.
+         In the quieter panel, so it reads as a choice, not a fourth reason. */
+      .looks { margin-top: 18px; background: var(--cream); border-radius: 10px; padding: 11px 16px 10px; }
+      .looks-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 7px; }
+      .looks-head h2 { margin-bottom: 0; }
+      .looks-head p { font-size: 12px; color: var(--ink-soft); }
+      .looks-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+      .looks-grid img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 1px 2px rgba(34, 48, 44, 0.18); }
+      .looks-grid span { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; text-align: center; }
 
       /* The ask: a full-width band at the foot of the sheet */
       .book {
@@ -238,11 +227,12 @@
         .sheet { margin: 0; padding: 20px 16px 0; box-shadow: none; }
         .flag { flex-direction: column; align-items: flex-start; }
         .flag-note { text-align: left; }
-        .hero, .reasons, .steps, .book { grid-template-columns: 1fr; }
+        .hero, .reasons, .book { grid-template-columns: 1fr; }
+        .looks-head { flex-direction: column; gap: 2px; }
+        .looks-grid { grid-template-columns: 1fr 1fr; }
         .hero { gap: 24px; }
         h1 { font-size: 38px; }
         .phone { margin: 0 auto; }
-        .steps::before { display: none; }
         .book { margin: 24px -16px 0; padding: 20px 16px; }
         .price { justify-self: start; }
         footer { padding-bottom: 20px; }
@@ -316,34 +306,26 @@
           <p>The 5&nbsp;p.m. edition arrives right at happy hour; the 7&nbsp;a.m. edition helps people plan the night.</p>
         </div>
         <div class="reason">
-          <h2>Looks like you</h2>
-          <p>Made from your own photo, logo and specials, confirmed with you by phone. Specials change? One call or email.</p>
+          <h2>Confirmed with you</h2>
+          <p>Your specials and prices, confirmed by phone before it runs. Changes? One call or email.</p>
         </div>
         <div class="reason">
           <h2>Cheap to try</h2>
-          <p>Priced per send, for one day or a run of dates. Clicks to your site show up in your own stats.</p>
+          <p>Priced per send: one big night, every Friday, or a month. Clicks show up in your own stats.</p>
         </div>
       </section>
 
-      <section class="how">
-        <ol class="steps" aria-label="How it works">
-          <li>
-            <span class="step-num">1</span>
-            <h3>Confirm your specials</h3>
-            What you’re running, when, and the prices. New to the Happy Hour Finder? One call sets up
-            both.
-          </li>
-          <li>
-            <span class="step-num">2</span>
-            <h3>Pick your dates</h3>
-            7&nbsp;a.m. or 5&nbsp;p.m.: every Friday, one big night, or a whole month.
-          </li>
-          <li>
-            <span class="step-num">3</span>
-            <h3>Your spotlight runs</h3>
-            Labeled as an ad, beside the local news people open the email for.
-          </li>
-        </ol>
+      <section class="looks" aria-labelledby="looks-title">
+        <div class="looks-head">
+          <h2 id="looks-title">Pick the look that fits your place</h2>
+          <p>Your own photo, logo and words in every one, labeled as an ad.</p>
+        </div>
+        <ul class="looks-grid">
+          <li><img src="./digest/spotlight-looks/menu.jpg" alt="" width="970" height="500" /><span>Supper-club menu</span></li>
+          <li><img src="./digest/spotlight-looks/neon.jpg" alt="" width="970" height="500" /><span>Roadside neon</span></li>
+          <li><img src="./digest/spotlight-looks/marquee.jpg" alt="" width="970" height="500" /><span>Marquee board</span></li>
+          <li><img src="./digest/spotlight-looks/photo.jpg" alt="" width="970" height="500" /><span>Photo</span></li>
+        </ul>
       </section>
 
       <section class="book">

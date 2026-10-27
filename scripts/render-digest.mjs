@@ -14,6 +14,7 @@
 //   dist/digest/spotlight/<id>.jpg  one spotlight ad per verified partner with ad
 //                            copy, 970 x 500, ready to book into a newsletter ad zone
 //   dist/digest/spotlight-sample.jpg  the showcase bar's ad (a preview), for the one-pager and rate card
+//   dist/digest/spotlight-looks/<style>.jpg  the same preview in every look, for the one-pager
 //   dist/digest/spotlight.json      per-ad image, alt text and tracked link
 // Fails loud (non-zero exit, deploy stops) on any page error, missing web font
 // or broken image, and on a spotlight whose text doesn't fit or whose photo
@@ -23,7 +24,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
-import { validate } from '../src/data/validate.js';
+import { AD_STYLES, validate } from '../src/data/validate.js';
 import { WEEK_ORDER, dayAtAGlance, digestFor, fmtWindows, spotlightFor, trackedUrl, weekdayLabel } from '../src/schedule.js';
 
 const WIDTH = 536; // CSS px — the newsletter's image column, rendered at 2x
@@ -101,6 +102,7 @@ function adProblems(gap) {
 }
 
 await mkdir(new URL('spotlight/', OUT), { recursive: true });
+await mkdir(new URL('spotlight-looks/', OUT), { recursive: true });
 const server = await preview({ preview: { port: 4173, strictPort: true }, logLevel: 'warn' });
 const base = server.resolvedUrls.local[0];
 const browser = await chromium.launch();
@@ -188,6 +190,11 @@ try {
   // owner agreed to be the showcase (2026-10-09): a preview of its real, sourced
   // listing. If it ever leaves bars.json this fails loudly — pick a new showcase.
   await shootAd('spotlight.html?preview=palms-supper-club&sample', 'spotlight-sample.jpg');
+  // ...and in every look, for the one-pager's "pick your look" strip. The same checks
+  // run on each: a look the showcase copy doesn't fit stops the deploy.
+  for (const style of AD_STYLES) {
+    await shootAd(`spotlight.html?preview=palms-supper-club&sample&style=${style}`, `spotlight-looks/${style}.jpg`);
+  }
   await writeFile(new URL('spotlight.json', OUT), `${JSON.stringify({ updated: data.updated, spotlights }, null, 2)}\n`);
   console.log(`Wrote dist/digest/spotlight.json (${spotlights.length} ad${spotlights.length === 1 ? '' : 's'})`);
 } finally {
