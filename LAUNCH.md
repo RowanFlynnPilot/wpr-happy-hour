@@ -19,7 +19,8 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    tracker is useful on day one.
 2. **Dress the featured showcase.** The Palms Supper Club is the showcase (owner
    agreed 2026-10-09): featured, with its own prime rib photo and logo (both
-   self-hosted), and its house-style spotlight ad is the sample in the sales sheets.
+   self-hosted), and its spotlight ad — the supper-club menu card look — is the sample in
+   the sales sheets.
    Its Wine Down Wednesday end time is still unconfirmed, and its specials need a
    recorded confirmation call before it counts as verified. Faraway Place (also
    featured) still needs a street address, website and `photo`.

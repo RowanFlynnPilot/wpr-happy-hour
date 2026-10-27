@@ -1,11 +1,10 @@
-/* Newsletter spotlight (spotlight.html) — one partner's ad in WPR's house ad
-   style, approved Oct 11, 2026: the bar's photo on the right under a scrim, its
-   logo on a cream plate, an Anton headline, a Yellowtail script line in the
-   bar's accent color, a chalkboard of the details hung from the top edge, and a
-   button naming its site. Built at the ad unit's real size, 970 x 500; the
-   newsletter shows it at 414 px wide on a computer and 326 on a phone, so no
-   text under 24 px here. Its own type, not the finder's: this is the bar's ad.
-   scripts/render-digest.mjs fails the deploy on text that overflows or collides. */
+/* Newsletter spotlight (spotlight.html) — one partner's ad, in the look its bar
+   picked (data-style on .ad; see AD_STYLES in validate.js): photo, menu, neon or
+   marquee. Every look uses the bar's own photo, logo and words, never stock.
+   Built at the ad unit's real size, 970 x 500; the newsletter shows it at 414 px
+   wide on a computer and 326 on a phone, so no text under 24 px here. Its own
+   type, not the finder's: this is the bar's ad. scripts/render-digest.mjs fails
+   the deploy on text that overflows or collides, in every look. */
 @font-face {
   font-family: 'Anton';
   font-style: normal;
@@ -26,6 +25,41 @@
   font-weight: 700;
   font-display: block;
   src: url('/fonts/barlow-condensed-700-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: block;
+  src: url('/fonts/bodoni-moda-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Bodoni Moda';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: block;
+  src: url('/fonts/bodoni-moda-italic-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Neonderthaw';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/neonderthaw-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Tilt Neon';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/tilt-neon-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('/fonts/oswald-600-latin.woff2') format('woff2');
 }
 
 body.spotlight-page {
@@ -56,12 +90,46 @@ body.spotlight-page {
   width: 970px;
   height: 500px;
   overflow: hidden;
-  background: var(--ink);
   color: #fff;
 }
 
-/* The bar's photo, never stretched: the render fails on one smaller than this box */
+/* A line that must show whole: one line, and clipped where the render can see it */
+.ad .fit {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* The bar's photo, in every look, is never stretched: the render fails on a photo
+   smaller than the box it's drawn in */
 .ad-photo {
+  display: block;
+}
+
+/* The disclosure, baked into the image so it travels wherever the ad runs: the
+   newsletter's sponsored chip (#FED850, dark text). "Advertisement" is the label
+   the FTC's native-ad guide names as clearly understood. Each look places it. */
+.ad-label {
+  position: absolute;
+  z-index: 3;
+  font: 700 24px/1 'Barlow Condensed', Arial, sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  background: #fed850;
+  padding: 6px 10px 7px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   photo — the bar's photo on the right under a scrim, its logo on a cream
+   plate, an Anton headline, a tilted Yellowtail line in the bar's accent, a
+   chalkboard of the details hung from the top edge, and a button
+   --------------------------------------------------------------------------- */
+.ad[data-style='photo'] {
+  background: var(--ink);
+}
+
+.ad[data-style='photo'] .ad-photo {
   position: absolute;
   top: 0;
   right: 0;
@@ -70,6 +138,11 @@ body.spotlight-page {
   object-fit: cover;
   object-position: 50% 78%; /* food photos sit low in the frame: favor the plate */
   filter: saturate(1.15) contrast(1.05);
+}
+
+.ad[data-style='photo'] .ad-label {
+  right: 26px;
+  bottom: 45px; /* centered on the button */
 }
 
 /* Dark from the left, so white type reads and the photo's subject stays bright */
@@ -147,7 +220,7 @@ body.spotlight-page {
   border-radius: 6px;
 }
 
-/* The supporting piece: a supper-club chalkboard, hung from the top edge */
+/* The supporting piece: a chalkboard, hung from the top edge */
 .ad-board {
   position: absolute;
   right: 26px;
@@ -188,8 +261,6 @@ body.spotlight-page {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden; /* so the render can see a line that doesn't fit */
 }
 
 .ad-slate .ad-when {
@@ -203,18 +274,369 @@ body.spotlight-page {
   margin: 8px 6px;
 }
 
-/* The disclosure, baked into the image so it travels wherever the ad runs: the
-   newsletter's sponsored chip (#FED850, dark text). "Advertisement" is the label
-   the FTC's native-ad guide names as clearly understood. */
-.ad-label {
+/* ---------------------------------------------------------------------------
+   menu — a supper-club menu card on a dark green booth wall: the logo, the
+   headline in Bodoni, the line in italic, priced lines with dotted leaders, the
+   plate in an arched window beside it, brass rules. Its own palette: the bar's
+   accent stays out of a menu.
+   --------------------------------------------------------------------------- */
+.ad[data-style='menu'] {
+  background: radial-gradient(120% 90% at 30% 20%, #245747 0%, #173d32 60%, #10291f 100%);
+  color: #1b3c31;
+}
+
+/* A flex column, so the web address sits at the foot; content that runs past the
+   card's height clips, and the render fails it (fit-y) */
+.menu-card {
   position: absolute;
-  right: 26px;
-  bottom: 45px; /* centered on the button */
-  font: 700 24px/1 'Barlow Condensed', Arial, sans-serif;
-  letter-spacing: 1.5px;
+  left: 36px;
+  top: 28px;
+  width: 504px;
+  height: 444px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 34px 30px; /* the headline may use the card's width; the rows sit inset */
+  background: #f5edda;
+  border-radius: 6px;
+  box-shadow: 0 22px 34px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  overflow: hidden;
+}
+
+.menu-card::before,
+.menu-card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 2px solid #c9a45c;
+  border-radius: 3px;
+  inset: 12px;
+}
+
+.menu-card::after {
+  inset: 18px;
+  border-width: 1px;
+  border-radius: 2px;
+}
+
+.menu-logo {
+  align-self: center;
+  height: 56px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+.menu-headline {
+  font: 800 88px/1 'Bodoni Moda', serif;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+
+.menu-line {
+  font: italic 400 30px/1.25 'Bodoni Moda', serif;
+  color: #3b544a;
+  margin-top: 2px;
+}
+
+.menu-rows {
+  list-style: none;
+  padding: 0 32px;
+  margin-top: 10px;
+  font: 400 26px/34px 'Bodoni Moda', serif;
+}
+
+.menu-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.menu-item {
+  min-width: 0;
+}
+
+.menu-leader {
+  flex: 1;
+  min-width: 24px;
+  border-bottom: 3px dotted #b99a5a;
+  transform: translateY(-7px);
+}
+
+.menu-price {
+  flex: none;
+  font-weight: 700;
+}
+
+.menu-note {
+  font-style: italic;
+  color: #7a5b22;
+}
+
+.menu-cta {
+  margin-top: auto;
+  font: 700 24px/1 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #1a1a1a;
-  background: #fed850;
-  padding: 6px 10px 7px;
+}
+
+.menu-window {
+  position: absolute;
+  right: 40px;
+  top: 28px;
+  width: 348px;
+  height: 444px;
+  overflow: hidden;
+  border-radius: 174px 174px 8px 8px; /* the arch of a supper club's window */
+  box-shadow:
+    0 0 0 3px #c9a45c,
+    0 0 0 10px #173d32,
+    0 0 0 11px #c9a45c,
+    0 22px 34px rgba(0, 0, 0, 0.45);
+}
+
+.ad[data-style='menu'] .ad-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 66% 80%;
+  filter: saturate(1.08) contrast(1.04);
+}
+
+.ad[data-style='menu'] .ad-label {
+  right: 58px;
+  bottom: 44px;
+}
+
+/* ---------------------------------------------------------------------------
+   neon — a roadside sign at night: the logo in a lit box, the line as a tube
+   glowing in the bar's accent, the headline in pink neon script with an arrow at
+   the plate, the notes and prices as amber tubes
+   --------------------------------------------------------------------------- */
+.ad[data-style='neon'] {
+  background: #0a0d16;
+}
+
+.ad[data-style='neon'] .ad-photo {
+  position: absolute;
+  right: -20px;
+  bottom: -60px;
+  width: 700px;
+  height: auto;
+  filter: saturate(1.12) contrast(1.06) brightness(0.92);
+}
+
+.neon-night {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #0a0d16 0%, rgba(10, 13, 22, 0.96) 34%, rgba(10, 13, 22, 0.55) 56%, rgba(10, 13, 22, 0) 76%),
+    linear-gradient(0deg, rgba(10, 13, 22, 0.6) 0%, rgba(10, 13, 22, 0) 34%);
+}
+
+.neon-box {
+  position: absolute;
+  left: 40px;
+  top: 28px;
+  padding: 12px 18px;
+  background: #fbf8ef;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 3px #2b3a52,
+    0 0 24px rgba(255, 240, 200, 0.35);
+}
+
+.neon-box img {
+  display: block;
+  height: 62px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+/* Its width is its longest tube, so a headline too long for the ad runs off it —
+   and the render says so */
+.neon-sign {
+  position: absolute;
+  left: 40px;
+  top: 136px;
+  width: max-content;
+}
+
+.neon-line {
+  font: 400 32px/1 'Tilt Neon', sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #f4fff0;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 10px var(--accent),
+    0 0 22px var(--accent),
+    0 0 40px var(--accent);
+}
+
+.neon-headline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+  font: 400 150px/1.1 'Neonderthaw', cursive;
+  color: #fff1f5;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 12px #ff5c93,
+    0 0 26px #ff2e74,
+    0 0 52px #ff2e74,
+    0 0 84px #c8124f;
+}
+
+.neon-headline .arrow {
+  flex: none;
+  width: 68px;
+  height: 68px;
+  color: #fff4d6;
+  filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 12px #ffb340) drop-shadow(0 0 26px #ff8a00);
+}
+
+.neon-small {
+  margin-top: 8px;
+  font: 400 30px/1.2 'Tilt Neon', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff6e0;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 10px #ffb340,
+    0 0 22px #ff8a00;
+}
+
+.neon-cta {
+  position: absolute;
+  left: 40px;
+  bottom: 30px;
+  white-space: nowrap;
+  font: 700 28px/1 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 4px;
+}
+
+.ad[data-style='neon'] .ad-label {
+  right: 26px;
+  bottom: 30px;
+}
+
+/* ---------------------------------------------------------------------------
+   marquee — the roadside changeable-letter board: bulbs all round a green
+   frame, the logo on a topper, the headline in red letters, then the line and
+   the details one a row; the web address under it in the bar's accent
+   --------------------------------------------------------------------------- */
+.ad[data-style='marquee'] {
+  background: #13201b;
+}
+
+.ad[data-style='marquee'] .ad-photo {
+  position: absolute;
+  right: -20px;
+  bottom: -60px;
+  width: 700px;
+  height: auto;
+  filter: saturate(1.1) contrast(1.04);
+}
+
+.marquee-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #13201b 0%, #13201b 32%, rgba(19, 32, 27, 0.55) 50%, rgba(19, 32, 27, 0) 70%);
+}
+
+.marquee-sign {
+  position: absolute;
+  left: 30px;
+  top: 14px;
+  width: 510px;
+}
+
+.marquee-topper {
+  position: relative;
+  z-index: 1;
+  width: 230px;
+  height: 70px;
+  margin: 0 auto -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fbf8ef;
+  border-radius: 12px 12px 4px 4px;
+  box-shadow:
+    0 0 0 5px #1f6b58,
+    0 10px 18px rgba(0, 0, 0, 0.35);
+}
+
+.marquee-topper img {
+  height: 54px;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+.marquee-frame {
+  position: relative;
+  padding: 26px;
+  background: #1f6b58;
+  border-radius: 14px;
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* The bulbs: lit, warm, one every 26px along each edge */
+.marquee-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  --bulb: radial-gradient(circle at 50% 50%, #fff8d8 0 4px, #ffd970 5px, rgba(255, 200, 80, 0) 9px);
+  background:
+    var(--bulb) 0 0 / 26px 26px repeat-x,
+    var(--bulb) 0 100% / 26px 26px repeat-x,
+    var(--bulb) 0 0 / 26px 26px repeat-y,
+    var(--bulb) 100% 0 / 26px 26px repeat-y;
+}
+
+.marquee-board {
+  position: relative;
+  background: repeating-linear-gradient(180deg, #f7f5ee 0 43px, #cfccc2 43px 46px);
   border-radius: 4px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.marquee-row {
+  height: 46px;
+  font: 600 34px/46px 'Oswald', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #161616;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.marquee-red {
+  color: #b3261e;
+}
+
+.marquee-cta {
+  position: absolute;
+  left: 30px;
+  width: 510px;
+  bottom: 28px;
+  text-align: center;
+  white-space: nowrap;
+  font: 700 28px/1 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ad[data-style='marquee'] .ad-label {
+  right: 26px;
+  bottom: 26px;
 }

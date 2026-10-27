@@ -213,11 +213,18 @@ export function digestSchedule(listed) {
 // finder listing when it has none. Real ads are for VERIFIED bars only.
 // { preview: true } is the sales preview (spotlight.html?preview=<id>): a listed
 // bar's ad before it's verified, for collateral and pitches — never sent to subscribers.
+// rows: the board lines, each split into item and price when it ends in one
+// ("12 oz Queen $42"), so a style can set it as a menu line; the rest are notes.
+const PRICED = /^(.*\S)\s+(\$\d[\d,]*(?:\.\d{2})?)$/;
 export function spotlightFor(bar, { preview = false } = {}) {
   if (!preview && bar.verifiedOn === null) throw new Error(`spotlight: "${bar.id}" is not verified — unconfirmed specials never go to subscribers`);
   if (bar.ad === null) throw new Error(`spotlight: "${bar.id}" has no ad copy — write its "ad" in bars.json with the bar`);
   const cta = bar.website ? `Details at ${new URL(bar.website).hostname.replace(/^www\./, '')}` : 'Details on the Happy Hour Finder';
-  return { ...bar.ad, cta };
+  const rows = bar.ad.board.map((text) => {
+    const m = PRICED.exec(text);
+    return m ? { text, item: m[1], price: m[2] } : { text };
+  });
+  return { ...bar.ad, cta, rows };
 }
 
 // Paid outbound links (bar websites, the presenting sponsor). The links carry

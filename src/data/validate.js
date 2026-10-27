@@ -16,7 +16,12 @@ const SPONSOR_KEYS = ['name', 'url'];
 const BAR_KEYS = ['id', 'name', 'city', 'address', 'website', 'tier', 'verifiedOn', 'checked', 'tags', 'note', 'photo', 'logo', 'ad', 'specials'];
 const SPECIAL_KEYS = ['days', 'start', 'end', 'type', 'items'];
 const CHECKED_KEYS = ['on', 'via'];
-const AD_KEYS = ['headline', 'line', 'board', 'accent'];
+const AD_KEYS = ['style', 'headline', 'line', 'board', 'accent'];
+// The spotlight's looks, picked per bar so ads in one newsletter don't look alike
+// (src/spotlight.jsx): photo — full-bleed photo, big headline, chalkboard; menu —
+// a supper-club menu card beside the photo in an arched window; neon — a roadside
+// neon sign at night; marquee — a changeable-letter board with bulbs
+export const AD_STYLES = ['photo', 'menu', 'neon', 'marquee'];
 // The spotlight ad's dark ink: its scrim behind white type, and the button text
 // on the bar's accent color (src/spotlight.jsx sets it on the ad)
 export const AD_INK = '#0f2421';
@@ -146,20 +151,23 @@ export function validate(json) {
     if (bar.note !== null && (!nonEmpty(bar.note) || bar.note.length > 120)) {
       throw new Error(`bars.json: bar "${bar.id}" "note" must be null or a short line (≤ 120 characters), e.g. "Not during Packers games"`);
     }
-    // The spotlight ad's copy, written with the bar at the sale (every word from its
-    // own advertising). A house-style ad is built on the bar's photo and logo. The
-    // lengths are a first check; the render (scripts/render-digest.mjs) fails on
-    // any text that doesn't fit.
+    // The spotlight ad: its look and its copy, written with the bar at the sale (every
+    // word from its own advertising). Every look is built on the bar's photo and
+    // logo. The lengths are a first check; the render (scripts/render-digest.mjs)
+    // fails on any text that doesn't fit its style.
     if (bar.ad !== null) {
-      if (typeof bar.ad !== 'object') throw new Error(`bars.json: bar "${bar.id}" "ad" must be null or { "headline", "line", "board", "accent" }`);
+      if (typeof bar.ad !== 'object') throw new Error(`bars.json: bar "${bar.id}" "ad" must be null or { "style", "headline", "line", "board", "accent" }`);
       checkKeys(bar.ad, AD_KEYS, `bar "${bar.id}" ad`);
+      if (!AD_STYLES.includes(bar.ad.style)) throw new Error(`bars.json: bar "${bar.id}" "ad.style" must be one of ${AD_STYLES.join(', ')}`);
       if (bar.photo === null || bar.logo === null) throw new Error(`bars.json: bar "${bar.id}" has an "ad" but no photo and logo — the spotlight is built on both`);
       if (!nonEmpty(bar.ad.headline) || bar.ad.headline.length > 12) throw new Error(`bars.json: bar "${bar.id}" "ad.headline" must be 1–12 characters`);
       if (!nonEmpty(bar.ad.line) || bar.ad.line.length > 26) throw new Error(`bars.json: bar "${bar.id}" "ad.line" must be 1–26 characters`);
       if (!Array.isArray(bar.ad.board) || bar.ad.board.length < 1 || bar.ad.board.length > 4 || !bar.ad.board.every((l) => nonEmpty(l) && l.length <= 18)) {
         throw new Error(`bars.json: bar "${bar.id}" "ad.board" must be 1–4 lines of at most 18 characters`);
       }
-      // The bar's brand color: the script line and button. It must read on the ad's ink.
+      // The bar's brand color, where a style takes one (the photo style's script line
+      // and button, the neon style's second tube, the marquee's web address; the
+      // menu card keeps its own brass). It must read on the ad's ink.
       if (typeof bar.ad.accent !== 'string' || !/^#[0-9a-f]{6}$/.test(bar.ad.accent) || contrast(bar.ad.accent, AD_INK) < 4.5) {
         throw new Error(`bars.json: bar "${bar.id}" "ad.accent" must be a lowercase #rrggbb color with at least 4.5:1 contrast on ${AD_INK} (a light brand color)`);
       }

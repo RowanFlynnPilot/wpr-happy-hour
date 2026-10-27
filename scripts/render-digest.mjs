@@ -31,7 +31,6 @@ const OUT = new URL('../dist/digest/', import.meta.url);
 const FONTS = ['Fraunces', 'Public Sans', 'JetBrains Mono'];
 // The spotlight is built at the ad unit's real size, so it renders at 1x
 const AD = { width: 970, height: 500 };
-const AD_FONTS = ['Anton', 'Yellowtail', 'Barlow Condensed'];
 const AD_GAP = 12; // px of clear space between any two parts of the ad
 // A photo ad is a JPEG: ~120 KB against 450 as a PNG. At 90 its colored type
 // stays clean (80 starts to mottle it); the day cards stay PNG (flat color, small).
@@ -52,11 +51,12 @@ function spotlightAlt(bar) {
   return `Advertisement: ${bar.name}. ${ad.headline}, ${ad.line}. ${ad.board.join(', ')}. ${ad.cta}.`;
 }
 
-// Runs in the page. Every part of the ad (data-box) must sit inside it and at
-// least `gap` px clear of every other part, the tilted script line included —
-// so long copy fails here instead of running into the headline or off the edge.
-// Board lines must fit their board, and the photo must cover its box without
-// being stretched.
+// Runs in the page, whatever the ad's style. Every part of the ad (data-box) must
+// sit inside it and at least `gap` px clear of every other part, the tilted script
+// line included — so long copy fails here instead of running into the headline or
+// off the edge. Lines that must show whole (.fit) must fit their width, boxes that
+// must hold their content (.fit-y) their height, and the photo must cover its box
+// without being stretched.
 function adProblems(gap) {
   const ad = document.querySelector('.ad');
   // Each part's outline in the ad's coordinates, turned by its CSS transform
@@ -87,8 +87,11 @@ function adProblems(gap) {
     if (poly.some(([x, y]) => x < 0 || y < 0 || x > ad.clientWidth || y > ad.clientHeight)) out.push(`the ${name} runs off the ad`);
   }
   parts.forEach((a, i) => parts.slice(i + 1).forEach((b) => apart(a.poly, b.poly) || out.push(`the ${a.name} and the ${b.name} are under ${gap}px apart`)));
-  for (const p of ad.querySelectorAll('.ad-slate p')) {
-    if (p.scrollWidth > p.clientWidth) out.push(`the board line "${p.textContent}" doesn't fit`);
+  for (const el of ad.querySelectorAll('.fit')) {
+    if (el.scrollWidth > el.clientWidth) out.push(`the line "${el.textContent}" doesn't fit`);
+  }
+  for (const el of ad.querySelectorAll('.fit-y')) {
+    if (el.scrollHeight > el.clientHeight + 1) out.push(`the ${el.dataset.box ?? el.className} runs out of room`);
   }
   const photo = ad.querySelector('.ad-photo');
   if (photo.naturalWidth < photo.clientWidth || photo.naturalHeight < photo.clientHeight) {
@@ -132,8 +135,18 @@ try {
     await adPage.goto(`${base}${path}`, { waitUntil: 'networkidle' });
     await adPage.evaluate(() => document.fonts.ready);
     const problems = await adPage.evaluate(adProblems, AD_GAP);
-    if (problems.length) throw new Error(`${path}: ${problems.join('; ')} — shorten the ad copy (or change the photo) in bars.json`);
-    await shoot(adPage, path, file, AD_FONTS, { quality: AD_QUALITY });
+    if (problems.length) {
+      throw new Error(`${path}: ${problems.join('; ')} — shorten the ad copy, pick another ad.style, or change the photo in bars.json`);
+    }
+    // Each style sets its own type: check the faces this ad's text actually uses
+    const fonts = await adPage.evaluate(() => [
+      ...new Set(
+        [...document.querySelectorAll('.ad *')]
+          .filter((el) => [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim()))
+          .map((el) => getComputedStyle(el).fontFamily.split(',')[0].replace(/['"]/g, '').trim())
+      ),
+    ]);
+    await shoot(adPage, path, file, fonts, { quality: AD_QUALITY });
   }
 
   const days = {};

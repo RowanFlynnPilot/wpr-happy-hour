@@ -87,18 +87,20 @@ test('tags and note', () => {
 });
 
 test('ad: copy with a photo and logo, within the ad sizes', () => {
-  const ad = { headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
+  const ad = { style: 'photo', headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
   const art = { photo: 'photos/test-bar.jpg', logo: 'logos/test-bar.png' };
   assert.doesNotThrow(() => validate(doc([bar({ ...art, ad })])));
   rejects(doc([bar({ ad })]), /no photo and logo/);
   rejects(doc([bar({ ...art, ad: { ...ad, headline: 'A headline far too long' } })]), /"ad.headline"/);
   rejects(doc([bar({ ...art, ad: { ...ad, board: ['1', '2', '3', '4', '5'] } })]), /"ad.board"/);
   rejects(doc([bar({ ...art, ad: { ...ad, price: '$5' } })]), /unknown field/);
+  rejects(doc([bar({ ...art, ad: { ...ad, style: 'poster' } })]), /"ad.style"/);
+  for (const style of ['photo', 'menu', 'neon', 'marquee']) assert.doesNotThrow(() => validate(doc([bar({ ...art, ad: { ...ad, style } })])));
 });
 
 test('ad.accent: a light #rrggbb that reads on the ad ink', () => {
   const art = { photo: 'photos/test-bar.jpg', logo: 'logos/test-bar.png' };
-  const ad = (accent) => ({ headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent });
+  const ad = (accent) => ({ style: 'menu', headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent });
   assert.doesNotThrow(() => validate(doc([bar({ ...art, ad: ad('#fcd150') })])));
   rejects(doc([bar({ ...art, ad: ad('#3a867c') })]), /"ad.accent"/); // the finder's teal: too dark on the ink
   rejects(doc([bar({ ...art, ad: ad('#FCD150') })]), /"ad.accent"/);

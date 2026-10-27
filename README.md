@@ -73,7 +73,9 @@ load, and `npm run check` runs the same validator in CI before every deploy):
   the photo on featured cards only.
 - `ad` — `null`, or the newsletter spotlight's copy, written with the bar at the sale
   from its own advertising: `{ "headline": "Prime Rib", "line": "Saturdays at The
-  Palms", "board": ["From 4 PM", "12 oz Queen $42"], "accent": "#c9e265" }`. Needs
+  Palms", "board": ["From 4 PM", "12 oz Queen $42"], "accent": "#c9e265", "style":
+  "menu" }`. `style` is `photo`, `menu`, `neon` or `marquee` (README → Newsletter
+  spotlight); a board line ending in a price is set as an item and its price. Needs
   `photo` and `logo`. Headline ≤12 characters, line ≤26, board 1–4 lines of ≤18 (the
   render is the real fit check); `accent` is the bar's brand color as lowercase
   `#rrggbb`, light enough for 4.5:1 on the ad's dark ink.
@@ -207,15 +209,26 @@ in a fail-soft block like the featured pet, linking the image to the WP page wit
 
 ## Newsletter spotlight
 
-The cheap placement: one partner's own ad in a newsletter, sold by the send. It's built
-in WPR's house ad style (the wpr-ad-creative look approved Oct 11, 2026) at the ad
-unit's real size, **970 × 500**, which the newsletter shows at 414px wide on a computer
-and 326 on a phone: the bar's photo on the right under a dark scrim, its logo on a cream
-plate, an Anton headline, a Yellowtail script line in the bar's accent color, a
-chalkboard of times and prices hung from the top edge, a button naming its site, and the
-newsletter's yellow "Advertisement" chip. `spotlight.html` builds it from the bar's
-`photo`, `logo` and `ad` (see Data model); every word comes from the bar's own
-advertising, agreed at the sale. `scripts/render-digest.mjs` renders it with the
+The cheap placement: one partner's own ad in a newsletter, sold by the send, built at
+the ad unit's real size, **970 × 500**, which the newsletter shows at 414px wide on a
+computer and 326 on a phone. Each bar's ad picks one of four looks (`ad.style`), so
+ads in one newsletter don't all look alike — the owner's call, 2026-10-26:
+
+- `photo` — the bar's photo under a dark scrim, an Anton headline, a tilted Yellowtail
+  line and a button in the bar's accent color, a chalkboard of the details.
+- `menu` — a supper-club menu card on a dark green wall: the headline in Bodoni, the
+  line in italic, priced lines set with dotted leaders ("12 oz Queen ······ $42"),
+  the photo in an arched window. Its own brass and green; no accent.
+- `neon` — a roadside neon sign at night: the line as a tube glowing in the accent,
+  the headline in pink neon script with an arrow at the plate, notes and prices as
+  amber tubes.
+- `marquee` — a changeable-letter board with bulbs, the logo on a topper: the
+  headline in red letters, then the line and each board line, one a row.
+
+Every look carries the newsletter's yellow "Advertisement" chip. `spotlight.html`
+builds the ad from the bar's `photo`, `logo` and `ad` (see Data model); every
+word comes from the bar's own advertising, agreed at the sale. Pick the look with the
+bar, and don't sell two neighbors the same one. `scripts/render-digest.mjs` renders it with the
 newsletter card:
 
 - `digest/spotlight/<id>.jpg` — one per **verified** bar that has `ad` copy, so a sale
@@ -225,7 +238,8 @@ newsletter card:
   it has no site — link its finder listing, `?bar=<id>`, instead; the button then reads
   "Details on the Happy Hour Finder").
 - `spotlight.html?preview=<id>` — a listed bar's own ad before it's verified, for
-  pitches, with a "Sales preview" ribbon; never sent to subscribers. A prospect's
+  pitches, with a "Sales preview" ribbon; never sent to subscribers. Add
+  `&style=neon` (or any style) to show a prospect the same ad in another look. A prospect's
   preview needs its `photo`, `logo` and `ad` in bars.json. `digest/spotlight-sample.jpg`
   is the showcase bar's preview without the ribbon (`&sample`), used by the one-pager
   and rate card — The Palms Supper Club, whose owner agreed to be the showcase
@@ -234,8 +248,9 @@ newsletter card:
 There is no generic demo ad: an ad without the bar's own photo and logo isn't the
 product, and stock photos are out. The render fails the deploy when any part of an ad
 runs off its edge or comes within 12px of another part (the tilted script line
-included), when a board line doesn't fit, or when the photo is smaller than its
-640 × 500 panel (it would be stretched); the message says what to shorten. Look at the
+included), when a line is cut off or a card runs out of room, when a web font it
+uses didn't load, or when the photo is smaller than the box it's drawn in (it would
+be stretched) — in every look. The message says what to shorten or which look to try. Look at the
 image before booking it.
 
 **Running one.** Bookings (dates, edition) stay offline with the sale, never in
@@ -322,8 +337,9 @@ localhost traffic is ignored automatically.
 - **Sort:** featured first, then the timetable's time groups in order.
 - **Fonts and photos are self-hosted** (`public/fonts/`, `public/photos/`): no Google
   Fonts request, no layout shift, and a bar's site going down can't blank a card. The
-  finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight ad, Anton,
-  Yellowtail and Barlow Condensed (all SIL Open Font License, latin subsets).
+  finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight's looks, Anton,
+  Yellowtail, Barlow Condensed, Bodoni Moda, Neonderthaw, Tilt Neon and Oswald (all
+  SIL Open Font License, latin subsets).
 - **Disclosure first:** "Every listing is a paid partner placement…" and the "Being
   confirmed" key sit above the first listing, not in the footer.
 - **Sponsor slot:** footer line reserved for the title sponsor.

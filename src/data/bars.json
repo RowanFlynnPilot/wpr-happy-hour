@@ -754,6 +754,7 @@
       "photo": "photos/palms-supper-club.jpg",
       "logo": "logos/palms-supper-club.png",
       "ad": {
+        "style": "menu",
         "headline": "Prime Rib",
         "line": "Saturdays at The Palms",
         "board": [

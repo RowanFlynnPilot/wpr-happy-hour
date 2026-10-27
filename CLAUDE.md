@@ -37,9 +37,11 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   touching it).
 - Newsletter spotlight (the cheap per-send ad): spotlight.html renders one 970×500
   JPEG per verified bar with `ad` copy (dist/digest/spotlight/ + spotlight.json) in
-  WPR's house ad style (the wpr-ad-creative skill): the bar's own photo and logo,
-  copy from its own advertising agreed at the sale, labeled "Advertisement". No
-  generic or stock-photo demo ad. The render fails on text that runs off or
+  the look its bar picked (`ad.style`: photo, menu, neon, marquee — owner decision
+  2026-10-26: not one template for every ad). The bar's own photo and logo, copy
+  from its own advertising agreed at the sale, labeled "Advertisement". No generic
+  or stock-photo demo ad. A new look is a new style in spotlight.jsx/.css under the
+  same checks, never a one-off. The render fails on text that runs off or
   collides, or a photo it would stretch — fix the copy, don't loosen the check.
   Bookings stay offline (Broadstreet / the sale) — no ad dates or booking fields in
   bars.json. Sales previews (`?preview=<id>`) are never sent; the collateral sample
@@ -67,8 +69,7 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Design system is fixed: teal #3A867C, cream #F6F2E9, Fraunces display,
   Public Sans body, JetBrains Mono for times/prices/data. Tokens in index.css; the
   evening tokens (night, gold) carry featured cards. The spotlight ad is the bar's
-  ad, not the finder's, so it uses the house ad type (Anton, Yellowtail, Barlow
-  Condensed) in spotlight.css.
+  ad, not the finder's: each of its looks sets its own type in spotlight.css.
 
 ## Environment
 Windows / PowerShell 5.1. Use `;` for command chaining, `python -m pip` if

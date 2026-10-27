@@ -242,10 +242,16 @@ test('digestSchedule groups by first start, in time order, with ends and later w
 });
 
 test('spotlightFor: the ad copy and a button to the bar, verified only unless a preview', () => {
-  const ad = { headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
+  const ad = { style: 'menu', headline: 'Prime Rib', line: 'Saturdays at the bar', board: ['From 4 PM'], accent: '#c9e265' };
   const listed = bar('listed', { website: 'https://www.example.com/menu', ad });
   assert.throws(() => spotlightFor(listed), /not verified/);
-  assert.deepEqual(spotlightFor(listed, { preview: true }), { ...ad, cta: 'Details at example.com' });
+  assert.deepEqual(spotlightFor(listed, { preview: true }), { ...ad, cta: 'Details at example.com', rows: [{ text: 'From 4 PM' }] });
+  const priced = spotlightFor({ ...listed, ad: { ...ad, board: ['12 oz Queen $42', 'Wings $8.50', 'Until sold out'] } }, { preview: true });
+  assert.deepEqual(priced.rows, [
+    { text: '12 oz Queen $42', item: '12 oz Queen', price: '$42' },
+    { text: 'Wings $8.50', item: 'Wings', price: '$8.50' },
+    { text: 'Until sold out' },
+  ]);
   assert.equal(spotlightFor({ ...listed, verifiedOn: '2026-09-01' }).headline, 'Prime Rib');
   assert.equal(spotlightFor({ ...listed, website: '' }, { preview: true }).cta, 'Details on the Happy Hour Finder');
   assert.throws(() => spotlightFor(bar('no-copy', { verifiedOn: '2026-09-01', ad: null })), /no ad copy/);
