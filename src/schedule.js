@@ -86,7 +86,7 @@ export function groupSpecials(specials) {
 }
 
 // Research placeholders carry a "PLACEHOLDER — " prefix in the data (a guessed item or
-// window); cards show them muted, tagged "Placeholder", instead of the raw marker.
+// window); cards show them muted, tagged "Being confirmed", instead of the raw marker.
 export const isPlaceholder = (item) => item.includes('PLACEHOLDER'); // same test as validate()
 export function placeholderText(item) {
   const t = item.replace(/^PLACEHOLDER\s*(—|-|:)?\s*/, '');
@@ -207,7 +207,7 @@ export function digestSchedule(listed) {
   return groups.sort((a, b) => toMinutes(a.start) - toMinutes(b.start));
 }
 
-// Newsletter spotlight: one partner's own ad in WPR's house ad style — its photo,
+// Newsletter spotlight: one partner's own ad, in the look it picked — its photo,
 // logo and words (bar.ad, written with the bar at the sale from its own
 // advertising), with a button naming where the ad links: the bar's site, or its
 // finder listing when it has none. Real ads are for VERIFIED bars only.
@@ -346,4 +346,43 @@ export function icsFor(bar, date) {
   });
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Wausau Pilot & Review//Happy Hour Finder//EN', 'CALSCALE:GREGORIAN', ...events, 'END:VCALENDAR'];
   return `${lines.map(fold).join('\r\n')}\r\n`;
+}
+
+// Days when a usual schedule can't be trusted: many bars close or keep short
+// hours. The finder says so instead of "pouring right now". Fixed dates plus
+// Thanksgiving (the fourth Thursday of November); the name, or null.
+export function holidayOn(date) {
+  const [m, d] = [date.getMonth() + 1, date.getDate()];
+  if (m === 11 && date.getDay() === 4 && d >= 22 && d <= 28) return 'Thanksgiving';
+  if (m === 12 && d === 24) return 'Christmas Eve';
+  if (m === 12 && d === 25) return 'Christmas Day';
+  if (m === 1 && d === 1) return "New Year's Day";
+  return null;
+}
+
+// Sunset in Wausau on the visitor's calendar date, as a Date — NOAA's short solar
+// formula, good to a few minutes; no timezone library, the result is an instant.
+const WAUSAU = { lat: 44.96, lon: -89.63 };
+export function sunsetAt(date) {
+  const [y, m, d] = [date.getFullYear(), date.getMonth(), date.getDate()];
+  const dayOfYear = Math.round((Date.UTC(y, m, d) - Date.UTC(y, 0, 1)) / 86_400_000);
+  const g = (2 * Math.PI * dayOfYear) / 365;
+  const eqTime = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl =
+    0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) -
+    0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const rad = Math.PI / 180;
+  const hourAngle = Math.acos(Math.cos(90.833 * rad) / (Math.cos(WAUSAU.lat * rad) * Math.cos(decl)) - Math.tan(WAUSAU.lat * rad) * Math.tan(decl)) / rad;
+  const utcMinutes = 720 - 4 * (WAUSAU.lon - hourAngle) - eqTime;
+  return new Date(Date.UTC(y, m, d) + utcMinutes * 60_000);
+}
+
+// The hero's light: late (10 PM–4 AM), the golden hour (90 minutes before
+// Wausau's sunset to 30 after — 4:30 in December, 8:45 in June), evening after
+// it, day before it
+export function phaseOf(date) {
+  const h = date.getHours();
+  if (h >= 22 || h < 4) return 'late';
+  const sinceSunset = (date - sunsetAt(date)) / 60_000;
+  return sinceSunset >= 30 ? 'evening' : sinceSunset >= -90 ? 'golden' : 'day';
 }

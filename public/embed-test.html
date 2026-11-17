@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
     <title>Embed test — Happy Hour Finder</title>
     <style>
       body { margin: 0; font-family: sans-serif; background: #ddd; }
@@ -14,7 +16,7 @@
       Parent-page stand-in — the iframe below should grow/shrink to fit its content.
       Reported height: <span id="h">none yet</span>
     </p>
-    <iframe id="wpr-hh" src="./" height="300" title="Happy Hour Finder — Wausau Pilot &amp; Review"></iframe>
+    <iframe id="wpr-hh" src="./" height="300" allow="web-share" title="Happy Hour Finder — Wausau Pilot &amp; Review"></iframe>
     <script>
       // Mirror the WP snippet: forward this page's query string into the app so
       // deep links (?view=fri, ?bar=...) can be tested through the iframe.

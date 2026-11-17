@@ -150,7 +150,7 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
 
 ```html
 <iframe id="wpr-hh" src="https://rowanflynnpilot.github.io/wpr-happy-hour/"
-        style="width:100%;border:0;" height="900" loading="lazy"
+        style="width:100%;border:0;" height="900" loading="lazy" allow="web-share"
         title="Happy Hour Finder — Wausau Pilot & Review"></iframe>
 <script>
   // Forward article deep links (?view=fri, ?bar=..., ?city=..., ?type=...) into
@@ -164,7 +164,7 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
       var frame = document.getElementById('wpr-hh');
       frame.height = e.data.height;
       // ?bar= links: the frame can't scroll itself once it's full height, so the
-      // page scrolls to the partner's card (sent once, on the first report)
+      // page scrolls to the partner's card (sent with a deep link, and with each "next up" jump)
       if (typeof e.data.anchor === 'number') {
         window.scrollTo(0, frame.getBoundingClientRect().top + window.scrollY + e.data.anchor);
       }
@@ -331,6 +331,18 @@ localhost traffic is ignored automatically.
   open that day at that bar, and "Clear filters" when filters caused it.
 - **Day picker:** Mon–Sun views for planning ahead, grouped "From <start>".
 - **Filters:** city, food/drinks, and tags (patio, Packers game day…) once any bar has one.
+- **Save and share:** "Save" keeps a bar in the reader's own browser (localStorage, no
+  account, nothing sent); saved bars lead their time group and a "My bars" filter
+  appears. Where the browser refuses storage, there are no Save buttons. "Share" opens
+  the phone's share sheet with the bar's `?bar=` link (`SHARE_BASE` in App.jsx —
+  switch it to the WordPress page at launch); it shows only where the browser has a
+  share sheet, and inside the iframe needs `allow="web-share"` (in the snippet above).
+- **Holidays:** on Thanksgiving, Christmas Eve, Christmas Day and New Year's Day
+  (`holidayOn` in schedule.js) the Now view claims nothing: "Holiday hours vary today…
+  call ahead", sections read "Usually pouring now", and countdowns are off. The
+  newsletter card is per weekday and knows no dates — hold it on those days.
+- **Golden hour is Wausau's real sunset** (`sunsetAt`, computed from the date): 90
+  minutes before to 30 after — about 3–5 PM in December, 7:15–9:15 in June.
 - **Every listing says how fresh it is:** "Verified by phone, Oct 2026" (with the
   newsroom's rubber-stamp seal) or "From the bar's website, checked Oct 26", with **Add to calendar** (an .ics file of the bar's
   sourced specials, repeating weekly, in local time) and **Report a change** (an email
@@ -346,6 +358,8 @@ localhost traffic is ignored automatically.
   finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight's looks, Anton,
   Yellowtail, Barlow Condensed, Bodoni Moda, Neonderthaw, Tilt Neon and Oswald (all
   SIL Open Font License, latin subsets).
+- **Link preview:** `og.html` is screenshotted at deploy into `og-image.png` (the
+  picture a shared link shows), in the evening look with Friday's skyline.
 - **Disclosure first:** "Every listing is a paid partner placement…" and the "Being
   confirmed" key sit above the first listing, not in the footer.
 - **Sponsor slot:** footer line reserved for the title sponsor.

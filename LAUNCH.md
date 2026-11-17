@@ -34,7 +34,11 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    GA4 + Jetpack stats, not Plausible — so this means a new Plausible account.
    If the newsroom would rather consolidate on GA4, swapping the tool's tag is
    a one-line change (owner call; the Plausible pick is from July 2026).
-5. **Embed on WordPress.** The pattern is proven: the live Fish Fry Guide page
+5. **Embed on WordPress.** On launch day, in the same edit: remove the
+   `<meta name="robots" content="noindex">` line from `index.html` (it hides the
+   unfinished finder from search until then), point `SHARE_BASE` in `src/App.jsx` at
+   the WordPress page so shared links land there, and keep `allow="web-share"` on the
+   iframe. The pattern is proven: the live Fish Fry Guide page
    embeds its app the same way (iframe → GitHub Pages). Create the page —
    suggest `/wausau-area-happy-hour-guide/` to match the fish fry slug — and
    paste the README snippet; it adds auto-height plus the query-string

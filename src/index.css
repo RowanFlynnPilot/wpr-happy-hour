@@ -514,6 +514,45 @@ a:focus-visible {
   }
 }
 
+/* "My bars": the reader's saved listings only. Appears once one is saved. */
+.mine-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 13px 'Public Sans', sans-serif;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mine-btn.active {
+  background: var(--night);
+  border-color: var(--night);
+  color: var(--on-night);
+}
+
+.mine-count {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--night);
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+}
+
+@media (pointer: coarse) {
+  .mine-btn {
+    min-height: 44px;
+  }
+}
+
 /* The disclosure and the "Being confirmed" key, before the first listing */
 .list-key {
   font-size: 13px;
@@ -722,6 +761,11 @@ a:focus-visible {
   border-radius: 8px;
 }
 
+/* a photo that failed to load: gone, not a broken-image icon (display: block above beats [hidden]) */
+.card-photo[hidden] {
+  display: none;
+}
+
 .card-tier {
   font-size: 13px;
   font-weight: 600;
@@ -794,6 +838,10 @@ a:focus-visible {
   background: var(--night);
   box-shadow: 0 0 0 3px var(--gold);
   border-radius: 12px;
+}
+
+.card-name {
+  overflow-wrap: anywhere;
 }
 
 .card-name:focus {
@@ -999,6 +1047,15 @@ a:focus-visible {
   text-underline-offset: 3px;
 }
 
+/* Saved: the gold, filled, so a reader's own bars show at scroll speed */
+.save-btn.is-saved {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--night);
+  text-decoration: none;
+}
+
 /* A button that reads as a link: it makes a file or changes the view, it doesn't go anywhere */
 .link-btn {
   padding: 0;
@@ -1081,9 +1138,18 @@ a:focus-visible {
     width: 100%;
   }
 
+  .filters {
+    flex-wrap: wrap;
+  }
+
   .filters select {
     flex: 1;
     min-width: 0; /* at 16px the selects would otherwise overflow a narrow frame */
+  }
+
+  .mine-btn {
+    flex: 1 1 100%; /* its own row: the selects keep their words */
+    justify-content: center;
   }
 
   .masthead-tag {
@@ -1295,7 +1361,9 @@ a.sponsor-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
     animation: none !important;
   }

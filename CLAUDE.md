@@ -54,6 +54,12 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   skip PLACEHOLDER windows; those rows show as "Being confirmed" and fold per group.
 - The hero's light follows the visitor's clock (day / golden 3–7 / evening / late);
   its one motion is the count rolling, skipped under reduced motion.
+- Holidays (`holidayOn`): Thanksgiving, Dec 24/25, Jan 1 — the Now view claims nothing
+  as "pouring" and says to call ahead. Per-bar holiday hours are not in the data.
+- Saved bars are localStorage only (key `wpr-hh-saved`): no accounts, nothing sent.
+  No storage means no Save buttons. Share uses the browser's own share sheet only.
+- index.html carries `noindex` until launch day (LAUNCH.md step 5); the link
+  preview image is rendered at deploy from og.html.
 - Fonts and photos are self-hosted (public/fonts, public/photos): no Google Fonts or
   other third-party requests at load.
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
@@ -86,6 +92,12 @@ removed 2026-08-01 (both closed); Sawmill Brewing 2026-09-26 (temporarily closed
 Tiki Beach 2026-09-26 (closed for the season — re-add in spring). A bar's own
 Facebook posts count as own-source; match them by page URL, not name (several
 "Office Bar"s exist).
+
+Rechecked 2026-11-17 against the bars' own sites: 15 of 21 sourced bars re-stamped;
+Hoehn's early bird and Ballyhoos' free old fashioned were no longer on their sites
+and are PLACEHOLDER-marked until Chris confirms; Oliva's, Nevermore (sites block
+automated reads), Mill Yard, Hatley Hangout (Facebook only) and Hog Creek's prime
+rib ounces (menu PDF) still need a manual look.
 
 Untimed specials (owner rule, 2026-09-26): a drink special the bar lists by day
 with no time may use the bar's own posted open hours for that day. A food special

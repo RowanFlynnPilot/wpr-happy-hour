@@ -23,6 +23,9 @@ import {
   placeholderText,
   nextDay,
   dayShape,
+  holidayOn,
+  sunsetAt,
+  phaseOf,
   dayAtAGlance,
   SHAPE_START,
   SHAPE_STEP,
@@ -334,4 +337,33 @@ test('icsFor: weekly repeating events for sourced specials, local time', () => {
   assert.equal((ics.match(/BEGIN:VEVENT/g) || []).length, 1); // the guessed Wednesday is left out
   assert.ok(ics.split('\r\n').every((l) => new TextEncoder().encode(l).length <= 75));
   assert.equal(icsFor(bar('guesses', { specials: [special({ items: ['PLACEHOLDER — x'] })] }), thu(12)), null);
+});
+
+test('holidayOn: Thanksgiving (4th Thursday of November) and the fixed dates', () => {
+  assert.equal(holidayOn(new Date(2026, 10, 26)), 'Thanksgiving');
+  assert.equal(holidayOn(new Date(2027, 10, 25)), 'Thanksgiving');
+  assert.equal(holidayOn(new Date(2026, 10, 19)), null); // third Thursday
+  assert.equal(holidayOn(new Date(2026, 11, 24)), 'Christmas Eve');
+  assert.equal(holidayOn(new Date(2026, 11, 25)), 'Christmas Day');
+  assert.equal(holidayOn(new Date(2027, 0, 1)), "New Year's Day");
+  assert.equal(holidayOn(new Date(2026, 10, 25)), null);
+});
+
+test('sunsetAt: Wausau sunset within a few minutes, as an instant', () => {
+  const utcMin = (d) => d.getUTCHours() * 60 + d.getUTCMinutes();
+  // Nov 17: 4:29 PM CST = 22:29 UTC; Jun 21: 8:48 PM CDT = 01:48 UTC
+  assert.ok(Math.abs(utcMin(sunsetAt(new Date(2026, 10, 17, 12))) - (22 * 60 + 29)) <= 5);
+  assert.ok(Math.abs(utcMin(sunsetAt(new Date(2026, 5, 21, 12))) - (1 * 60 + 48)) <= 5);
+});
+
+test('phaseOf: golden hour sits around sunset, late by the clock', () => {
+  const day = new Date(2026, 10, 17, 12);
+  const at = (min) => new Date(sunsetAt(day).getTime() + min * 60_000);
+  // only meaningful when the test machine's noon-to-evening clock isn't in the late band
+  const notLate = (d) => !(d.getHours() >= 22 || d.getHours() < 4);
+  for (const [min, phase] of [[-120, 'day'], [-60, 'golden'], [10, 'golden'], [45, 'evening']]) {
+    if (notLate(at(min))) assert.equal(phaseOf(at(min)), phase);
+  }
+  assert.equal(phaseOf(new Date(2026, 10, 17, 23, 0)), 'late');
+  assert.equal(phaseOf(new Date(2026, 10, 17, 2, 0)), 'late');
 });

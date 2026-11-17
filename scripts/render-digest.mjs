@@ -9,6 +9,7 @@
 // Output, published with the site:
 //   dist/digest/<day>.png    verified partners for that weekday (none on days without any)
 //   dist/digest/demo.png     sales preview with sample listings
+//   dist/og-image.png        the link preview image for the finder (og.html)
 //   dist/digest/digest.json  per-day count, image path and alt text — the
 //                            newsletter omits the section when "image" is null
 //   dist/digest/spotlight/<id>.jpg  one spotlight ad per verified partner with ad
@@ -163,6 +164,10 @@ try {
     days[day] = { count: d.count, image: `digest/${day}.png`, alt: altText(day, d) };
   }
   await shoot(cardPage, 'digest.html?day=thu&demo', 'demo.png', FONTS);
+
+  // The link preview image a shared finder link shows (index.html's og:image)
+  const ogPage = await open({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+  await shoot(ogPage, 'og.html', '../og-image.png', ['Fraunces', 'Public Sans']);
 
   const manifest = { updated: data.updated, sponsor: data.sponsor, days };
   await writeFile(new URL('digest.json', OUT), `${JSON.stringify(manifest, null, 2)}\n`);

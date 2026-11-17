@@ -11,7 +11,10 @@
       name="description"
       content="Live happy hour finder for the Wausau area — see what's pouring right now, plan by day, and find drink and food specials at partner bars. A Wausau Pilot &amp; Review community tool."
     />
-    <meta name="theme-color" content="#3A867C" />
+    <!-- PRE-LAUNCH: keeps the unfinished finder out of search results. Remove this
+         line on launch day (LAUNCH.md) and add the canonical to the WordPress page. -->
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#173A35" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <!-- Link previews for shared deep links (bars posting their ?bar= URLs).
          One static card site-wide — per-bar previews would need a backend; don't. -->
@@ -23,6 +26,7 @@
     <meta property="og:image" content="https://rowanflynnpilot.github.io/wpr-happy-hour/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Happy Hour Finder: see what’s pouring right now in the Wausau area. From Wausau Pilot &amp; Review." />
     <meta name="twitter:card" content="summary_large_image" />
     <!-- Plausible (register site "rowanflynnpilot.github.io" in the WPR account).
          outbound-links variant: pageviews + clicks on bar websites/Directions —
@@ -35,6 +39,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="font-family: sans-serif; padding: 24px; max-width: 40em">
+        The Happy Hour Finder needs JavaScript to show today’s specials. Turn it on and reload, or visit
+        <a href="https://wausaupilotandreview.com" target="_top">Wausau Pilot &amp; Review</a>.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,0 +1,67 @@
+/* The link preview image (og.html): the finder's evening band at 1200 x 630.
+   Feeds show it small, so nothing here is under 28px. */
+.og {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  padding: 56px 72px 0;
+  background: var(--night);
+  color: var(--on-night);
+  overflow: hidden;
+}
+
+.og-tool {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.og-tool img {
+  width: 48px;
+  height: 48px;
+}
+
+.og-title {
+  margin-top: 36px;
+  max-width: 15ch;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 92px;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  font-variation-settings: 'opsz' 144;
+}
+
+.og-title span {
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* The skyline along the foot, full width */
+.og .hero-day {
+  position: absolute;
+  left: 72px;
+  right: 72px;
+  bottom: 40px;
+  margin: 0;
+}
+
+.og .hero-skyline {
+  height: 120px;
+  gap: 6px;
+}
+
+.og .hero-axis {
+  display: none; /* a picture, not a chart, at this size */
+}
+
+.og-from {
+  position: absolute;
+  right: 72px;
+  top: 60px;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--on-night-soft);
+}

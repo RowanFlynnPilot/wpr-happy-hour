@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import data from './data/bars.json';
 // Schema lives in validate.js — shared with scripts/check-data.mjs so CI
 // rejects bad data before it can deploy. The app still throws at load.
@@ -16,12 +16,14 @@ import {
   groupSpecials,
   heroFinding,
   hmOf,
+  holidayOn,
   icsFor,
   isConfirmed,
   isPlaceholder,
   minutesUntil,
   nextDay,
   nowListings,
+  phaseOf,
   placeholderText,
   sourcedOf,
   specialStatus,
@@ -83,6 +85,8 @@ const CONTACT_SPONSOR = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20s
 const CONTACT_CORRECTION = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20correction`;
 // Per listing: lands with Chris as a call-list item; nothing a reader reports is
 // published until he confirms it with the bar
+// Email links carry target="_top": a web mail handler (Gmail) won't load inside the
+// WordPress iframe and would blank it.
 const reportUrl = (bar) =>
   `mailto:${CHRIS_EMAIL}?subject=${encodeURIComponent(`Happy Hour Finder: change at ${bar.name}`)}&body=${encodeURIComponent(
     `What's changed at ${bar.name}?\n\n`
@@ -133,11 +137,29 @@ function bringIntoView(el) {
   window.parent.postMessage({ type: 'wpr-hh-height', height: document.body.scrollHeight, anchor }, '*');
 }
 
-// The hero's light follows the clock: day, the golden hour, evening, late night
-function phaseOf(date) {
-  const h = date.getHours();
-  return h >= 22 || h < 4 ? 'late' : h >= 19 ? 'evening' : h >= 15 ? 'golden' : 'day';
+// Where a shared listing points: this page, at the bar. Switch to the WordPress
+// page's URL at launch (LAUNCH.md) — its snippet forwards ?bar= into the frame.
+const SHARE_BASE = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
+// The phone's own share sheet, where the browser has one. Inside the WordPress
+// iframe it also needs allow="web-share" on the frame (README snippet).
+const CAN_SHARE = typeof navigator.share === 'function';
+
+// Saved bars live in this browser only — no account, nothing sent anywhere. Null
+// when the browser refuses storage (private mode, a partitioned iframe): then the
+// finder simply has no Save buttons.
+const SAVED_KEY = 'wpr-hh-saved';
+function readSaved() {
+  try {
+    const ids = JSON.parse(window.localStorage.getItem(SAVED_KEY) ?? '[]');
+    return new Set(ids.filter((id) => DATA.bars.some((b) => b.id === id)));
+  } catch {
+    return null;
+  }
 }
+
+// What every card needs from the app: the saved set and its toggle, the one
+// status line screen readers hear, and whether today is a holiday
+const Finder = createContext(null);
 
 // The hero count rolls to its new value when a filter or the clock moves it — the
 // finder's one authored motion, exponential ease-out. Reduced motion: it just changes.
@@ -190,6 +212,7 @@ const TYPE_WORDS = { drinks: 'Drinks', food: 'Food', both: 'Food and drinks' };
 // also runs on others ("Tue · Thu · Sat–Sun"), not a "Sat" on every row — except
 // on a linked card, which may be read with the day's heading scrolled away.
 function SpecialRow({ group, now, showDays, allDays }) {
+  const { holiday } = useContext(Finder);
   return (
     <div className="special">
       <div className="special-meta">
@@ -197,7 +220,7 @@ function SpecialRow({ group, now, showDays, allDays }) {
         <span className="sr-only">{TYPE_WORDS[group.type]}:</span>
         {(allDays || (showDays && group.days.length > 1)) && <span className="special-days mono">{fmtDays(group.days)}</span>}
         <span className="special-time mono">{unbroken(fmtWindow(group))}</span>
-        {now && <StatusChip group={group} now={now} />}
+        {now && !holiday && <StatusChip group={group} now={now} />}
         {group.placeholder && <span className="chip chip-placeholder">Being confirmed</span>}
       </div>
       <ul className="special-items">
@@ -249,8 +272,15 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
   const featured = bar.tier === 'featured';
   const fresh = freshness(bar, trackNow ?? new Date());
   const calendar = groupSpecials(bar.specials).some((g) => !g.placeholder);
-  const [saved, setSaved] = useState(false);
+  const { saved, toggleSaved, announce } = useContext(Finder);
+  const isSaved = saved?.has(bar.id);
+  const [downloaded, setDownloaded] = useState(false);
   const Name = `h${level}`;
+  const share = () =>
+    navigator
+      .share({ title: bar.name, text: `${bar.name}: specials and times on Wausau Pilot & Review’s Happy Hour Finder`, url: `${SHARE_BASE}?bar=${bar.id}` })
+      // AbortError is the reader closing the sheet; anything else, say so
+      .catch((e) => e.name === 'AbortError' || announce('Sharing isn’t available here'));
   return (
     <article
       id={`bar-${bar.id}`}
@@ -306,23 +336,41 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
             </p>
           )}
           <p className="card-actions">
+            {saved && (
+              <button
+                type="button"
+                className={`link-btn save-btn${isSaved ? ' is-saved' : ''}`}
+                aria-pressed={isSaved}
+                onClick={() => {
+                  toggleSaved(bar.id);
+                  announce(isSaved ? `${bar.name} removed from your bars` : `${bar.name} saved to your bars`);
+                }}
+              >
+                {isSaved ? 'Saved' : 'Save'}
+              </button>
+            )}
+            {CAN_SHARE && (
+              <button type="button" className="link-btn" onClick={share}>
+                Share
+              </button>
+            )}
             {calendar && (
               <button
                 type="button"
                 className="link-btn"
                 onClick={() => {
                   addToCalendar(bar);
-                  setSaved(true);
+                  setDownloaded(true);
+                  announce(`Calendar file for ${bar.name} downloaded`);
                 }}
               >
-                {saved ? 'Calendar file downloaded' : 'Add to calendar'}
+                {downloaded ? 'Calendar file downloaded' : 'Add to calendar'}
               </button>
             )}
-            <a href={reportUrl(bar)}>Report a change</a>
+            <a href={reportUrl(bar)} target="_top">
+              Report a change
+            </a>
           </p>
-          <span className="sr-only" role="status">
-            {saved ? `Calendar file for ${bar.name} downloaded` : ''}
-          </span>
         </div>
       </div>
     </article>
@@ -334,8 +382,12 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
 // "also today" schedule, in the finder. In each group the rows still being
 // confirmed fold into one line, so a busy evening reads as what's certain.
 function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
-  // stable sort: confirmed featured rows first, each half keeping its order
-  const featured = entries.filter((e) => e.bar.tier === 'featured').sort((a, b) => isConfirmed(b) - isConfirmed(a));
+  const { saved } = useContext(Finder);
+  const mine = (e) => (saved?.has(e.bar.id) ? 1 : 0);
+  // stable sorts: the reader's saved bars lead their group; confirmed featured
+  // rows lead the featured ones; each run keeps its order
+  const savedFirst = (list) => [...list].sort((a, b) => mine(b) - mine(a));
+  const featured = savedFirst(entries.filter((e) => e.bar.tier === 'featured')).sort((a, b) => isConfirmed(b) - isConfirmed(a));
   const rest = entries.filter((e) => e.bar.tier !== 'featured');
   const card = (level) => (e) => (
     <BarCard
@@ -365,14 +417,14 @@ function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
         <div className="slot" key={minutes}>
           <h3 className="slot-time">{label(unbroken(fmtTime(hmOf(minutes))))}</h3>
           <div className="slot-rows">
-            {confirmed.map(card(4))}
+            {savedFirst(confirmed).map(card(4))}
             {guessed.length > 0 && (
-              <details className="slot-more" open={guessed.some((e) => e.bar.id === linkedBar)}>
+              <details className="slot-more" open={guessed.some((e) => e.bar.id === linkedBar || mine(e))}>
                 <summary>
                   {confirmed.length > 0 ? `${guessed.length} more` : `${guessed.length} listing${guessed.length === 1 ? '' : 's'}`},
                   specials being confirmed
                 </summary>
-                {guessed.map(card(4))}
+                {savedFirst(guessed).map(card(4))}
               </details>
             )}
           </div>
@@ -397,6 +449,21 @@ export default function App() {
   // Where to take the reader after a deep link or a "next up" jump: a bar's card,
   // or (barId null) the top of the new view. key makes a repeat jump re-run.
   const [jump, setJump] = useState(() => (INITIAL_BAR ? { barId: INITIAL_BAR, key: 0 } : null));
+  const [saved, setSaved] = useState(readSaved); // Set of bar ids, or null: no storage here
+  const [onlySaved, setOnlySaved] = useState(false);
+  const [notice, setNotice] = useState(''); // what a card just did, for screen readers
+
+  const toggleSaved = (id) => {
+    const next = new Set(saved);
+    if (!next.delete(id)) next.add(id);
+    try {
+      window.localStorage.setItem(SAVED_KEY, JSON.stringify([...next]));
+      setSaved(next);
+    } catch {
+      setSaved(null); // storage went away mid-visit: stop offering it
+    }
+  };
+  const mineOnly = onlySaved && saved?.size > 0; // the last one unsaved: the filter lets go
 
   useEffect(() => {
     const refresh = () => setNow(new Date());
@@ -448,21 +515,26 @@ export default function App() {
     setJump({ barId, key: Date.now() });
   };
 
-  const filtered = city !== 'all' || type !== 'all' || tag !== 'all';
+  const filtered = city !== 'all' || type !== 'all' || tag !== 'all' || mineOnly;
   const clearFilters = () => {
     setCity('all');
     setType('all');
     setTag('all');
+    setOnlySaved(false);
   };
 
   const typeMatch = (s) => type === 'all' || s.type === type || s.type === 'both';
   const cityBars = useMemo(
-    () => DATA.bars.filter((b) => (city === 'all' || b.city === city) && (tag === 'all' || b.tags.includes(tag))),
-    [city, tag]
+    () => DATA.bars.filter((b) => (city === 'all' || b.city === city) && (tag === 'all' || b.tags.includes(tag)) && (!mineOnly || saved.has(b.id))),
+    [city, tag, mineOnly, saved]
   );
 
   const today = DAY_KEYS[now.getDay()];
   const nowMin = minuteOf(now);
+  // Thanksgiving, Christmas, New Year's Day: the usual schedule may not hold, so
+  // nothing is claimed as "pouring right now" — the list shows the usual specials
+  const holiday = holidayOn(now);
+  const todayShown = view === 'now' || view === today;
 
   // Now view: bars grouped by whether any qualifying special is active this
   // minute; counted only when sourced (a guessed time is never a "pouring" fact)
@@ -494,21 +566,26 @@ export default function App() {
   // The hero: one number, set big, and the sentence it starts — in the reader's
   // filters ("3 food specials are on in Athens right now")
   const place = city === 'all' ? '' : ` in ${city}`;
-  const heroCount = view === 'now' ? confirmedNow || confirmedLater : 0;
+  const heroCount = view === 'now' && !holiday ? confirmedNow || confirmedLater : 0;
   const rolled = useRolling(heroCount);
   const [one, many] = NOUNS[type];
   const noun = heroCount === 1 ? one : many;
   const words =
     view !== 'now'
       ? `${weekdayLabel(view)} happy hours`
-      : confirmedNow > 0
+      : holiday
+        ? 'Holiday hours vary today'
+        : confirmedNow > 0
         ? `${noun} ${heroCount === 1 ? 'is' : 'are'} ${type === 'food' ? 'on' : 'pouring'}${place} right now`
         : confirmedLater > 0
           ? `${noun}${place} start${heroCount === 1 ? 's' : ''} later today`
           : `Quiet${place} right now`;
   const nextWhen = next && `${next.offset === 1 ? 'tomorrow' : weekdayLabel(next.dayKey)} at ${fmtTime(next.openers[0].start)}`;
+  const holidayLine = `It’s ${holiday}. Many bars close or keep short hours, so call ahead. These are their usual specials.`;
   const sub =
-    view === 'now'
+    holiday && todayShown
+      ? holidayLine
+      : view === 'now'
       ? [
           heroFinding(pouring, laterToday),
           quiet && next && `Back at it ${nextWhen}.`,
@@ -531,6 +608,7 @@ export default function App() {
   const linkedBar = jump?.barId ?? null;
 
   return (
+    <Finder.Provider value={{ saved, toggleSaved, announce: setNotice, holiday: holiday && todayShown }}>
     <div className="app">
       <header className="masthead">
         <a className="masthead-brand" href="https://wausaupilotandreview.com" target="_top">
@@ -628,6 +706,11 @@ export default function App() {
                 ))}
               </select>
             )}
+            {saved?.size > 0 && (
+              <button type="button" className={`mine-btn${mineOnly ? ' active' : ''}`} aria-pressed={mineOnly} onClick={() => setOnlySaved(!mineOnly)}>
+                My bars <span className="mine-count">{saved.size}</span>
+              </button>
+            )}
           </div>
         </div>
         {/* The disclosure and the key, before the first listing rather than after the last */}
@@ -637,6 +720,9 @@ export default function App() {
         </p>
         <p className="sr-only" role="status">
           {status}
+        </p>
+        <p className="sr-only" role="status">
+          {notice}
         </p>
 
         {view === 'now' ? (
@@ -675,13 +761,13 @@ export default function App() {
             )}
             {pouring.length > 0 && (
               <section>
-                <h2 className="section-label">Pouring now</h2>
+                <h2 className="section-label">{holiday ? 'Usually pouring now' : 'Pouring now'}</h2>
                 <Timetable entries={pouring} by={endsAt} label={(t) => `Until ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} />
               </section>
             )}
             {laterToday.length > 0 && (
               <section>
-                <h2 className="section-label">Later today</h2>
+                <h2 className="section-label">{holiday ? 'Usually later today' : 'Later today'}</h2>
                 <Timetable entries={laterToday} by={startsAt} label={(t) => `From ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} />
               </section>
             )}
@@ -721,7 +807,9 @@ export default function App() {
                     Clear filters
                   </button>
                 ) : (
-                  <a href={CONTACT_LISTING}>Run one? Get it listed.</a>
+                  <a href={CONTACT_LISTING} target="_top">
+                    Run one? Get it listed.
+                  </a>
                 )}
               </p>
             )}
@@ -742,7 +830,7 @@ export default function App() {
               <span className="sponsor-name">{DATA.sponsor.name}</span>
             )
           ) : (
-            <a className="sponsor-open" href={CONTACT_SPONSOR}>
+            <a className="sponsor-open" href={CONTACT_SPONSOR} target="_top">
               your business here
             </a>
           )}
@@ -754,9 +842,16 @@ export default function App() {
         </p>
         <p>
           Run a bar or restaurant? Get listed: email Chris Weber at{' '}
-          <a href={CONTACT_LISTING}>{CHRIS_EMAIL}</a> · <a href={CONTACT_CORRECTION}>Spot an error? Tell us</a>
+          <a href={CONTACT_LISTING} target="_top">
+            {CHRIS_EMAIL}
+          </a>{' '}
+          ·{' '}
+          <a href={CONTACT_CORRECTION} target="_top">
+            Spot an error? Tell us
+          </a>
         </p>
       </footer>
     </div>
+    </Finder.Provider>
   );
 }
