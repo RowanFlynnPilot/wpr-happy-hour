@@ -61,9 +61,12 @@ load, and `npm run check` runs the same validator in CI before every deploy):
   90 days. `npm run check` lists sources due for a recheck.
 - A verified bar may not carry `PLACEHOLDER` items — replace them with the confirmed
   specials in the same edit that sets `verifiedOn`.
-- `tags` — filterable features, from `patio`, `game-day` (Packers game day), `pool`,
-  `darts`; collected on the verification call, never guessed. The finder's tag filter
-  appears once any bar has one.
+- `tags` — filterable features, from `patio`, `pool`, `darts`, and three seasonal
+  ones that show only in season and come down on their own: `game-day` ("Shows the
+  Packers", while a game is still ahead in `packers.json`), `tom-and-jerrys` (Nov 20 –
+  Jan 5) and `hunters` ("Hunters welcome", the nine-day gun deer season: the Saturday
+  before Thanksgiving through the Sunday after). Collected on the verification call,
+  never guessed. The finder's tag filter appears once any bar has one in season.
 - `note` — `null` or one short restriction (≤120 characters) shown on the card in
   amber, e.g. "Happy hour is dine-in only".
 - `photo` and `logo` — `null`, a full `https://` URL, or a self-hosted file
@@ -116,7 +119,8 @@ npm run calls -- "C:\Users\rpfly\OneDrive\Desktop\happy-hour-call-tracker-2026-0
 ```
 
 Two optional columns ride along: **Tags (final)** (comma-separated, e.g.
-`patio, game-day`) and **Note (final)** (one short restriction; blank clears it).
+`patio, game-day, tom-and-jerrys, hunters` — ask "Do you show the Packers? Serve Tom &
+Jerrys? Anything for hunters?") and **Note (final)** (one short restriction; blank clears it).
 
 The first command previews; `--write` applies. Every `Verified` row replaces that
 bar's specials, sets its tier and `verifiedOn` = the call date (plus tags and note
@@ -379,7 +383,16 @@ against the dashboard by eye.
   it's quiet: "Back at it tomorrow at 11 AM", the first three openers as buttons that
   open that day at that bar, and "Clear filters" when filters caused it.
 - **Day picker:** Mon–Sun views for planning ahead, grouped "From <start>".
-- **Filters:** city, food/drinks, and tags (patio, Packers game day…) once any bar has one.
+- **Filters:** city, food/drinks, and tags (patio, Shows the Packers…) once any bar has one
+  in season.
+- **Packers game days:** the hero says "Packers at the Rams today, 7 PM kickoff." with a
+  "See who's showing it" filter when any bar has the `game-day` tag. The schedule is
+  `src/data/packers.json` (`checked` + `games`: date, opponent, home, kickoff in
+  Central or `null`), read from packers.com/schedule — never from memory. Enter a
+  kickoff only when the schedule shows it with no "subject to change" note; otherwise
+  `null`, and the line gives no time. `npm run check` asks for a re-read once
+  `checked` is over a week old while games remain. Week 18 has no date until the
+  league sets it: add it then.
 - **Save and share:** "Save" keeps a bar in the reader's own browser (localStorage, no
   account, nothing sent); saved bars lead their time group and a "My bars" filter
   appears. Where the browser refuses storage, there are no Save buttons. "Share" opens

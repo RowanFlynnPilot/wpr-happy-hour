@@ -30,7 +30,17 @@ export const AD_INK = '#0f2421';
 // advertising — shown on every row, so a reader can see how fresh it is
 export const CHECKED_VIA = ['website', 'facebook', 'instagram'];
 // Filterable tags. Chris collects them on the verification call; never guessed.
-export const TAGS = { patio: 'Patio', 'game-day': 'Packers game day', pool: 'Pool tables', darts: 'Darts' };
+// Three are seasonal and show only in season (tagInSeason in schedule.js): game-day
+// while Packers games remain on the schedule, tom-and-jerrys from late November
+// through New Year's, hunters during the gun deer season.
+export const TAGS = {
+  patio: 'Patio',
+  'game-day': 'Shows the Packers',
+  pool: 'Pool tables',
+  darts: 'Darts',
+  'tom-and-jerrys': 'Tom & Jerrys',
+  hunters: 'Hunters welcome',
+};
 
 export function toMinutes(hm) {
   const [h, m] = hm.split(':').map(Number);
@@ -209,5 +219,27 @@ export function validate(json) {
       throw new Error(`bars.json: bar "${bar.id}" has sourced specials but no "checked" — say how and when they were checked`);
     }
   }
+  return json;
+}
+
+// packers.json — the Packers' remaining games, read from the team's own schedule
+// (never from memory): the finder says "Packers at the Rams today" on game days
+// and shows the game-day tag while games remain. kickoff is Central time, or null
+// while the league can still move it. checked is the day the schedule was last
+// read; check-data asks for a re-read when it gets old.
+const GAME_KEYS = ['date', 'opponent', 'home', 'kickoff'];
+export function validateGames(json) {
+  checkKeys(json, ['checked', 'games'], 'packers.json');
+  if (!isDate(json.checked)) throw new Error('packers.json: "checked" must be a real YYYY-MM-DD date');
+  if (!Array.isArray(json.games)) throw new Error('packers.json: "games" must be a list');
+  json.games.forEach((g, i) => {
+    for (const k of GAME_KEYS) if (g[k] === undefined) throw new Error(`packers.json: game ${i + 1} missing "${k}"`);
+    checkKeys(g, GAME_KEYS, `packers.json game ${i + 1}`);
+    if (!isDate(g.date)) throw new Error(`packers.json: game ${i + 1} "date" must be a real YYYY-MM-DD date`);
+    if (!nonEmpty(g.opponent)) throw new Error(`packers.json: game ${g.date} "opponent" must be the team nickname`);
+    if (typeof g.home !== 'boolean') throw new Error(`packers.json: game ${g.date} "home" must be true or false`);
+    if (g.kickoff !== null && !HM.test(g.kickoff)) throw new Error(`packers.json: game ${g.date} "kickoff" must be 24h HH:MM (Central) or null`);
+    if (i > 0 && g.date <= json.games[i - 1].date) throw new Error(`packers.json: games must be in date order, one a day (${g.date})`);
+  });
   return json;
 }

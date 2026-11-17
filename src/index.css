@@ -1143,7 +1143,7 @@ a:focus-visible {
   }
 
   .filters select {
-    flex: 1;
+    flex: 1 1 calc(50% - 4px); /* two to a row: a third (the tag filter) wraps, none is squeezed */
     min-width: 0; /* at 16px the selects would otherwise overflow a narrow frame */
   }
 

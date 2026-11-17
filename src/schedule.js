@@ -416,3 +416,31 @@ export function parseActionUrl(url) {
   const m = /[?&]bar=([a-z0-9-]+)#([a-z-]+)$/.exec(url);
   return m && url.startsWith(LISTING_BASE) && m[2] in LISTING_EVENTS ? { barId: m[1], action: m[2] } : null;
 }
+
+// The visitor's calendar date as YYYY-MM-DD (local, like every time in the finder)
+export const ymdOf = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+// Thanksgiving's day of the month: the fourth Thursday of November
+const thanksgiving = (year) => 22 + ((11 - new Date(year, 10, 1).getDay()) % 7);
+
+// Seasonal tags show only in season, so nobody has to remember to take them down:
+//   game-day        while a Packers game is still ahead on the schedule (packers.json)
+//   tom-and-jerrys  November 20 through January 5
+//   hunters         Wisconsin's nine-day gun deer season: the Saturday before
+//                   Thanksgiving through the Sunday after it
+// Every other tag is always in season.
+export function tagInSeason(tag, date, games) {
+  const [m, d] = [date.getMonth() + 1, date.getDate()];
+  if (tag === 'game-day') return games.some((g) => g.date >= ymdOf(date));
+  if (tag === 'tom-and-jerrys') return (m === 11 && d >= 20) || m === 12 || (m === 1 && d <= 5);
+  if (tag === 'hunters') {
+    const t = thanksgiving(date.getFullYear());
+    return m === 11 && d >= t - 5 && d <= t + 3;
+  }
+  return true;
+}
+
+// Today's Packers game, if there is one, and the hero's line for it
+export const gameOn = (games, date) => games.find((g) => g.date === ymdOf(date)) ?? null;
+export const gameLine = (game) =>
+  `Packers ${game.home ? 'vs.' : 'at'} the ${game.opponent} today${game.kickoff ? `, ${unbroken(fmtTime(game.kickoff))} kickoff` : ''}.`;

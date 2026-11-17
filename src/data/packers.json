@@ -1,0 +1,41 @@
+{
+  "checked": "2026-11-17",
+  "games": [
+    {
+      "date": "2026-11-25",
+      "opponent": "Rams",
+      "home": false,
+      "kickoff": "19:00"
+    },
+    {
+      "date": "2026-12-06",
+      "opponent": "Saints",
+      "home": false,
+      "kickoff": null
+    },
+    {
+      "date": "2026-12-13",
+      "opponent": "Bills",
+      "home": true,
+      "kickoff": null
+    },
+    {
+      "date": "2026-12-20",
+      "opponent": "Dolphins",
+      "home": true,
+      "kickoff": null
+    },
+    {
+      "date": "2026-12-25",
+      "opponent": "Bears",
+      "home": false,
+      "kickoff": "12:00"
+    },
+    {
+      "date": "2027-01-04",
+      "opponent": "Texans",
+      "home": true,
+      "kickoff": null
+    }
+  ]
+}

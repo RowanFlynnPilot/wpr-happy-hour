@@ -24,6 +24,9 @@ import {
   nextDay,
   dayShape,
   LISTING_EVENTS,
+  tagInSeason,
+  gameOn,
+  gameLine,
   actionUrl,
   parseActionUrl,
   listingUrl,
@@ -380,4 +383,23 @@ test('actionUrl and parseActionUrl round-trip a listing action', () => {
   assert.equal(parseActionUrl('https://thepalmswausau.com/?utm_source=wausaupilotandreview'), null);
   assert.equal(parseActionUrl(`${listingUrl(b)}#nonsense`), null);
   assert.equal(parseActionUrl('https://evil.example/?bar=palms-supper-club#save'), null);
+});
+
+test('tagInSeason: seasonal tags come and go on their own', () => {
+  const games = [{ date: '2026-11-25', opponent: 'Rams', home: false, kickoff: '19:00' }, { date: '2027-01-04', opponent: 'Texans', home: true, kickoff: null }];
+  const on = (tag, y, m, d) => tagInSeason(tag, new Date(y, m - 1, d, 12), games);
+  assert.equal(on('patio', 2026, 7, 4), true); // not seasonal
+  assert.deepEqual([on('game-day', 2026, 11, 17), on('game-day', 2027, 1, 4), on('game-day', 2027, 1, 5)], [true, true, false]);
+  assert.deepEqual([on('tom-and-jerrys', 2026, 11, 19), on('tom-and-jerrys', 2026, 11, 20), on('tom-and-jerrys', 2027, 1, 5), on('tom-and-jerrys', 2027, 1, 6)], [false, true, true, false]);
+  // 2026: Thanksgiving is Nov 26, so gun deer season is Nov 21–29
+  assert.deepEqual([on('hunters', 2026, 11, 20), on('hunters', 2026, 11, 21), on('hunters', 2026, 11, 29), on('hunters', 2026, 11, 30)], [false, true, true, false]);
+  // 2027: Thanksgiving is Nov 25, season Nov 20–28
+  assert.deepEqual([on('hunters', 2027, 11, 19), on('hunters', 2027, 11, 20), on('hunters', 2027, 11, 28), on('hunters', 2027, 11, 29)], [false, true, true, false]);
+});
+
+test('gameOn and gameLine: the Packers line on a game day only', () => {
+  const games = [{ date: '2026-11-25', opponent: 'Rams', home: false, kickoff: '19:00' }, { date: '2026-12-13', opponent: 'Bills', home: true, kickoff: null }];
+  assert.equal(gameOn(games, new Date(2026, 10, 24, 20)), null);
+  assert.equal(gameLine(gameOn(games, new Date(2026, 10, 25, 9))), 'Packers at the Rams today, 7\u00a0PM kickoff.');
+  assert.equal(gameLine(gameOn(games, new Date(2026, 11, 13, 23, 59))), 'Packers vs. the Bills today.');
 });

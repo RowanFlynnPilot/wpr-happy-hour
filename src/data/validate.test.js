@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { isDate, validate } from './validate.js';
+import { isDate, validate, validateGames } from './validate.js';
 
 const special = (over = {}) => ({ days: ['thu'], start: '15:00', end: '18:00', type: 'drinks', items: ['$1 off taps'], ...over });
 const bar = (over = {}) => ({
@@ -133,4 +133,22 @@ test('a verified bar cannot carry PLACEHOLDER items', () => {
   const placeholder = [special({ items: ['PLACEHOLDER — $2 off rails'] })];
   assert.doesNotThrow(() => validate(doc([bar({ specials: placeholder })])));
   rejects(doc([bar({ verifiedOn: '2026-09-01', specials: placeholder })]), /PLACEHOLDER/);
+});
+
+test('validateGames: dated, ordered, kickoff HH:MM or null', () => {
+  const g = (over = {}) => ({ date: '2026-11-25', opponent: 'Rams', home: false, kickoff: '19:00', ...over });
+  const file = (games, checked = '2026-11-17') => ({ checked, games });
+  assert.doesNotThrow(() => validateGames(file([g(), g({ date: '2026-12-06', kickoff: null })])));
+  assert.doesNotThrow(() => validateGames(file([]))); // the season is over
+  assert.throws(() => validateGames(file([g({ kickoff: '7 PM' })])), /"kickoff"/);
+  assert.throws(() => validateGames(file([g({ date: '2026-11-31' })])), /"date"/);
+  assert.throws(() => validateGames(file([g(), g()])), /date order/);
+  assert.throws(() => validateGames(file([g({ home: 'away' })])), /"home"/);
+  assert.throws(() => validateGames(file([g({ tv: 'Netflix' })])), /unknown field/);
+  assert.throws(() => validateGames(file([g()], 'today')), /"checked"/);
+});
+
+test('the real packers.json passes', async () => {
+  const raw = await readFile(new URL('./packers.json', import.meta.url), 'utf8');
+  assert.doesNotThrow(() => validateGames(JSON.parse(raw)));
 });

@@ -68,6 +68,10 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Table tent (tent.html?bar=<id>): a printable sign with a QR code to the bar's
   listing. Never prints specials, prices or times. QR encoder is src/qr.js — no
   QR dependency (dependencies stay React only).
+- Seasonal tags (game-day, tom-and-jerrys, hunters) show only in season
+  (tagInSeason). The Packers line reads src/data/packers.json, which is entered
+  only from packers.com/schedule: never a game, date or kickoff from memory, and
+  kickoff stays null while the league can still move it.
 - Fonts and photos are self-hosted (public/fonts, public/photos): no Google Fonts or
   other third-party requests at load.
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.

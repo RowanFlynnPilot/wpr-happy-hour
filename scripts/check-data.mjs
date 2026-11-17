@@ -2,7 +2,7 @@
 // bars.json would deploy green and only fail in visitors' browsers. This runs
 // the exact validator the app runs at load. Usage: npm run check
 import { readFile } from 'node:fs/promises';
-import { validate } from '../src/data/validate.js';
+import { validate, validateGames } from '../src/data/validate.js';
 
 const raw = await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8');
 const json = validate(JSON.parse(raw));
@@ -20,6 +20,10 @@ const future = [
 if (future.length) {
   throw new Error(`bars.json: date(s) in the future (today is ${today}): ${future.join(', ')}`);
 }
+
+// The Packers schedule behind the game-day line: valid, and not from the future
+const packers = validateGames(JSON.parse(await readFile(new URL('../src/data/packers.json', import.meta.url), 'utf8')));
+if (packers.checked > today) throw new Error(`packers.json: "checked" ${packers.checked} is in the future (today is ${today})`);
 
 const specials = json.bars.reduce((n, b) => n + b.specials.length, 0);
 const verified = json.bars.filter((b) => b.verifiedOn !== null);
@@ -43,3 +47,12 @@ const staleChecks = json.bars.filter(
 if (staleChecks.length) {
   console.log(`WARN — sources checked over ${STALE_DAYS} days ago (recheck): ${staleChecks.map((b) => b.id).join(', ')}`);
 }
+
+// Advisory — kickoffs get flexed and late games get dated, so the schedule is
+// re-read from packers.com every week or so while games remain
+const upcoming = packers.games.filter((g) => g.date >= today);
+const scheduleAge = Math.floor((new Date(today) - new Date(packers.checked)) / 86_400_000);
+if (upcoming.length > 0 && scheduleAge > 7) {
+  console.log(`WARN — packers.json was last read ${scheduleAge} days ago; re-read packers.com/schedule (kickoffs flex; Week 18 may be set) and update "checked"`);
+}
+if (upcoming.length === 0) console.log('NOTE — no Packers games ahead in packers.json: the game-day tag and line are off until the schedule is updated');

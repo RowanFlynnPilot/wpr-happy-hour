@@ -1,8 +1,9 @@
 import { Fragment, createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import data from './data/bars.json';
+import packers from './data/packers.json';
 // Schema lives in validate.js — shared with scripts/check-data.mjs so CI
 // rejects bad data before it can deploy. The app still throws at load.
-import { DAY_KEYS, TAGS, toMinutes, validate } from './data/validate.js';
+import { DAY_KEYS, TAGS, toMinutes, validate, validateGames } from './data/validate.js';
 // Time + listing logic is shared with the newsletter card and unit-tested
 import {
   DAY_LABELS,
@@ -15,6 +16,8 @@ import {
   fmtDays,
   fmtTime,
   fmtWindow,
+  gameLine,
+  gameOn,
   groupSpecials,
   heroFinding,
   hmOf,
@@ -31,6 +34,7 @@ import {
   sourcedOf,
   specialStatus,
   startsAt,
+  tagInSeason,
   timetable,
   trackedUrl,
   unbroken,
@@ -45,8 +49,11 @@ import { Arrow, Axis, DayShape, Seal, onAxis, pctOf, spanOf } from './marks.jsx'
 
 const DATA = validate(data);
 const CITIES = [...new Set(DATA.bars.map((b) => b.city))].sort();
+// The Packers' remaining games, read from the team's schedule (never from memory)
+const GAMES = validateGames(packers).games;
 // The tag filter offers only tags some listing actually has (Chris collects them)
-const TAGS_IN_USE = Object.keys(TAGS).filter((t) => DATA.bars.some((b) => b.tags.includes(t)));
+// and that are in season on the day: Tom & Jerrys leave the list in January
+const tagsInUse = (date) => Object.keys(TAGS).filter((t) => tagInSeason(t, date, GAMES) && DATA.bars.some((b) => b.tags.includes(t)));
 
 // Deep links: ?view=fri&city=Weston&type=food&tag=patio&bar=red-eye-brewing — read
 // once at load, no router. Unlike curated data, params arrive from outside (article
@@ -76,7 +83,7 @@ function viewForBar(barId) {
 const ARRIVED_BY = INITIAL_BAR && (PARAMS.get('utm_source') === 'tent' ? 'opened-tent' : 'opened');
 const INITIAL_CITY = CITIES.includes(PARAMS.get('city')) ? PARAMS.get('city') : 'all';
 const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.get('type') : 'all';
-const INITIAL_TAG = TAGS_IN_USE.includes(PARAMS.get('tag')) ? PARAMS.get('tag') : 'all';
+const INITIAL_TAG = tagsInUse(new Date()).includes(PARAMS.get('tag')) ? PARAMS.get('tag') : 'all';
 
 // Derived from public address only — contact info stays in the Notion CRM
 const mapsUrl = (bar) =>
@@ -283,7 +290,8 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
   const featured = bar.tier === 'featured';
   const fresh = freshness(bar, trackNow ?? new Date());
   const calendar = groupSpecials(bar.specials).some((g) => !g.placeholder);
-  const { saved, toggleSaved, announce } = useContext(Finder);
+  const { saved, toggleSaved, announce, inSeason } = useContext(Finder);
+  const tags = bar.tags.filter(inSeason);
   const isSaved = saved?.has(bar.id);
   const [downloaded, setDownloaded] = useState(false);
   const Name = `h${level}`;
@@ -332,7 +340,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
           )}
         </p>
         {featured && <p className="card-tier">Featured partner</p>}
-        {bar.tags.length > 0 && <p className="card-tags">{bar.tags.map((t) => TAGS[t]).join(' · ')}</p>}
+        {tags.length > 0 && <p className="card-tags">{tags.map((t) => TAGS[t]).join(' · ')}</p>}
         {fresh?.verified && <Seal />}
       </header>
       <div className="card-specials">
@@ -482,6 +490,11 @@ export default function App() {
     }
   };
   const mineOnly = onlySaved && saved?.size > 0; // the last one unsaved: the filter lets go
+  // Tags on offer today; a seasonal tag picked before its season ended lets go too
+  const dateKey = now.toDateString();
+  const tagsNow = useMemo(() => tagsInUse(now), [dateKey]);
+  const activeTag = tagsNow.includes(tag) ? tag : 'all';
+  const game = gameOn(GAMES, now); // today's Packers game, if any
 
   useEffect(() => {
     const refresh = () => setNow(new Date());
@@ -533,7 +546,7 @@ export default function App() {
     setJump({ barId, key: Date.now() });
   };
 
-  const filtered = city !== 'all' || type !== 'all' || tag !== 'all' || mineOnly;
+  const filtered = city !== 'all' || type !== 'all' || activeTag !== 'all' || mineOnly;
   const clearFilters = () => {
     setCity('all');
     setType('all');
@@ -543,8 +556,8 @@ export default function App() {
 
   const typeMatch = (s) => type === 'all' || s.type === type || s.type === 'both';
   const cityBars = useMemo(
-    () => DATA.bars.filter((b) => (city === 'all' || b.city === city) && (tag === 'all' || b.tags.includes(tag)) && (!mineOnly || saved.has(b.id))),
-    [city, tag, mineOnly, saved]
+    () => DATA.bars.filter((b) => (city === 'all' || b.city === city) && (activeTag === 'all' || b.tags.includes(activeTag)) && (!mineOnly || saved.has(b.id))),
+    [city, activeTag, mineOnly, saved]
   );
 
   const today = DAY_KEYS[now.getDay()];
@@ -626,7 +639,7 @@ export default function App() {
   const linkedBar = jump?.barId ?? null;
 
   return (
-    <Finder.Provider value={{ saved, toggleSaved, announce: setNotice, holiday: holiday && todayShown }}>
+    <Finder.Provider value={{ saved, toggleSaved, announce: setNotice, holiday: holiday && todayShown, inSeason: (t) => tagsNow.includes(t) }}>
     <div className="app">
       <header className="masthead">
         <a className="masthead-brand" href="https://wausaupilotandreview.com" target="_top">
@@ -675,6 +688,20 @@ export default function App() {
               .
             </p>
           )}
+          {game && todayShown && (
+            <p className="hero-fishfry">
+              {gameLine(game)}
+              {tagsNow.includes('game-day') && activeTag !== 'game-day' && (
+                <>
+                  {' '}
+                  <button type="button" className="link-btn" onClick={() => setTag('game-day')}>
+                    See who’s showing it
+                  </button>
+                  .
+                </>
+              )}
+            </p>
+          )}
           <DayShape counts={shape} nowMin={view === 'now' || view === today ? nowMin : null} />
         </header>
 
@@ -714,10 +741,10 @@ export default function App() {
               <option value="drinks">Drinks</option>
               <option value="food">Food</option>
             </select>
-            {TAGS_IN_USE.length > 0 && (
-              <select value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Filter by feature">
+            {tagsNow.length > 0 && (
+              <select value={activeTag} onChange={(e) => setTag(e.target.value)} aria-label="Filter by feature">
                 <option value="all">Any spot</option>
-                {TAGS_IN_USE.map((t) => (
+                {tagsNow.map((t) => (
                   <option key={t} value={t}>
                     {TAGS[t]}
                   </option>
