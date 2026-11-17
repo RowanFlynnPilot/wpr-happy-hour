@@ -37,7 +37,9 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   card src/digest.jsx, scripts/render-digest.mjs); it's unit-tested (`npm test`).
 - Newsletter card: digest.html is screenshotted by Playwright at deploy time into
   one PNG per weekday + digest.json (dist/digest/). Verified bars only — nothing
-  unconfirmed reaches subscribers. No cron: the card changes only with bars.json.
+  unconfirmed reaches subscribers. No cron: the card changes only with bars.json. It carries no date, so
+  digest.json lists the holidays ahead (`skip`, from holidayOn) and the newsletter
+  leaves the card out on those dates.
   The email side lives in the wpr-newsletter repo (auto-sends; confirm before
   touching it).
 - Newsletter spotlight (the cheap per-send ad): spotlight.html renders one 970×500

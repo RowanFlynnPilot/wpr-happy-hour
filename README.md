@@ -58,7 +58,8 @@ load, and `npm run check` runs the same validator in CI before every deploy):
   `{ "on": "YYYY-MM-DD", "via": "website" | "facebook" | "instagram" }`. Required
   once a bar has any sourced (non-`PLACEHOLDER`) special and isn't verified; the card
   shows "From the bar's website, checked Oct 26", greyed with "may have changed" after
-  90 days. `npm run check` lists sources due for a recheck.
+  90 days. `npm run check` lists sources due for a recheck from day 60, with the days left
+  before the first one shows as "may have changed".
 - A verified bar may not carry `PLACEHOLDER` items — replace them with the confirmed
   specials in the same edit that sets `verifiedOn`.
 - `tags` — filterable features, from `patio`, `pool`, `darts`, and three seasonal
@@ -194,7 +195,11 @@ the same pattern as the Packers, gas-price and meeting digests. `digest.html` is
   where the image goes: "See every special and its price", with "+N more". The
   presenting `sponsor` is baked in — one sponsorship covers the tool and the newsletter.
 - `digest/digest.json` — per-day `count`, `image`, `alt`. `image` is `null` on days
-  with no verified partners; the newsletter omits the section on those days.
+  with no verified partners; the newsletter omits the section on those days. It also
+  omits it on any date in `skip` (`[{ date, name }]`: Thanksgiving, Dec 24/25, Jan 1 for
+  the next 400 days, from the same `holidayOn` the finder uses) — the card has no date
+  on it, so it can't say "holiday hours vary" — and on any date after `skipThrough`,
+  when the list has run out because the site hasn't deployed in over a year.
 - `digest/demo.png` — sales preview with sample listings. Any day, live:
   `digest.html?day=thu&demo`, or `&demo=Bar%20Name` to put a prospect's name in the
   featured spot for a screenshot.
@@ -209,7 +214,8 @@ npm run build; npm run render
 The newsletter side lives in the `wpr-newsletter` repo: add `wpr-happy-hour` to the
 tools-proxy allowlist (then redeploy the Cloudflare worker), and read `digest.json`
 in a fail-soft block like the featured pet, linking the image to the WP page with
-`?view=<day>`.
+`?view=<day>`. The block shows nothing when the day's `image` is null, when today
+(Central) is in `skip`, or when today is after `skipThrough`.
 
 ## Newsletter spotlight
 

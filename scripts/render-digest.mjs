@@ -11,7 +11,9 @@
 //   dist/digest/demo.png     sales preview with sample listings
 //   dist/og-image.png        the link preview image for the finder (og.html)
 //   dist/digest/digest.json  per-day count, image path and alt text — the
-//                            newsletter omits the section when "image" is null
+//                            newsletter omits the section when "image" is null,
+//                            on a date in "skip" (holidays: a usual schedule can't
+//                            be trusted) and after "skipThrough" (the list has run out)
 //   dist/digest/spotlight/<id>.jpg  one spotlight ad per verified partner with ad
 //                            copy, 970 x 500, ready to book into a newsletter ad zone
 //   dist/digest/spotlight-sample.jpg  the showcase bar's ad (a preview), for the one-pager and rate card
@@ -26,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { AD_STYLES, validate } from '../src/data/validate.js';
-import { WEEK_ORDER, dayAtAGlance, digestFor, fmtWindows, spotlightFor, trackedUrl, weekdayLabel } from '../src/schedule.js';
+import { WEEK_ORDER, dayAtAGlance, digestFor, fmtWindows, holidaysAhead, spotlightFor, trackedUrl, weekdayLabel, ymdOf } from '../src/schedule.js';
 
 const WIDTH = 536; // CSS px — the newsletter's image column, rendered at 2x
 const OUT = new URL('../dist/digest/', import.meta.url);
@@ -37,6 +39,12 @@ const AD_GAP = 12; // px of clear space between any two parts of the ad
 // A photo ad is a JPEG: ~120 KB against 450 as a PNG. At 90 its colored type
 // stays clean (80 starts to mottle it); the day cards stay PNG (flat color, small).
 const AD_QUALITY = 90;
+// The card carries no date, so it can't say "holiday hours vary" the way the finder
+// does. The manifest lists the holidays in the next 400 days instead, and the
+// newsletter leaves the card out on those dates. Central dates: this runs in CI (UTC).
+const SKIP_DAYS = 400;
+const [cy, cm, cd] = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }).split('-').map(Number);
+const TODAY = new Date(cy, cm - 1, cd);
 
 const data = validate(JSON.parse(await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8')));
 
@@ -169,7 +177,13 @@ try {
   const ogPage = await open({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
   await shoot(ogPage, 'og.html', '../og-image.png', ['Fraunces', 'Public Sans']);
 
-  const manifest = { updated: data.updated, sponsor: data.sponsor, days };
+  const manifest = {
+    updated: data.updated,
+    sponsor: data.sponsor,
+    skip: holidaysAhead(TODAY, SKIP_DAYS),
+    skipThrough: ymdOf(new Date(cy, cm - 1, cd + SKIP_DAYS)),
+    days,
+  };
   await writeFile(new URL('digest.json', OUT), `${JSON.stringify(manifest, null, 2)}\n`);
   console.log('Wrote dist/digest/digest.json');
 

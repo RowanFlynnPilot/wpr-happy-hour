@@ -31,6 +31,7 @@ import {
   parseActionUrl,
   listingUrl,
   holidayOn,
+  holidaysAhead,
   sunsetAt,
   phaseOf,
   dayAtAGlance,
@@ -402,4 +403,16 @@ test('gameOn and gameLine: the Packers line on a game day only', () => {
   assert.equal(gameOn(games, new Date(2026, 10, 24, 20)), null);
   assert.equal(gameLine(gameOn(games, new Date(2026, 10, 25, 9))), 'Packers at the Rams today, 7\u00a0PM kickoff.');
   assert.equal(gameLine(gameOn(games, new Date(2026, 11, 13, 23, 59))), 'Packers vs. the Bills today.');
+});
+
+test('holidaysAhead: the dates the newsletter card sits out', () => {
+  assert.deepEqual(holidaysAhead(new Date(2026, 10, 17, 9), 60), [
+    { date: '2026-11-26', name: 'Thanksgiving' },
+    { date: '2026-12-24', name: 'Christmas Eve' },
+    { date: '2026-12-25', name: 'Christmas Day' },
+    { date: '2027-01-01', name: "New Year's Day" },
+  ]);
+  assert.deepEqual(holidaysAhead(new Date(2026, 10, 26, 23), 0), [{ date: '2026-11-26', name: 'Thanksgiving' }]); // today counts
+  assert.deepEqual(holidaysAhead(new Date(2026, 1, 1), 60), []);
+  assert.equal(holidaysAhead(new Date(2026, 10, 17), 400).at(-1).date, '2027-11-25'); // through Dec 22, 2027: next Thanksgiving too
 });

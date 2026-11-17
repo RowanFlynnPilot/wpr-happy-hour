@@ -360,6 +360,19 @@ export function holidayOn(date) {
   return null;
 }
 
+// The holidays in the `days` days from `from`, as [{ date: 'YYYY-MM-DD', name }]:
+// the dates the newsletter leaves the day card out (digest.json's "skip"). The card
+// is one image per weekday with no date on it, so it can't say "hours vary" itself.
+export function holidaysAhead(from, days) {
+  const out = [];
+  for (let i = 0; i <= days; i++) {
+    const date = new Date(from.getFullYear(), from.getMonth(), from.getDate() + i);
+    const name = holidayOn(date);
+    if (name) out.push({ date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, name });
+  }
+  return out;
+}
+
 // Sunset in Wausau on the visitor's calendar date, as a Date — NOAA's short solar
 // formula, good to a few minutes; no timezone library, the result is an instant.
 const WAUSAU = { lat: 44.96, lon: -89.63 };

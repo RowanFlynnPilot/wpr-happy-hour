@@ -40,12 +40,19 @@ const stale = verified.filter((b) => (Date.now() - new Date(`${b.verifiedOn}T00:
 if (stale.length) {
   console.log(`WARN — verified over ${STALE_DAYS} days ago (renewal call due): ${stale.map((b) => b.id).join(', ')}`);
 }
-// Readers see these as "may have changed" — recheck the bar's own site, or call
-const staleChecks = json.bars.filter(
-  (b) => b.verifiedOn === null && b.checked !== null && (Date.now() - new Date(`${b.checked.on}T00:00:00`)) / 86_400_000 > STALE_DAYS
-);
+// Sourced listings: at 60 days the recheck is due; past 90 readers see "may have
+// changed" on the listing — re-read the bar's own site or posts, or call
+const DUE_DAYS = 60;
+const checkAge = (b) => Math.floor((new Date(today) - new Date(b.checked.on)) / 86_400_000);
+const sourced = json.bars.filter((b) => b.verifiedOn === null && b.checked !== null);
+const staleChecks = sourced.filter((b) => checkAge(b) > STALE_DAYS);
+const dueChecks = sourced.filter((b) => checkAge(b) > DUE_DAYS && checkAge(b) <= STALE_DAYS);
 if (staleChecks.length) {
-  console.log(`WARN — sources checked over ${STALE_DAYS} days ago (recheck): ${staleChecks.map((b) => b.id).join(', ')}`);
+  console.log(`WARN — sources checked over ${STALE_DAYS} days ago, shown to readers as "may have changed" (recheck now): ${staleChecks.map((b) => b.id).join(', ')}`);
+}
+if (dueChecks.length) {
+  const soonest = STALE_DAYS + 1 - Math.max(...dueChecks.map(checkAge));
+  console.log(`WARN — sources checked over ${DUE_DAYS} days ago (recheck due; the first shows as "may have changed" in ${soonest} day${soonest === 1 ? '' : 's'}): ${dueChecks.map((b) => b.id).join(', ')}`);
 }
 
 // Advisory — kickoffs get flexed and late games get dated, so the schedule is

@@ -54,7 +54,8 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    subscribers automatically — review before merging there. Add `wpr-happy-hour`
    to the tools-proxy allowlist and redeploy that Cloudflare worker, then add a
    fail-soft section that reads `digest/digest.json`, shows the weekday's image
-   linked to the WP page (`?view=<day>`), and omits itself when `image` is null.
+   linked to the WP page (`?view=<day>`), and omits itself when `image` is null, on a date listed in `skip` (holidays), or
+   after `skipThrough`.
    Needs the WP page from step 5 and at least one verified partner.
    The **newsletter spotlight** (per-send ad, README → Newsletter spotlight) needs
    no code per sale: a verified partner with its `photo`, `logo` and `ad` copy in
