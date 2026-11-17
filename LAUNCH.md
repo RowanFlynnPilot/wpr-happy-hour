@@ -36,7 +36,7 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    a one-line change (owner call; the Plausible pick is from July 2026).
 5. **Embed on WordPress.** On launch day, in the same edit: remove the
    `<meta name="robots" content="noindex">` line from `index.html` (it hides the
-   unfinished finder from search until then), point `SHARE_BASE` in `src/App.jsx` at
+   unfinished finder from search until then), point `LISTING_BASE` in `src/schedule.js` at
    the WordPress page so shared links land there, and keep `allow="web-share"` on the
    iframe. The pattern is proven: the live Fish Fry Guide page
    embeds its app the same way (iframe → GitHub Pages). Create the page —
@@ -61,7 +61,8 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    Guide on Fridays. Add the reciprocal link on the fish fry side (WP page or
    the wpr-fish-fry app footer) once the happy hour page exists.
 8. **Announcement article.** Link the page; give each partner their own
-   `?bar=<id>` link to share on socials.
+   `?bar=<id>` link to share on socials, and a printed table tent
+   (`tent.html?bar=<id>`, README → Sales assets).
 
 Open decisions (owner/Chris):
 

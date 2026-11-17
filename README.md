@@ -295,6 +295,15 @@ drinking-game copy out.
 - All three sheets use the site's self-hosted fonts (`public/fonts/`), like the finder:
   no third-party requests. Each must print on one Letter page — re-check after any
   copy change (`npm run build; npm run render`, then Print → Save as PDF).
+- `tent.html?bar=<id>` — a printable table tent for one partner (.../tent.html?bar=palms-supper-club):
+  its name, "Scan for our happy hour" and a QR code to its listing. One Letter page,
+  two panels head to head: print on card stock at 100% scale, fold on the teal band,
+  stand it up. No specials or prices are printed, so it can't go stale. A verified bar
+  gets the "Verified by phone" seal; an unverified one prints a "Sample" strip. The
+  code's link carries `utm_source=tent`, so scans show in Plausible. The QR encoder is
+  `src/qr.js` (no dependency; tested in `qr.test.js`). At launch the link moves with
+  `LISTING_BASE` — reprint tents made before then only if the GitHub address ever stops
+  working (it won't, short of renaming the repo).
 - `LAUNCH.md` — the ordered launch checklist.
 
 ## Analytics
@@ -334,7 +343,7 @@ localhost traffic is ignored automatically.
 - **Save and share:** "Save" keeps a bar in the reader's own browser (localStorage, no
   account, nothing sent); saved bars lead their time group and a "My bars" filter
   appears. Where the browser refuses storage, there are no Save buttons. "Share" opens
-  the phone's share sheet with the bar's `?bar=` link (`SHARE_BASE` in App.jsx —
+  the phone's share sheet with the bar's `?bar=` link (`LISTING_BASE` in schedule.js —
   switch it to the WordPress page at launch); it shows only where the browser has a
   share sheet, and inside the iframe needs `allow="web-share"` (in the snippet above).
 - **Holidays:** on Thanksgiving, Christmas Eve, Christmas Day and New Year's Day

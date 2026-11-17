@@ -20,6 +20,7 @@ import {
   icsFor,
   isConfirmed,
   isPlaceholder,
+  listingUrl,
   minutesUntil,
   nextDay,
   nowListings,
@@ -137,9 +138,6 @@ function bringIntoView(el) {
   window.parent.postMessage({ type: 'wpr-hh-height', height: document.body.scrollHeight, anchor }, '*');
 }
 
-// Where a shared listing points: this page, at the bar. Switch to the WordPress
-// page's URL at launch (LAUNCH.md) — its snippet forwards ?bar= into the frame.
-const SHARE_BASE = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
 // The phone's own share sheet, where the browser has one. Inside the WordPress
 // iframe it also needs allow="web-share" on the frame (README snippet).
 const CAN_SHARE = typeof navigator.share === 'function';
@@ -278,7 +276,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
   const Name = `h${level}`;
   const share = () =>
     navigator
-      .share({ title: bar.name, text: `${bar.name}: specials and times on Wausau Pilot & Review’s Happy Hour Finder`, url: `${SHARE_BASE}?bar=${bar.id}` })
+      .share({ title: bar.name, text: `${bar.name}: specials and times on Wausau Pilot & Review’s Happy Hour Finder`, url: listingUrl(bar) })
       // AbortError is the reader closing the sheet; anything else, say so
       .catch((e) => e.name === 'AbortError' || announce('Sharing isn’t available here'));
   return (

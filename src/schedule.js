@@ -386,3 +386,10 @@ export function phaseOf(date) {
   const sinceSunset = (date - sunsetAt(date)) / 60_000;
   return sinceSunset >= 30 ? 'evening' : sinceSunset >= -90 ? 'golden' : 'day';
 }
+
+// A listing's own link: this page, opened at the bar. Switch LISTING_BASE to the
+// WordPress page's URL at launch (LAUNCH.md) — its snippet forwards ?bar= into the
+// frame. source says where the visit came from (the printed table tent's QR code),
+// as utm_source, which Plausible reports.
+const LISTING_BASE = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
+export const listingUrl = (bar, source) => `${LISTING_BASE}?bar=${bar.id}${source ? `&utm_source=${source}` : ''}`;

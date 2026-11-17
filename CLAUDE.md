@@ -60,6 +60,9 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   No storage means no Save buttons. Share uses the browser's own share sheet only.
 - index.html carries `noindex` until launch day (LAUNCH.md step 5); the link
   preview image is rendered at deploy from og.html.
+- Table tent (tent.html?bar=<id>): a printable sign with a QR code to the bar's
+  listing. Never prints specials, prices or times. QR encoder is src/qr.js — no
+  QR dependency (dependencies stay React only).
 - Fonts and photos are self-hosted (public/fonts, public/photos): no Google Fonts or
   other third-party requests at load.
 - Paid outbound links (bar websites, sponsor) carry rel="sponsored" + UTM tags.
