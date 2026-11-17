@@ -393,3 +393,26 @@ export function phaseOf(date) {
 // as utm_source, which Plausible reports.
 const LISTING_BASE = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
 export const listingUrl = (bar, source) => `${LISTING_BASE}?bar=${bar.id}${source ? `&utm_source=${source}` : ''}`;
+
+// What readers do on a listing, counted per bar for the partner report (Plausible
+// custom events; scripts/partner-report.mjs reads them back). Each event carries
+// the listing's link with the action as its fragment in the "url" property —
+// the one property Plausible shows and exports on every plan (a "bar" property
+// would need the Business plan). The event names are the goals to create in
+// Plausible's site settings.
+export const LISTING_EVENTS = {
+  website: 'Listing Website', // tapped through to the bar's own site
+  directions: 'Listing Directions',
+  save: 'Listing Saved',
+  share: 'Listing Shared',
+  calendar: 'Listing Calendar',
+  opened: 'Listing Opened', // arrived by the bar's own link
+  'opened-tent': 'Listing Opened', // ...by scanning its table tent
+};
+export const actionUrl = (bar, action) => `${listingUrl(bar)}#${action}`;
+// The reverse: a "url" value from an export → { barId, action }, or null when it
+// isn't one of ours (an outbound link, say)
+export function parseActionUrl(url) {
+  const m = /[?&]bar=([a-z0-9-]+)#([a-z-]+)$/.exec(url);
+  return m && url.startsWith(LISTING_BASE) && m[2] in LISTING_EVENTS ? { barId: m[1], action: m[2] } : null;
+}

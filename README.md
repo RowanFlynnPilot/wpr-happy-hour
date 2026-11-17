@@ -295,7 +295,7 @@ drinking-game copy out.
 - All three sheets use the site's self-hosted fonts (`public/fonts/`), like the finder:
   no third-party requests. Each must print on one Letter page — re-check after any
   copy change (`npm run build; npm run render`, then Print → Save as PDF).
-- `tent.html?bar=<id>` — a printable table tent for one partner (.../tent.html?bar=palms-supper-club):
+- `tent.html` lists every bar's table tent by name; `tent.html?bar=<id>` is one partner's (.../tent.html?bar=palms-supper-club):
   its name, "Scan for our happy hour" and a QR code to its listing. One Letter page,
   two panels head to head: print on card stock at 100% scale, fold on the teal band,
   stand it up. No specials or prices are printed, so it can't go stale. A verified bar
@@ -312,6 +312,46 @@ Plausible, via the `script.outbound-links.js` tag in `index.html`: pageviews plu
 clicks (bar websites, Directions) — the numbers Chris brings to renewal calls. The site must
 be registered as `rowanflynnpilot.github.io` in the WPR Plausible account before data flows;
 localhost traffic is ignored automatically.
+
+The finder also counts what readers do on each listing, through that same tag (no second
+script): six custom events — **Listing Website**, **Listing Directions**, **Listing Saved**,
+**Listing Shared**, **Listing Calendar**, **Listing Opened** (arrived by the bar's own
+link, or by scanning its table tent). Each is a count plus the listing it happened on,
+nothing about the reader. Create those six as goals in Plausible's site settings, or
+they won't show. Each event carries the listing's link with the action as its fragment
+(`…?bar=<id>#save`) in the `url` property — the one property Plausible shows and exports
+on every plan; a `bar` property is sent too, visible on the Business plan only.
+
+## Partner report
+
+A one-page results sheet per bar for Chris's renewal calls, built from a Plausible export
+so every number is one Plausible measured:
+
+1. In Plausible, set the dashboard to the month and choose **Export** (a zip). Don't
+   filter by a goal or a page. Unzip it.
+2. Run it:
+
+```powershell
+npm run report -- "C:\path\to\unzipped-export"                     # every verified bar
+npm run report -- "C:\path\to\unzipped-export" --bar palms-supper-club
+```
+
+Each report lands in `reports/<bar-id>/<start>_<end>/` as `index.html` (open it, type the
+recommendation into the amber box, print to PDF) and `data.json` (the numbers behind
+it). `reports/` is git-ignored: a bar's numbers are its own and never ship with the site.
+
+What's on it: the listing and period; the top three actions; every action with **Times**
+(events) and **Readers** (unique visitors), never converted into each other; the finder's
+pageviews and visits for the same period; Chris's recommendation; his contact. It never
+shows another bar's numbers, and it doesn't cover the newsletter card or spotlight ad
+(those are Broadstreet's and the newsletter platform's numbers).
+
+It stops rather than guess: no `custom_props.csv` in the export, an export filtered by a
+goal, or 300 `url` rows (Plausible's export limit — rows may be cut off; export each
+"Listing …" goal on its own instead). A bar with no recorded activity gets a report that
+says so, and the run flags it. The export format was taken from Plausible's docs and
+source (Nov 2026), not yet from a real export: check the first real month's numbers
+against the dashboard by eye.
 
 ## Behavior
 
@@ -361,7 +401,9 @@ localhost traffic is ignored automatically.
   that bar has a sourced special (else the next day it's listed), brings its card to the
   top, rings it, shows its days and moves focus to it — each partner's shareable link
   for socials and table tents. Invalid values are ignored.
-- **Sort:** featured first, then the timetable's time groups in order.
+- **Sort:** featured partners with a sourced special in view first, then the timetable's
+  time groups in order. A featured bar with only "Being confirmed" specials files into
+  the timetable, so a list never opens on an unconfirmed card.
 - **Fonts and photos are self-hosted** (`public/fonts/`, `public/photos/`): no Google
   Fonts request, no layout shift, and a bar's site going down can't blank a card. The
   finder uses Fraunces, Public Sans and JetBrains Mono; the spotlight's looks, Anton,

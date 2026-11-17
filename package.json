@@ -10,7 +10,8 @@
     "build": "vite build",
     "render": "node scripts/render-digest.mjs",
     "calls": "node scripts/apply-calls.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "report": "node scripts/partner-report.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

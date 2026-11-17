@@ -29,7 +29,11 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
    placeholders), settle the rate card's amber "To settle" tags, and remove each
    page's DRAFT ribbon in the same edit.
 4. **Register Plausible.** Add site `rowanflynnpilot.github.io` to a WPR
-   Plausible account. The script tag is already live; no data is recorded until
+   Plausible account. Then, in its site settings, create seven goals (custom
+   events): Listing Website, Listing Directions, Listing Saved, Listing Shared,
+   Listing Calendar, Listing Opened, and Outbound Link: Click — events without a
+   goal don't show. The monthly partner report (README → Partner report) is built
+   from that account's export; any plan with exports will do. The script tag is already live; no data is recorded until
    the site is registered. Note (checked 2026-08-01): the main WP site runs
    GA4 + Jetpack stats, not Plausible — so this means a new Plausible account.
    If the newsroom would rather consolidate on GA4, swapping the tool's tag is

@@ -149,3 +149,50 @@ body.tent-page {
     box-shadow: none;
   }
 }
+
+/* The list of every bar's tent (tent.html with no ?bar=) */
+.tent-index {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+.tent-index h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 32px;
+}
+
+.tent-index p {
+  margin-top: 6px;
+  color: var(--ink-soft);
+}
+
+.tent-index ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  border-top: 2px solid var(--ink);
+}
+
+.tent-index li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px 64px;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.tent-index a {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+.tent-index .ok {
+  font-weight: 600;
+  color: var(--teal-dark);
+}

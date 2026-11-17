@@ -6,6 +6,8 @@ import { DAY_KEYS, TAGS, toMinutes, validate } from './data/validate.js';
 // Time + listing logic is shared with the newsletter card and unit-tested
 import {
   DAY_LABELS,
+  LISTING_EVENTS,
+  actionUrl,
   WEEK_ORDER,
   dayListings,
   dayShape,
@@ -69,6 +71,9 @@ function viewForBar(barId) {
   // runs(specials) always finds one — the validator guarantees ≥1 special with ≥1 day
   return runs(sourcedOf(specials)) ?? runs(specials);
 }
+// Arriving by a bar's own link is counted for that bar — once, at load — and by
+// its table tent when the link says so (utm_source=tent, from the QR code)
+const ARRIVED_BY = INITIAL_BAR && (PARAMS.get('utm_source') === 'tent' ? 'opened-tent' : 'opened');
 const INITIAL_CITY = CITIES.includes(PARAMS.get('city')) ? PARAMS.get('city') : 'all';
 const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.get('type') : 'all';
 const INITIAL_TAG = TAGS_IN_USE.includes(PARAMS.get('tag')) ? PARAMS.get('tag') : 'all';
@@ -142,6 +147,12 @@ function bringIntoView(el) {
 // iframe it also needs allow="web-share" on the frame (README snippet).
 const CAN_SHARE = typeof navigator.share === 'function';
 
+// What readers do on a listing, counted per bar for the partner report — a count
+// and the listing it happened on, nothing about the reader. Plausible's own queue:
+// events sent before its script loads are replayed when it does.
+window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };
+const track = (action, bar) => window.plausible(LISTING_EVENTS[action], { props: { url: actionUrl(bar, action), bar: bar.id } });
+
 // Saved bars live in this browser only — no account, nothing sent anywhere. Null
 // when the browser refuses storage (private mode, a partitioned iframe): then the
 // finder simply has no Save buttons.
@@ -184,6 +195,8 @@ function useRolling(value) {
   }, [value]);
   return shown;
 }
+
+if (ARRIVED_BY) track(ARRIVED_BY, DATA.bars.find((b) => b.id === INITIAL_BAR));
 
 /* ---------------- */
 /* Components       */
@@ -274,11 +287,13 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
   const isSaved = saved?.has(bar.id);
   const [downloaded, setDownloaded] = useState(false);
   const Name = `h${level}`;
-  const share = () =>
-    navigator
+  const share = () => {
+    track('share', bar);
+    return navigator
       .share({ title: bar.name, text: `${bar.name}: specials and times on Wausau Pilot & Review’s Happy Hour Finder`, url: listingUrl(bar) })
       // AbortError is the reader closing the sheet; anything else, say so
       .catch((e) => e.name === 'AbortError' || announce('Sharing isn’t available here'));
+  };
   return (
     <article
       id={`bar-${bar.id}`}
@@ -298,7 +313,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
         <Name className="card-name" tabIndex={-1}>
           {bar.website ? (
             // Every listing is paid — rel="sponsored" is the disclosure to search engines
-            <a href={trackedUrl(bar.website)} target="_blank" rel="noopener noreferrer sponsored">
+            <a href={trackedUrl(bar.website)} target="_blank" rel="noopener noreferrer sponsored" onClick={() => track('website', bar)}>
               {bar.name}
             </a>
           ) : (
@@ -310,7 +325,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
           {featured && (
             <>
               {' · '}
-              <a href={mapsUrl(bar)} target="_blank" rel="noopener noreferrer">
+              <a href={mapsUrl(bar)} target="_blank" rel="noopener noreferrer" onClick={() => track('directions', bar)}>
                 Directions
               </a>
             </>
@@ -341,6 +356,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
                 aria-pressed={isSaved}
                 onClick={() => {
                   toggleSaved(bar.id);
+                  if (!isSaved) track('save', bar);
                   announce(isSaved ? `${bar.name} removed from your bars` : `${bar.name} saved to your bars`);
                 }}
               >
@@ -358,6 +374,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
                 className="link-btn"
                 onClick={() => {
                   addToCalendar(bar);
+                  track('calendar', bar);
                   setDownloaded(true);
                   announce(`Calendar file for ${bar.name} downloaded`);
                 }}
@@ -375,18 +392,21 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
   );
 }
 
-// Featured partners lead every list (the rate card's promise), then the
+// Featured partners lead every list (the rate card's promise) — when they have a
+// sourced special in it. One with only guessed specials files into the timetable
+// like any other unconfirmed row, so the list never opens on "Being confirmed".
+// (A verified bar can't carry guesses, so a paying featured partner always leads.) Then the
 // timetable: one big time per group, the bars beside it — the newsletter card's
 // "also today" schedule, in the finder. In each group the rows still being
 // confirmed fold into one line, so a busy evening reads as what's certain.
 function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
   const { saved } = useContext(Finder);
   const mine = (e) => (saved?.has(e.bar.id) ? 1 : 0);
-  // stable sorts: the reader's saved bars lead their group; confirmed featured
-  // rows lead the featured ones; each run keeps its order
+  // a stable sort: the reader's saved bars lead their group, the rest keep their order
   const savedFirst = (list) => [...list].sort((a, b) => mine(b) - mine(a));
-  const featured = savedFirst(entries.filter((e) => e.bar.tier === 'featured')).sort((a, b) => isConfirmed(b) - isConfirmed(a));
-  const rest = entries.filter((e) => e.bar.tier !== 'featured');
+  const leads = (e) => e.bar.tier === 'featured' && isConfirmed(e);
+  const featured = savedFirst(entries.filter(leads));
+  const rest = entries.filter((e) => !leads(e));
   const card = (level) => (e) => (
     <BarCard
       key={e.bar.id}

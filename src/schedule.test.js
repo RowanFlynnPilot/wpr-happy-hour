@@ -23,6 +23,10 @@ import {
   placeholderText,
   nextDay,
   dayShape,
+  LISTING_EVENTS,
+  actionUrl,
+  parseActionUrl,
+  listingUrl,
   holidayOn,
   sunsetAt,
   phaseOf,
@@ -366,4 +370,14 @@ test('phaseOf: golden hour sits around sunset, late by the clock', () => {
   }
   assert.equal(phaseOf(new Date(2026, 10, 17, 23, 0)), 'late');
   assert.equal(phaseOf(new Date(2026, 10, 17, 2, 0)), 'late');
+});
+
+test('actionUrl and parseActionUrl round-trip a listing action', () => {
+  const b = bar('palms-supper-club');
+  for (const action of Object.keys(LISTING_EVENTS)) {
+    assert.deepEqual(parseActionUrl(actionUrl(b, action)), { barId: 'palms-supper-club', action });
+  }
+  assert.equal(parseActionUrl('https://thepalmswausau.com/?utm_source=wausaupilotandreview'), null);
+  assert.equal(parseActionUrl(`${listingUrl(b)}#nonsense`), null);
+  assert.equal(parseActionUrl('https://evil.example/?bar=palms-supper-club#save'), null);
 });

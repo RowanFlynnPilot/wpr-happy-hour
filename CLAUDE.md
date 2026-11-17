@@ -21,7 +21,12 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   explicit ask.
 - verifiedOn is null until Chris confirms specials by phone; never invent a date.
 - Analytics is exactly one Plausible script tag in index.html — no other
-  external scripts.
+  external scripts. Per-listing actions are custom events through that tag
+  (LISTING_EVENTS in schedule.js): a count and the listing, never anything about
+  the reader. The action rides in the `url` property so it works on any plan.
+- Partner reports (`npm run report`) are built from a Plausible export into
+  `reports/` (git-ignored: a bar's numbers never ship with the site). Every number
+  is from the export; nothing is estimated, and no report shows another bar's data.
 - Time logic: start inclusive, end exclusive, no cross-midnight windows,
   visitor's local browser time. Do not introduce timezone libraries.
 - Finder layout is a timetable (rows grouped "Until X" / "From X" with a time track),
