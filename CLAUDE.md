@@ -73,7 +73,8 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Search and the A-to-Z view (every bar's whole week; where `?bar=` links land)
   follow the same rule as every list: sourced specials first, guesses folded and
   marked. Search matches a guess only by what it claims (`claimOf`), and nothing a
-  reader types is sent or counted.
+  reader types is sent or counted — so the address bar never follows the search;
+  a link to the view is made only when the reader asks ("Copy a link to this view").
 - Listing check (confirm.html?bar=<id>): the owner corrects their own listing and
   their own mail app sends it to Chris in the call sheet's format. No backend, no
   storage; it never sets verifiedOn — that still comes only from Chris's call via

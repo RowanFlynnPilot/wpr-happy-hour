@@ -200,7 +200,7 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
 
 ```html
 <iframe id="wpr-hh" src="https://rowanflynnpilot.github.io/wpr-happy-hour/"
-        style="width:100%;border:0;" height="900" loading="lazy" allow="web-share"
+        style="width:100%;border:0;" height="900" loading="lazy" allow="web-share; clipboard-write"
         title="Happy Hour Finder — Wausau Pilot & Review"></iframe>
 <script>
   // Forward article deep links (?view=fri, ?bar=..., ?city=..., ?type=..., ?q=...) into
@@ -443,6 +443,12 @@ against the dashboard by eye.
   by what it claims, never by "being confirmed" — and still shows as "Being confirmed".
   Nothing typed is sent anywhere or counted. With no match on the day shown, "Search
   every day" opens the A-to-Z view.
+- **Copy a link to this view:** appears once a day, filter or search is set, and gives
+  the finder's own deep link for it (`viewUrl` in schedule.js) — the phone's share sheet
+  where there is one, else the clipboard, else the link shown to select. The address bar
+  is deliberately left alone: on the WordPress page a changing address would pass every
+  search a reader types to that page's analytics. Inside the iframe, copying needs
+  `clipboard-write` in the frame's `allow` (in the snippet above).
 - **All bars A–Z:** every bar with its whole week, for looking one bar up. Featured
   partners with a sourced special lead, then every bar with one, then the rest folded
   into "N more, specials being confirmed" (open during a search or for a linked or saved

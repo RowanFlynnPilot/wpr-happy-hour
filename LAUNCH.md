@@ -41,7 +41,7 @@ wausaupilotandreview.com or announced**. What blocks launch, in order:
 5. **Embed on WordPress.** On launch day, in the same edit: remove the
    `<meta name="robots" content="noindex">` line from `index.html` (it hides the
    unfinished finder from search until then), point `LISTING_BASE` in `src/schedule.js` at
-   the WordPress page so shared links land there, and keep `allow="web-share"` on the
+   the WordPress page so shared links land there, and keep `allow="web-share; clipboard-write"` on the
    iframe. The pattern is proven: the live Fish Fry Guide page
    embeds its app the same way (iframe → GitHub Pages). Create the page —
    suggest `/wausau-area-happy-hour-guide/` to match the fish fry slug — and

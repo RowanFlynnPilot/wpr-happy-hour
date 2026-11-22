@@ -33,6 +33,7 @@ import {
   holidayOn,
   holidaysAhead,
   searchSpecials,
+  viewUrl,
   claimOf,
   byBarName,
   specialsToSheet,
@@ -483,4 +484,15 @@ test('specialsToSheet: the call sheet line for each special', () => {
       'Fri 4:30pm-9pm food: Fish fry',
     ].join('\n')
   );
+});
+
+test('viewUrl: the view, filters and search as a link, defaults left out', () => {
+  const base = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
+  const at = (over) => viewUrl({ view: 'now', city: 'all', type: 'all', tag: 'all', q: '', ...over });
+  assert.equal(at({}), base);
+  assert.equal(at({ q: 'wings' }), `${base}?q=wings`);
+  assert.equal(at({ view: 'fri', city: 'Rib Mountain', type: 'food', tag: 'patio', q: 'old fashioned & $5' }), `${base}?view=fri&city=Rib+Mountain&type=food&tag=patio&q=old+fashioned+%26+%245`);
+  // the finder reads its own link back
+  const read = new URL(at({ view: 'all', city: 'Rib Mountain', q: 'old fashioned & $5' })).searchParams;
+  assert.deepEqual([read.get('view'), read.get('city'), read.get('q')], ['all', 'Rib Mountain', 'old fashioned & $5']);
 });

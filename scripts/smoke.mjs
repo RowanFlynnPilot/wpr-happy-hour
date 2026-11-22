@@ -30,7 +30,12 @@ let checks = 0;
 
 // One fresh page per check, at a phone's size, on Wausau time, with the clock held
 async function check(name, at, path, body) {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, timezoneId: 'America/Chicago', locale: 'en-US' });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    timezoneId: 'America/Chicago',
+    locale: 'en-US',
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -94,6 +99,21 @@ try {
     assert.match(await page.locator('.empty').innerText(), /No bar or special matches “zzzqqq”/);
     await page.getByRole('button', { name: 'Clear filters' }).click();
     assert.equal(await cards(page), bars.length);
+  });
+
+  await check('Copy a link to this view: the link reopens the same search', FRIDAY_5PM, '', async (page) => {
+    assert.equal(await page.locator('.view-link').count(), 0); // nothing set, nothing to link
+    await page.getByRole('button', { name: 'Sat', exact: true }).click();
+    await page.getByLabel('Search bars and specials').fill(known.name);
+    const shown = await page.locator('.card-name').allInnerTexts();
+    assert.equal(new URL(page.url()).search, ''); // the address is left alone
+    await page.getByRole('button', { name: 'Copy a link to this view' }).click();
+    const link = new URL(await page.evaluate(() => navigator.clipboard.readText()));
+    assert.equal(link.searchParams.get('q'), known.name);
+    await page.goto(`${base}${link.search}`, { waitUntil: 'networkidle' });
+    assert.equal(await page.getByLabel('Search bars and specials').inputValue(), known.name);
+    assert.equal(await words(page), 'Saturday happy hours');
+    assert.deepEqual(await page.locator('.card-name').allInnerTexts(), shown);
   });
 
   await check('A bar’s own link lands on its card, with its whole week', FRIDAY_5PM, `?bar=${known.id}`, async (page) => {

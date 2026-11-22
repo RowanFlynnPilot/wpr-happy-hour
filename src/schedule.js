@@ -407,6 +407,20 @@ export function phaseOf(date) {
 const LISTING_BASE = 'https://rowanflynnpilot.github.io/wpr-happy-hour/';
 export const listingUrl = (bar, source) => `${LISTING_BASE}?bar=${bar.id}${source ? `&utm_source=${source}` : ''}`;
 
+// A link to what the reader is looking at: the view, filters and search as the
+// finder's own deep-link parameters, leaving out whatever is at its default
+// ("now", "all", no search). The finder reads them back at load.
+export function viewUrl({ view, city, type, tag, q }) {
+  const params = new URLSearchParams();
+  if (view !== 'now') params.set('view', view);
+  if (city !== 'all') params.set('city', city);
+  if (type !== 'all') params.set('type', type);
+  if (tag !== 'all') params.set('tag', tag);
+  if (q) params.set('q', q);
+  const query = params.toString();
+  return `${LISTING_BASE}${query ? `?${query}` : ''}`;
+}
+
 // What readers do on a listing, counted per bar for the partner report (Plausible
 // custom events; scripts/partner-report.mjs reads them back). Each event carries
 // the listing's link with the action as its fragment in the "url" property —

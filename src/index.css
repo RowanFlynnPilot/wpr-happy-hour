@@ -594,6 +594,38 @@ a:focus-visible {
   }
 }
 
+/* "Copy a link to this view": only when a day, filter or search is set */
+.view-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+/* ...and the link itself to select, where it can't be copied for the reader */
+.view-link-url {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+@media (pointer: coarse) {
+  .view-link .link-btn {
+    min-height: 44px;
+  }
+
+  .view-link-url {
+    font-size: 16px; /* under 16px iOS zooms the page on focus */
+  }
+}
+
 /* The disclosure and the "Being confirmed" key, before the first listing */
 .list-key {
   font-size: 13px;

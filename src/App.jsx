@@ -40,6 +40,7 @@ import {
   timetable,
   trackedUrl,
   unbroken,
+  viewUrl,
   weekdayLabel,
 } from './schedule.js';
 // The day's axis and skyline, the verified seal, the arrow — shared with the newsletter card
@@ -498,6 +499,8 @@ export default function App() {
   const [saved, setSaved] = useState(readSaved); // Set of bar ids, or null: no storage here
   const [onlySaved, setOnlySaved] = useState(false);
   const [notice, setNotice] = useState(''); // what a card just did, for screen readers
+  const [linkCopied, setLinkCopied] = useState(null); // the link last copied: the button says so until the view changes
+  const [linkShown, setLinkShown] = useState(null); // the view's link, shown to copy by hand when it can't be copied for the reader
 
   const toggleSaved = (id) => {
     const next = new Set(saved);
@@ -576,6 +579,28 @@ export default function App() {
     setTag('all');
     setOnlySaved(false);
     setQuery('');
+  };
+
+  // A link to this view, made only when the reader asks for it. The address bar is
+  // left alone on purpose: in the WordPress page a changing address would hand every
+  // keystroke of a search to that page's analytics, and nothing typed here is sent
+  // or counted. The phone's share sheet where there is one, else the clipboard
+  // (inside the iframe that needs allow="clipboard-write"), else the link to select.
+  const viewLink = viewUrl({ view, city, type, tag: activeTag, q: asked });
+  const worthLinking = view !== 'now' || city !== 'all' || type !== 'all' || activeTag !== 'all' || hits !== null;
+  const shareView = () => {
+    if (CAN_SHARE) {
+      return navigator
+        .share({ title: 'Happy Hour Finder', text: 'Wausau Pilot & Review’s Happy Hour Finder', url: viewLink })
+        .catch((e) => e.name === 'AbortError' || setLinkShown(viewLink));
+    }
+    return navigator.clipboard.writeText(viewLink).then(
+      () => {
+        setLinkCopied(viewLink);
+        setNotice('Link copied');
+      },
+      () => setLinkShown(viewLink)
+    );
   };
 
   // One test for every list, count and sentence: the type filter and the search
@@ -824,6 +849,16 @@ export default function App() {
             spellCheck={false}
           />
         </div>
+        {worthLinking && (
+          <p className="view-link">
+            <button type="button" className="link-btn" onClick={shareView}>
+              {CAN_SHARE ? 'Share this view' : linkCopied === viewLink ? 'Link copied' : 'Copy a link to this view'}
+            </button>
+            {linkShown === viewLink && (
+              <input className="view-link-url mono" readOnly value={viewLink} aria-label="Link to this view" onFocus={(e) => e.target.select()} autoFocus />
+            )}
+          </p>
+        )}
         {/* The disclosure and the key, before the first listing rather than after the last */}
         <p className="list-key">
           Every listing is a paid partner placement. Each says where its specials came from; those marked{' '}
