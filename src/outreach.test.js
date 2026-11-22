@@ -17,6 +17,20 @@ test('outreachStatus: what the owner will find', () => {
   assert.equal(outreachStatus(bar({ specials: [special(['PLACEHOLDER \u2014 specials being confirmed'])] })), 'Our guess only');
 });
 
+test('a guess-only bar is asked for its specials; a known one to check them', () => {
+  const unknown = bar({ specials: [special(['PLACEHOLDER \u2014 specials being confirmed'])] });
+  assert.match(outreachText(unknown), /to add Test Bar & Grill\u2019s specials to our Happy Hour Finder/);
+  assert.match(outreachEmail(unknown).body, /We\u2019re adding Test Bar & Grill, .* tell us your specials/);
+  assert.ok(!/is on our list|shows what we have/.test(outreachEmail(unknown).body));
+  assert.match(outreachText(bar()), /to check what our Happy Hour Finder has for Test Bar & Grill/);
+  assert.match(outreachEmail(bar()).body, /Test Bar & Grill is on our list/);
+});
+
+test('the text is a follow-up; the email says listings are paid', () => {
+  assert.match(outreachText(bar()), /As promised/);
+  assert.match(outreachEmail(bar()).body, /Listings on the finder are paid placements\./);
+});
+
 test('the text and the email name the bar, carry its link, and no address', () => {
   const text = outreachText(bar());
   assert.ok(text.includes('Test Bar & Grill') && text.endsWith(LINK)); // the link last, so a phone makes it tappable

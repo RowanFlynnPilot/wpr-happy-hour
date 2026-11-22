@@ -273,7 +273,8 @@ function Index() {
     <main className="check check-index">
       <h1>Listing checks</h1>
       <p className="check-lead">
-        Send a bar its link: copy the text message, or open the email and add their address. The owner sees what the finder has
+        Send a bar its link: open the email and add their address, or copy the text message once you’ve spoken to them (it
+        reads as a follow-up, “as promised”). The owner sees what the finder has
         for them, corrects it, and emails it back in the call sheet’s format. Confirm by phone, paste the specials into the sheet,
         then run the import as usual.
       </p>

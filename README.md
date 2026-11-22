@@ -149,8 +149,11 @@ call are in the email only, never in bars.json.
 
 **Sending the links.** `confirm.html` lists every bar with what the finder holds for it
 ("Our guess only", "From their own site", "Verified") and two ways to send its link:
-**Copy text** (a text message, link last) and **Email** (opens a drafted email with no
-recipient — Chris adds the address from his sheet). For the call sheet itself:
+**Copy text** (a text message, link last, worded as a follow-up to a call or visit: "As
+promised, here's the link…") and **Email** (opens a drafted email with no recipient —
+Chris adds the address from his sheet; it says listings are paid placements). A bar we
+hold only guesses for is told we're *adding* it and asked for its specials, not asked to
+check ours. For the call sheet itself:
 
 ```powershell
 npm run outreach
