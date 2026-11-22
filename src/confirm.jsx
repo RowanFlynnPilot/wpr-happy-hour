@@ -2,7 +2,8 @@
 // them and send back what's right.
 //   confirm.html?bar=<id>   the bar's specials, editable, and one button that opens
 //                           an email to Chris with the answers
-//   confirm.html            the list of every bar's link, for Chris to send out
+//   confirm.html            the list of every bar's link, for Chris to send out:
+//                           each with a text message to copy and an email to open
 // It has no backend and sends nothing itself: the owner's own mail app sends the
 // email. The specials in it are written in the call sheet's "Verified specials
 // (final)" format (specialsToSheet), so Chris pastes them into the sheet after his
@@ -16,6 +17,7 @@ import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { TAGS, validate } from './data/validate.js';
 import { CHRIS_EMAIL, DAY_LABELS, WEEK_ORDER, byBarName, claimOf, isPlaceholder, specialsToSheet } from './schedule.js';
+import { outreachEmail, outreachStatus, outreachText } from './outreach.js';
 import './index.css';
 import './confirm.css';
 
@@ -204,24 +206,45 @@ function Check() {
   );
 }
 
-// No ?bar=: every bar's link, by name, so Chris can copy the one he needs
+// No ?bar=: every bar's link, by name, with the message that carries it. The email
+// opens with no recipient: addresses and phone numbers stay in Chris's call sheet.
 function Index() {
+  const [copied, setCopied] = useState(null); // the bar whose text was just copied
+  const copy = (b) => navigator.clipboard.writeText(outreachText(b)).then(() => setCopied(b.id), () => setCopied(null));
+  const mail = (b) => {
+    const { subject, body } = outreachEmail(b);
+    return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
   return (
     <main className="check check-index">
       <h1>Listing checks</h1>
       <p className="check-lead">
-        Send a bar its link. The owner sees what the finder has for them, corrects it, and emails it back in the call sheet’s
-        format. Confirm by phone, paste the specials into the sheet, then run the import as usual.
+        Send a bar its link: copy the text message, or open the email and add their address. The owner sees what the finder has
+        for them, corrects it, and emails it back in the call sheet’s format. Confirm by phone, paste the specials into the sheet,
+        then run the import as usual.
       </p>
       <ul>
         {[...DATA.bars].sort(byBarName).map((b) => (
           <li key={b.id}>
-            <a href={`?bar=${b.id}`}>{b.name}</a>
+            <a className="check-bar" href={`?bar=${b.id}`}>
+              {b.name}
+            </a>
             <span>{b.city}</span>
-            <span className={b.verifiedOn ? 'ok' : ''}>{b.verifiedOn ? 'Verified' : 'Not yet'}</span>
+            <span className={b.verifiedOn ? 'ok' : ''}>{outreachStatus(b)}</span>
+            <span className="check-out">
+              <button type="button" className="link-btn" aria-label={`Copy text message for ${b.name}`} title="Copy text message" onClick={() => copy(b)}>
+                {copied === b.id ? 'Copied' : 'Copy text'}
+              </button>
+              <a href={mail(b)} aria-label={`Open email for ${b.name}`}>
+                Email
+              </a>
+            </span>
           </li>
         ))}
       </ul>
+      <p className="sr-only" role="status">
+        {copied ? 'Text message copied' : ''}
+      </p>
     </main>
   );
 }

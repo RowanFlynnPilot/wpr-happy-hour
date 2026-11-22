@@ -145,6 +145,20 @@ pastes them into the sheet. A guess the owner sent back untouched is named in th
 `verifiedOn` still comes only from the call sheet. The owner's name and best time to
 call are in the email only, never in bars.json.
 
+**Sending the links.** `confirm.html` lists every bar with what the finder holds for it
+("Our guess only", "From their own site", "Verified") and two ways to send its link:
+**Copy text** (a text message, link last) and **Email** (opens a drafted email with no
+recipient — Chris adds the address from his sheet). For the call sheet itself:
+
+```powershell
+npm run outreach
+```
+
+writes `outreach/listing-check-links.csv` (git-ignored, made fresh each time): Deep-link
+ID, bar, city, what we have, the link and the text message, to paste beside the sheet's
+rows. The wording lives in one place, `src/outreach.js`. No phone number or address is
+read or written by any of it.
+
 Top-level `sponsor` is `null` until the title sponsorship sells, then
 `{ "name": "Business Name", "url": "https://..." }` (`url` may be `""`). Selling
 the slot is a JSON edit, not a code change.
@@ -158,6 +172,20 @@ cd C:\Users\rpfly\Projects\wpr-happy-hour; npm install; npm run dev
 `npm run check` validates bars.json; `npm test` runs the unit tests (Node's built-in
 runner — time logic in `src/schedule.js`, every validator rule). CI runs both before
 every deploy.
+
+### Browser smoke test
+
+```powershell
+npm run build; npm run smoke
+```
+
+`scripts/smoke.mjs` opens the built site in a real browser (the Playwright already here
+for the images) at a phone's size with the clock held still, and checks what unit tests
+can't: the Now view's count, a day view, the city filter, the A-to-Z list, a search, a
+bar's own link, Thanksgiving, a Packers game day, the listing check and its list, and a
+table tent. Expected numbers are worked out from bars.json with the app's own functions,
+so a data change never needs a test edit. Any page or console error fails. The deploy
+runs it before the images are rendered; a failure stops the deploy.
 
 ## Deploy
 

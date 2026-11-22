@@ -260,8 +260,8 @@
 
 .check-index li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 130px 64px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 100px 124px auto;
+  gap: 4px 12px;
   align-items: baseline;
   padding: 10px 0;
   border-bottom: 1px solid var(--line);
@@ -269,8 +269,22 @@
   color: var(--ink-soft);
 }
 
-.check-index a {
+.check-index .check-bar {
   font-size: 15px;
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+/* The two ways to send a bar its link */
+.check-out {
+  display: flex;
+  gap: 16px;
+  white-space: nowrap;
+}
+
+.check-out .link-btn,
+.check-out a {
+  font-size: 13px;
   font-weight: 600;
   color: var(--teal-dark);
 }
@@ -296,5 +310,22 @@
   .check-pair {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  /* the name on a line of its own; town, status and the two actions under it */
+  .check-index li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .check-index .check-bar,
+  .check-out {
+    grid-column: 1 / -1;
+  }
+
+  .check-out .link-btn,
+  .check-out a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 }

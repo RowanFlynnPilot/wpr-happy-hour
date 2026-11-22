@@ -78,6 +78,12 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
   their own mail app sends it to Chris in the call sheet's format. No backend, no
   storage; it never sets verifiedOn — that still comes only from Chris's call via
   `npm run calls`. The owner's name and call time stay in the email.
+- Outreach wording (the text and email that carry a listing check link) lives only
+  in src/outreach.js; `npm run outreach` writes the links for the call sheet into
+  git-ignored `outreach/`. Neither holds a phone number or an address.
+- `npm run smoke` (scripts/smoke.mjs) runs in the deploy after the build: the built
+  pages in a real browser with the clock held still. Its expected numbers come from
+  bars.json through schedule.js, never typed in. A new page or view gets a check.
 - Seasonal tags (game-day, tom-and-jerrys, hunters) show only in season
   (tagInSeason). The Packers line reads src/data/packers.json, which is entered
   only from packers.com/schedule: never a game, date or kickoff from memory, and

@@ -32,6 +32,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
+      # The built finder opened in a real browser with the clock held still: each
+      # view, a search, a bar's link, the listing check. A failure stops the deploy.
+      - run: npm run smoke
       - run: npm run render
       - uses: actions/upload-pages-artifact@v3
         with:

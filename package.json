@@ -11,7 +11,9 @@
     "render": "node scripts/render-digest.mjs",
     "calls": "node scripts/apply-calls.mjs",
     "preview": "vite preview",
-    "report": "node scripts/partner-report.mjs"
+    "report": "node scripts/partner-report.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "outreach": "node scripts/outreach.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
