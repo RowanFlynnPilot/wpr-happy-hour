@@ -32,6 +32,10 @@ import {
   listingUrl,
   holidayOn,
   holidaysAhead,
+  searchSpecials,
+  claimOf,
+  byBarName,
+  specialsToSheet,
   sunsetAt,
   phaseOf,
   dayAtAGlance,
@@ -415,4 +419,68 @@ test('holidaysAhead: the dates the newsletter card sits out', () => {
   assert.deepEqual(holidaysAhead(new Date(2026, 10, 26, 23), 0), [{ date: '2026-11-26', name: 'Thanksgiving' }]); // today counts
   assert.deepEqual(holidaysAhead(new Date(2026, 1, 1), 60), []);
   assert.equal(holidaysAhead(new Date(2026, 10, 17), 400).at(-1).date, '2027-11-25'); // through Dec 22, 2027: next Thanksgiving too
+});
+
+test('searchSpecials: a bar by name, a special by its wording, a guess only by its claim', () => {
+  const wings = { days: ['thu'], start: '17:00', end: '20:00', type: 'food', items: ['Wing night — 75¢ wings'] };
+  const taps = { days: ['mon'], start: '15:00', end: '18:00', type: 'drinks', items: ['$1 off taps'] };
+  const guess = { days: ['tue'], start: '11:00', end: '20:00', type: 'food', items: ['PLACEHOLDER — time being confirmed: Wing Tuesday'] };
+  const vague = { days: ['wed'], start: '15:00', end: '18:00', type: 'drinks', items: ['PLACEHOLDER — specials being confirmed'] };
+  const buffet = { days: ['sat'], start: '16:00', end: '18:00', type: 'food', items: ['Early bird — wing & rib buffet'] };
+  const fashioned = { days: ['fri'], start: '15:00', end: '18:00', type: 'drinks', items: ['$5 Old Fashioneds', 'Jalapeño poppers $6'] };
+  const bars = [
+    { name: 'Oliva’s Tap', address: '1 Main St, Wausau', specials: [wings, taps] },
+    { name: 'The Mill Yard', address: '2 County Rd W, Brokaw', specials: [guess, fashioned, vague, buffet] },
+  ];
+  const found = (q) => [...searchSpecials(bars, q)];
+  assert.equal(searchSpecials(bars, '   '), null); // a blank box is no search
+  assert.deepEqual(found('wings'), [wings, guess, buffet]); // the guess by its claim; a plural finds "wing & rib"
+  assert.deepEqual(found('specials'), []); // the marker's own words answer nothing
+  assert.deepEqual(found('confirmed'), []);
+  assert.deepEqual(found("OLIVA'S"), [wings, taps]); // a name keeps the whole listing; apostrophes fold
+  assert.deepEqual(found('mill yard'), [guess, fashioned, vague, buffet]); // ...its guesses too
+  assert.deepEqual(found('old fashioned'), [fashioned]);
+  assert.deepEqual(found('jalapeno'), [fashioned]);
+  assert.deepEqual(found('wausau wings'), [wings]); // where + what
+  assert.deepEqual(found('brokaw wings'), [guess, buffet]);
+  assert.deepEqual(found('$1'), [taps]);
+  assert.deepEqual(found('karaoke'), []);
+  // words match from their start: "wing" is not inside "Brewing"
+  const brewery = [{ name: 'Red Eye Brewing', address: '1 Main St, Wausau', specials: [taps] }];
+  assert.equal(searchSpecials(brewery, 'wings').size, 0);
+  assert.equal(searchSpecials(brewery, 'brew').size, 1);
+});
+
+test('claimOf: what an item says, without the marker', () => {
+  assert.equal(claimOf('$1 off taps'), '$1 off taps');
+  assert.equal(claimOf('PLACEHOLDER — time being confirmed: 80¢ boneless wings'), '80¢ boneless wings');
+  assert.equal(claimOf('PLACEHOLDER — time & details being confirmed: Friday fish fry'), 'Friday fish fry');
+  assert.equal(claimOf('PLACEHOLDER — being confirmed: Early bird: 1 pc fish $9.99'), 'Early bird: 1 pc fish $9.99');
+  assert.equal(claimOf('PLACEHOLDER — reported: $1.75 mugs & wings Mon (confirming)'), '$1.75 mugs & wings Mon');
+  assert.equal(claimOf('PLACEHOLDER — Friday fish fry being confirmed'), 'Friday fish fry');
+  assert.equal(claimOf('PLACEHOLDER — $1 off house pints'), '$1 off house pints');
+  assert.equal(claimOf('PLACEHOLDER — specials being confirmed'), '');
+  assert.equal(claimOf('PLACEHOLDER — daily specials being confirmed with the bar'), '');
+});
+
+test('byBarName: A to Z, with "The" set aside', () => {
+  const names = ['The Mill Yard', 'Arrow Sports Club', 'The Bar of Wausau', 'Nevermore on Third'].map((name) => ({ name }));
+  assert.deepEqual(names.sort(byBarName).map((b) => b.name), ['Arrow Sports Club', 'The Bar of Wausau', 'The Mill Yard', 'Nevermore on Third']);
+});
+
+test('specialsToSheet: the call sheet line for each special', () => {
+  assert.equal(
+    specialsToSheet([
+      { days: ['mon', 'tue', 'wed', 'thu'], start: '15:00', end: '18:00', type: 'drinks', items: ['$1 off all drinks', '$4 taps; cans | bottles'] },
+      { days: ['tue', 'thu', 'sat', 'sun'], start: '11:00', end: '12:00', type: 'food', items: ['Brunch burger $8'] },
+      { days: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], start: '00:30', end: '23:59', type: 'both', items: ['$3 rails'] },
+      { days: ['fri'], start: '16:30', end: '21:00', type: 'food', items: ['Fish fry'] },
+    ]),
+    [
+      'Mon-Thu 3pm-6pm drinks: $1 off all drinks; $4 taps, cans / bottles',
+      'Tue, Thu, Sat-Sun 11am-noon food: Brunch burger $8',
+      'Daily 12:30am-midnight both: $3 rails',
+      'Fri 4:30pm-9pm food: Fish fry',
+    ].join('\n')
+  );
 });

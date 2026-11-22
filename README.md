@@ -130,6 +130,21 @@ written. A row it can't read stops the run
 and names the bar. Other outcomes are listed, never applied. Re-running the same
 sheet is safe.
 
+### Listing check: the owner fills it in first
+
+`confirm.html?bar=<id>` is a page for the bar's owner (`confirm.html` alone lists every
+bar's link, for Chris to send out). It shows what the finder has for that bar — a
+research guess is put as the plain claim, flagged "our best guess" — and the owner
+corrects the days, times and wording, ticks the tags, and presses **Email this to
+Chris**. The page sends and stores nothing itself: it opens the owner's own mail app
+(or offers the text to copy). The email's "Specials" lines are already in the
+**Verified specials (final)** format above (`specialsToSheet` in schedule.js; a test
+round-trips every special in bars.json through the import), so after his call Chris
+pastes them into the sheet. A guess the owner sent back untouched is named in the email
+("still our guess: line 2") so it gets asked about. Nothing is verified by the form:
+`verifiedOn` still comes only from the call sheet. The owner's name and best time to
+call are in the email only, never in bars.json.
+
 Top-level `sponsor` is `null` until the title sponsorship sells, then
 `{ "name": "Business Name", "url": "https://..." }` (`url` may be `""`). Selling
 the slot is a JSON edit, not a code change.
@@ -158,7 +173,7 @@ frame sizes itself (no more fixed 1400px clipping busy days). Sanity-check page:
         style="width:100%;border:0;" height="900" loading="lazy" allow="web-share"
         title="Happy Hour Finder — Wausau Pilot & Review"></iframe>
 <script>
-  // Forward article deep links (?view=fri, ?bar=..., ?city=..., ?type=...) into
+  // Forward article deep links (?view=fri, ?bar=..., ?city=..., ?type=..., ?q=...) into
   // the app — without this, links to the WP page can't pre-select anything.
   if (window.location.search) {
     document.getElementById('wpr-hh').src += window.location.search;
@@ -391,6 +406,17 @@ against the dashboard by eye.
 - **Day picker:** Mon–Sun views for planning ahead, grouped "From <start>".
 - **Filters:** city, food/drinks, and tags (patio, Shows the Packers…) once any bar has one
   in season.
+- **Search:** one box over bar names, addresses and the wording of specials — "wings",
+  "old fashioned", "wausau tacos", a bar's name. It narrows every view, count and
+  sentence (`searchSpecials` in schedule.js). Words match from their start ("wing" isn't
+  found in "Brewing"), a plural finds its singular, and a guessed special is found only
+  by what it claims, never by "being confirmed" — and still shows as "Being confirmed".
+  Nothing typed is sent anywhere or counted. With no match on the day shown, "Search
+  every day" opens the A-to-Z view.
+- **All bars A–Z:** every bar with its whole week, for looking one bar up. Featured
+  partners with a sourced special lead, then every bar with one, then the rest folded
+  into "N more, specials being confirmed" (open during a search or for a linked or saved
+  bar). City, type, tag, search and My bars all apply.
 - **Packers game days:** the hero says "Packers at the Rams today, 7 PM kickoff." with a
   "See who's showing it" filter when any bar has the `game-day` tag. The schedule is
   `src/data/packers.json` (`checked` + `games`: date, opponent, home, kickoff in
@@ -416,10 +442,10 @@ against the dashboard by eye.
   sourced specials, repeating weekly, in local time) and **Report a change** (an email
   to Chris; nothing is published until he confirms it with the bar).
 - **Deep links:** `?view=fri&city=Weston&type=food&tag=patio` pre-selects
-  day/city/type/tag — for article links and pre-filtered embeds. `?bar=red-eye-brewing` lands on the next day
-  that bar has a sourced special (else the next day it's listed), brings its card to the
-  top, rings it, shows its days and moves focus to it — each partner's shareable link
-  for socials and table tents. Invalid values are ignored.
+  day/city/type/tag — for article links and pre-filtered embeds; `?q=wings` fills the
+  search and `?view=all` opens the A-to-Z view. `?bar=red-eye-brewing` opens the A-to-Z
+  view with that bar's card at the top, ringed and focused, showing its whole week — each
+  partner's shareable link for socials and table tents. Invalid values are ignored.
 - **Sort:** featured partners with a sourced special in view first, then the timetable's
   time groups in order. A featured bar with only "Being confirmed" specials files into
   the timetable, so a list never opens on an unconfirmed card.

@@ -457,3 +457,87 @@ export function tagInSeason(tag, date, games) {
 export const gameOn = (games, date) => games.find((g) => g.date === ymdOf(date)) ?? null;
 export const gameLine = (game) =>
   `Packers ${game.home ? 'vs.' : 'at'} the ${game.opponent} today${game.kickoff ? `, ${unbroken(fmtTime(game.kickoff))} kickoff` : ''}.`;
+
+// Sales contact: Chris Weber owns the listing pipeline (the finder's footer, the
+// listing check page)
+export const CHRIS_EMAIL = 'weber.chris@wausaupilotandreview.com';
+
+// A to Z, the way a reader looks a bar up: "The Bar of Wausau" files under B
+const sortName = (bar) => bar.name.replace(/^the\s+/i, '');
+export const byBarName = (a, b) => sortName(a).localeCompare(sortName(b));
+
+// Search: the reader's words against a bar's name and address and the wording of
+// its sourced specials. Folded so "oliva's" finds "Oliva’s" and "jalapeno" finds
+// "jalapeño"; "$3" and "2-for-1" keep their characters.
+const foldText = (t) =>
+  t
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9$]+/g, ' ')
+    .trim();
+
+// What an item actually claims. A sourced item is its own claim. A guessed one is
+// its marker's claim with the marker's own words taken off:
+//   "PLACEHOLDER — time being confirmed: 80¢ boneless wings" → "80¢ boneless wings"
+//   "PLACEHOLDER — Friday fish fry being confirmed"          → "Friday fish fry"
+//   "PLACEHOLDER — specials being confirmed"                 → "" (it claims nothing)
+// Search matches a guess only by this (it still shows as "Being confirmed"), and the
+// listing check page puts it to the owner as the thing to correct.
+export function claimOf(item) {
+  if (!isPlaceholder(item)) return item;
+  const claim = item
+    .replace(/^PLACEHOLDER\s*(—|-|:)?\s*/, '')
+    .replace(/^[^:$\d]*\b(being confirmed|reported):\s*/i, '')
+    .replace(/\s*\(confirming\)$/i, '')
+    .replace(/\s*being confirmed\b.*$/i, '');
+  return /^((daily|drink|food|happy hour) )*(specials|deals|happy hour)$/i.test(claim) ? '' : claim;
+}
+
+// The specials a search keeps, as a Set — or null when the query is blank (no
+// search). A special is kept when every word is in its bar's name or address or in
+// its own items: "wings" keeps the wing nights, "wausau wings" the ones in Wausau,
+// and a bar's name keeps its whole listing. Words match from their start, so
+// "wing" is not found inside "Brewing", and a plural finds its singular ("wings"
+// finds "wing & rib buffet").
+export function searchSpecials(bars, query) {
+  const words = foldText(query).split(' ').filter(Boolean).map((w) => (w.length > 3 ? w.replace(/s$/, '') : w));
+  if (words.length === 0) return null;
+  const hits = new Set();
+  for (const bar of bars) {
+    const where = foldText(`${bar.name} ${bar.address}`).split(' ');
+    for (const s of bar.specials) {
+      const what = foldText(s.items.map(claimOf).join(' ')).split(' ');
+      if (words.every((w) => where.some((t) => t.startsWith(w)) || what.some((t) => t.startsWith(w)))) hits.add(s);
+    }
+  }
+  return hits;
+}
+
+// Specials written the way the call sheet's "Verified specials (final)" column
+// reads them (parseSpecials in scripts/apply-calls.mjs), one per line:
+//   Mon-Thu 3pm-6pm drinks: $1 off all drinks; $4 old fashioneds
+// The listing check page puts these in the owner's email, so Chris pastes them
+// into the sheet instead of retyping them. ";" and "|" are the format's own
+// separators, so an item's own are swapped out.
+const sheetTime = (hm) => {
+  if (hm === '12:00') return 'noon';
+  if (hm === '23:59') return 'midnight';
+  const [h, m] = hm.split(':').map(Number);
+  return `${h % 12 || 12}${m ? `:${String(m).padStart(2, '0')}` : ''}${h < 12 ? 'am' : 'pm'}`;
+};
+const sheetDays = (days) => {
+  if (days.length === 7) return 'Daily';
+  const runs = [];
+  for (const i of days.map((d) => WEEK_ORDER.indexOf(d)).sort((a, b) => a - b)) {
+    const last = runs[runs.length - 1];
+    if (last && i === last[1] + 1) last[1] = i;
+    else runs.push([i, i]);
+  }
+  return runs.map(([a, b]) => (a === b ? DAY_LABELS[WEEK_ORDER[a]] : `${DAY_LABELS[WEEK_ORDER[a]]}-${DAY_LABELS[WEEK_ORDER[b]]}`)).join(', ');
+};
+export const specialsToSheet = (specials) =>
+  specials
+    .map((s) => `${sheetDays(s.days)} ${sheetTime(s.start)}-${sheetTime(s.end)} ${s.type}: ${s.items.map((i) => i.replaceAll(';', ',').replaceAll('|', '/').trim()).join('; ')}`)
+    .join('\n');

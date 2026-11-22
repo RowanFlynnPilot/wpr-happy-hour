@@ -6,10 +6,12 @@ import packers from './data/packers.json';
 import { DAY_KEYS, TAGS, toMinutes, validate, validateGames } from './data/validate.js';
 // Time + listing logic is shared with the newsletter card and unit-tested
 import {
+  CHRIS_EMAIL,
   DAY_LABELS,
   LISTING_EVENTS,
   actionUrl,
   WEEK_ORDER,
+  byBarName,
   dayListings,
   dayShape,
   endsAt,
@@ -31,7 +33,7 @@ import {
   nowListings,
   phaseOf,
   placeholderText,
-  sourcedOf,
+  searchSpecials,
   specialStatus,
   startsAt,
   tagInSeason,
@@ -55,35 +57,23 @@ const GAMES = validateGames(packers).games;
 // and that are in season on the day: Tom & Jerrys leave the list in January
 const tagsInUse = (date) => Object.keys(TAGS).filter((t) => tagInSeason(t, date, GAMES) && DATA.bars.some((b) => b.tags.includes(t)));
 
-// Deep links: ?view=fri&city=Weston&type=food&tag=patio&bar=red-eye-brewing — read
+// Deep links: ?view=fri&city=Weston&type=food&tag=patio&q=wings&bar=red-eye-brewing — read
 // once at load, no router. Unlike curated data, params arrive from outside (article
 // links, embeds, bars' own socials), so invalid values fall back to defaults
 // instead of throwing.
 const PARAMS = new URLSearchParams(window.location.search);
 const INITIAL_BAR = DATA.bars.some((b) => b.id === PARAMS.get('bar')) ? PARAMS.get('bar') : null;
-const INITIAL_VIEW = ['now', ...DAY_KEYS].includes(PARAMS.get('view'))
-  ? PARAMS.get('view')
-  : INITIAL_BAR
-    ? viewForBar(INITIAL_BAR)
-    : 'now';
-
-// ?bar= without ?view=: land on a view where that bar is actually visible — today
-// or the next day it has a sourced special (the day view still shows a special
-// that already ended; the Now view would not), else the next day it appears.
-function viewForBar(barId) {
-  const { specials } = DATA.bars.find((b) => b.id === barId);
-  const todayIdx = WEEK_ORDER.indexOf(DAY_KEYS[new Date().getDay()]);
-  const days = WEEK_ORDER.map((_, off) => WEEK_ORDER[(todayIdx + off) % 7]);
-  const runs = (list) => days.find((d) => list.some((s) => s.days.includes(d)));
-  // runs(specials) always finds one — the validator guarantees ≥1 special with ≥1 day
-  return runs(sourcedOf(specials)) ?? runs(specials);
-}
+// ?bar= without ?view=: the A-to-Z view, where every bar is listed with its whole
+// week — a bar's own link (its table tent, its ad, a share) shows all it runs, not
+// one day of it.
+const INITIAL_VIEW = ['now', 'all', ...DAY_KEYS].includes(PARAMS.get('view')) ? PARAMS.get('view') : INITIAL_BAR ? 'all' : 'now';
 // Arriving by a bar's own link is counted for that bar — once, at load — and by
 // its table tent when the link says so (utm_source=tent, from the QR code)
 const ARRIVED_BY = INITIAL_BAR && (PARAMS.get('utm_source') === 'tent' ? 'opened-tent' : 'opened');
 const INITIAL_CITY = CITIES.includes(PARAMS.get('city')) ? PARAMS.get('city') : 'all';
 const INITIAL_TYPE = ['drinks', 'food'].includes(PARAMS.get('type')) ? PARAMS.get('type') : 'all';
 const INITIAL_TAG = tagsInUse(new Date()).includes(PARAMS.get('tag')) ? PARAMS.get('tag') : 'all';
+const INITIAL_QUERY = (PARAMS.get('q') ?? '').slice(0, 60);
 
 // Derived from public address only — contact info stays in the Notion CRM
 const mapsUrl = (bar) =>
@@ -92,7 +82,6 @@ const mapsUrl = (bar) =>
 // Sales contact — Chris Weber owns the listing pipeline; billing never touches the tool.
 // The address is also shown as text in the footer: on a desktop with no mail app a
 // mailto: click does nothing, and the reader needs something to copy.
-const CHRIS_EMAIL = 'weber.chris@wausaupilotandreview.com';
 const CONTACT_LISTING = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20listing`;
 const CONTACT_SPONSOR = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20sponsorship`;
 const CONTACT_CORRECTION = `mailto:${CHRIS_EMAIL}?subject=Happy%20Hour%20Finder%20correction`;
@@ -285,8 +274,10 @@ function Track({ specials, now }) {
 
 // A timetable row, not a pinned card. Featured keeps the evening ground and
 // its photo (the featured perk) and leads every list. Bar names are h3 beside
-// a list's featured rows, h4 inside a time group (its time is the h3).
-function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
+// a list's featured rows, h4 inside a time group (its time is the h3). In the
+// A-to-Z view a card carries the bar's whole week: every row names its days, and
+// there is no time track (one axis can't hold seven days).
+function BarCard({ bar, specials, now, showDays, trackNow, linked, level, week }) {
   const featured = bar.tier === 'featured';
   const fresh = freshness(bar, trackNow ?? new Date());
   const calendar = groupSpecials(bar.specials).some((g) => !g.placeholder);
@@ -345,10 +336,10 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level }) {
       </header>
       <div className="card-specials">
         {groupSpecials(specials).map((g, i) => (
-          <SpecialRow key={i} group={g} now={now} showDays={showDays} allDays={linked} />
+          <SpecialRow key={i} group={g} now={now} showDays={showDays} allDays={linked || week} />
         ))}
         {bar.note && <p className="card-note">{bar.note}</p>}
-        <Track specials={specials} now={trackNow} />
+        {!week && <Track specials={specials} now={trackNow} />}
         <div className="card-meta">
           {fresh && (
             <p className={`card-fresh${fresh.verified ? ' verified' : ''}${fresh.stale ? ' stale' : ''}`}>
@@ -460,6 +451,34 @@ function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
   );
 }
 
+// Every bar, A to Z, each with its whole week — where a reader looks one bar up.
+// The same order of trust as the timetable: featured partners with a sourced
+// special lead, then every bar with one, then the rest folded into one line.
+function AllBars({ entries, linkedBar, searching }) {
+  const { saved } = useContext(Finder);
+  const leads = (e) => e.bar.tier === 'featured' && isConfirmed(e);
+  const card = (level) => (e) => <BarCard key={e.bar.id} bar={e.bar} specials={e.specials} now={null} showDays={true} linked={e.bar.id === linkedBar} level={level} week />;
+  const sure = entries.filter((e) => isConfirmed(e) && !leads(e));
+  const guessed = entries.filter((e) => !isConfirmed(e));
+  return (
+    <>
+      {entries.filter(leads).map(card(3))}
+      <div className="slot-rows az">
+        {sure.map(card(3))}
+        {guessed.length > 0 && (
+          // open for what the reader came for: a search, a linked bar, a saved one
+          <details className="slot-more" open={searching || guessed.some((e) => e.bar.id === linkedBar || saved?.has(e.bar.id))}>
+            <summary>
+              {sure.length > 0 ? `${guessed.length} more` : `${guessed.length} listing${guessed.length === 1 ? '' : 's'}`}, specials being confirmed
+            </summary>
+            {guessed.map(card(3))}
+          </details>
+        )}
+      </div>
+    </>
+  );
+}
+
 /* ---------------- */
 /* App              */
 /* ---------------- */
@@ -468,10 +487,11 @@ const NOUNS = { all: ['happy hour', 'happy hours'], drinks: ['drink special', 'd
 
 export default function App() {
   const [now, setNow] = useState(() => new Date());
-  const [view, setView] = useState(INITIAL_VIEW); // 'now' | one of DAY_KEYS
+  const [view, setView] = useState(INITIAL_VIEW); // 'now' | one of DAY_KEYS | 'all' (every bar, A to Z)
   const [city, setCity] = useState(INITIAL_CITY);
   const [type, setType] = useState(INITIAL_TYPE); // 'all' | 'drinks' | 'food'
   const [tag, setTag] = useState(INITIAL_TAG); // 'all' | a key of TAGS
+  const [query, setQuery] = useState(INITIAL_QUERY); // the search box
   // Where to take the reader after a deep link or a "next up" jump: a bar's card,
   // or (barId null) the top of the new view. key makes a repeat jump re-run.
   const [jump, setJump] = useState(() => (INITIAL_BAR ? { barId: INITIAL_BAR, key: 0 } : null));
@@ -546,18 +566,30 @@ export default function App() {
     setJump({ barId, key: Date.now() });
   };
 
-  const filtered = city !== 'all' || type !== 'all' || activeTag !== 'all' || mineOnly;
+  // The search keeps a set of specials (null: no search); it never leaves the page
+  const hits = useMemo(() => searchSpecials(DATA.bars, query), [query]);
+  const asked = query.trim();
+  const filtered = city !== 'all' || type !== 'all' || activeTag !== 'all' || mineOnly || hits !== null;
   const clearFilters = () => {
     setCity('all');
     setType('all');
     setTag('all');
     setOnlySaved(false);
+    setQuery('');
   };
 
-  const typeMatch = (s) => type === 'all' || s.type === type || s.type === 'both';
+  // One test for every list, count and sentence: the type filter and the search
+  const typeMatch = (s) => (type === 'all' || s.type === type || s.type === 'both') && (hits === null || hits.has(s));
   const cityBars = useMemo(
-    () => DATA.bars.filter((b) => (city === 'all' || b.city === city) && (activeTag === 'all' || b.tags.includes(activeTag)) && (!mineOnly || saved.has(b.id))),
-    [city, activeTag, mineOnly, saved]
+    () =>
+      DATA.bars.filter(
+        (b) =>
+          (city === 'all' || b.city === city) &&
+          (activeTag === 'all' || b.tags.includes(activeTag)) &&
+          (!mineOnly || saved.has(b.id)) &&
+          (hits === null || b.specials.some((s) => hits.has(s)))
+      ),
+    [city, activeTag, mineOnly, saved, hits]
   );
 
   const today = DAY_KEYS[now.getDay()];
@@ -586,23 +618,36 @@ export default function App() {
 
   // Day view: every bar with a qualifying special on the chosen day
   const dayList = useMemo(
-    () => (view === 'now' ? [] : dayListings(cityBars, view, typeMatch)),
+    () => (view === 'now' || view === 'all' ? [] : dayListings(cityBars, view, typeMatch)),
     [cityBars, view, type]
   );
 
-  // The hero's picture of the day it's showing
-  const shapeDay = view === 'now' ? today : view;
+  // A-to-Z view: every bar, with all of its qualifying specials
+  const allList = useMemo(
+    () =>
+      view === 'all'
+        ? cityBars.map((bar) => ({ bar, specials: bar.specials.filter(typeMatch) })).filter((e) => e.specials.length > 0).sort((a, b) => byBarName(a.bar, b.bar))
+        : [],
+    [cityBars, view, type]
+  );
+
+  // The hero's picture of the day it's showing (the A-to-Z view has no one day)
+  const shapeDay = view === 'now' || view === 'all' ? today : view;
   const shape = useMemo(() => dayShape(cityBars, shapeDay, typeMatch), [cityBars, shapeDay, type]);
 
   // The hero: one number, set big, and the sentence it starts — in the reader's
   // filters ("3 food specials are on in Athens right now")
   const place = city === 'all' ? '' : ` in ${city}`;
-  const heroCount = view === 'now' && !holiday ? confirmedNow || confirmedLater : 0;
+  const heroCount = view === 'all' ? allList.length : view === 'now' && !holiday ? confirmedNow || confirmedLater : 0;
   const rolled = useRolling(heroCount);
   const [one, many] = NOUNS[type];
   const noun = heroCount === 1 ? one : many;
   const words =
-    view !== 'now'
+    view === 'all'
+      ? heroCount > 0
+        ? `bar${heroCount === 1 ? '' : 's'}${place}, A to Z`
+        : `No bars${place} match`
+      : view !== 'now'
       ? `${weekdayLabel(view)} happy hours`
       : holiday
         ? 'Holiday hours vary today'
@@ -624,13 +669,17 @@ export default function App() {
         ]
           .filter(Boolean)
           .join(' ')
-      : '';
+      : view === 'all'
+        ? 'Every listing, with its specials for the whole week.'
+        : '';
   const friday = view === 'fri' || (view === 'now' && today === 'fri');
 
   // Screen readers hear the result of a filter or day change. Counts only move
   // when a window opens or closes — never the per-minute countdown text.
   const status =
-    view === 'now'
+    view === 'all'
+      ? `${allList.length} bar${allList.length === 1 ? '' : 's'} listed`
+      : view === 'now'
       ? `${confirmedNow} pouring now, ${confirmedLater} later today${guessed ? `, ${guessed} more being confirmed` : ''}`
       : `${dayList.length} bar${dayList.length === 1 ? '' : 's'} with ${weekdayLabel(view)} specials`;
 
@@ -702,7 +751,7 @@ export default function App() {
               )}
             </p>
           )}
-          <DayShape counts={shape} nowMin={view === 'now' || view === today ? nowMin : null} />
+          {view !== 'all' && <DayShape counts={shape} nowMin={view === 'now' || view === today ? nowMin : null} />}
         </header>
 
         <div className="controls">
@@ -756,7 +805,24 @@ export default function App() {
                 My bars <span className="mine-count">{saved.size}</span>
               </button>
             )}
+            {/* Every bar with its whole week; pressed again, back to what's on now */}
+            <button type="button" className={`mine-btn${view === 'all' ? ' active' : ''}`} aria-pressed={view === 'all'} onClick={() => setView(view === 'all' ? 'now' : 'all')}>
+              All bars A–Z
+            </button>
           </div>
+          <input
+            className="search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search a bar or a special, like wings"
+            aria-label="Search bars and specials"
+            maxLength={60}
+            enterKeyHint="search"
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
         </div>
         {/* The disclosure and the key, before the first listing rather than after the last */}
         <p className="list-key">
@@ -775,7 +841,11 @@ export default function App() {
             {quiet && (
               <section className="quiet">
                 <h2 className="section-label">
-                  {next ? `First up ${next.offset === 1 ? 'tomorrow' : `on ${weekdayLabel(next.dayKey)}`}` : `Nothing listed${place} this week yet`}
+                  {next
+                    ? `First up ${next.offset === 1 ? 'tomorrow' : `on ${weekdayLabel(next.dayKey)}`}`
+                    : hits !== null
+                      ? `Nothing matches “${asked}”${place}`
+                      : `Nothing listed${place} this week yet`}
                 </h2>
                 {next && (
                   <ul className="openers">
@@ -830,6 +900,22 @@ export default function App() {
               </button>
             )}
           </>
+        ) : view === 'all' ? (
+          <section>
+            <h2 className="sr-only">All bars, A to Z</h2>
+            {allList.length > 0 ? (
+              <AllBars entries={allList} linkedBar={linkedBar} searching={hits !== null} />
+            ) : (
+              <p className="empty">
+                {hits !== null ? `No bar or special matches “${asked}”${place}.` : `No bars listed${place} yet.`}{' '}
+                {filtered && (
+                  <button type="button" className="link-btn" onClick={clearFilters}>
+                    Clear filters
+                  </button>
+                )}
+              </p>
+            )}
+          </section>
         ) : (
           <section>
             <h2 className="sr-only">{weekdayLabel(view)} specials</h2>
@@ -845,8 +931,14 @@ export default function App() {
               />
             ) : (
               <p className="empty">
-                No specials listed for {weekdayLabel(view)}
-                {place} yet.{' '}
+                {hits !== null ? `Nothing matches “${asked}” on ${weekdayLabel(view)}${place}.` : `No specials listed for ${weekdayLabel(view)}${place} yet.`}{' '}
+                {hits !== null && (
+                  <>
+                    <button type="button" className="link-btn" onClick={() => setView('all')}>
+                      Search every day
+                    </button>{' '}
+                  </>
+                )}
                 {filtered ? (
                   <button type="button" className="link-btn" onClick={clearFilters}>
                     Clear filters

@@ -70,6 +70,14 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - Table tent (tent.html?bar=<id>): a printable sign with a QR code to the bar's
   listing. Never prints specials, prices or times. QR encoder is src/qr.js — no
   QR dependency (dependencies stay React only).
+- Search and the A-to-Z view (every bar's whole week; where `?bar=` links land)
+  follow the same rule as every list: sourced specials first, guesses folded and
+  marked. Search matches a guess only by what it claims (`claimOf`), and nothing a
+  reader types is sent or counted.
+- Listing check (confirm.html?bar=<id>): the owner corrects their own listing and
+  their own mail app sends it to Chris in the call sheet's format. No backend, no
+  storage; it never sets verifiedOn — that still comes only from Chris's call via
+  `npm run calls`. The owner's name and call time stay in the email.
 - Seasonal tags (game-day, tom-and-jerrys, hunters) show only in season
   (tagInSeason). The Packers line reads src/data/packers.json, which is entered
   only from packers.com/schedule: never a game, date or kickoff from memory, and

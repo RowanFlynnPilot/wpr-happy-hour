@@ -1,0 +1,300 @@
+/* Listing check (confirm.html): a plain form in the finder's type and colors.
+   Controls are 16px so a phone doesn't zoom the page on focus. */
+.check {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px 56px;
+}
+
+.check-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.check h1 {
+  margin-top: 12px;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.check h2 {
+  margin-top: 32px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ink);
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 19px;
+}
+
+.check-lead {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+.check-none {
+  margin-top: 12px;
+  color: var(--ink-soft);
+}
+
+.check-row {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.check-row legend {
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.check-guess {
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--amber-tint);
+  color: var(--amber);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Days: seven toggles that read as one row of chips */
+.check-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.check-days label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.check-days label.on {
+  background: var(--night);
+  border-color: var(--night);
+  color: var(--on-night);
+}
+
+.check-days input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.check-days label:focus-within {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
+}
+
+.check-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.check-times label,
+.check-items,
+.check-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.check-items,
+.check-field {
+  margin-top: 12px;
+}
+
+.check input[type='time'],
+.check input[type='text'],
+.check select,
+.check textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: 400 16px/1.4 'Public Sans', sans-serif;
+}
+
+.check input[type='time'] {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.check textarea {
+  resize: vertical;
+}
+
+.check input:focus-visible,
+.check select:focus-visible,
+.check textarea:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 1px;
+}
+
+.check-row .link-btn {
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.check-problem {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+}
+
+.check-add {
+  margin-top: 16px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--teal-dark);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--teal-dark);
+  font: 600 15px 'Public Sans', sans-serif;
+  cursor: pointer;
+}
+
+.check-tags {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 16px;
+  margin-top: 12px;
+}
+
+.check-tags label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.check-tags input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--teal-dark);
+}
+
+.check-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.check-send {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 2px solid var(--ink);
+}
+
+.check-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  background: var(--night);
+  color: var(--on-night);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.check-send p {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.check .check-text {
+  margin-top: 8px;
+  background: var(--card);
+  font: 400 13px/1.5 'JetBrains Mono', monospace;
+}
+
+.check-send .check-add {
+  margin-top: 8px;
+}
+
+.check-send .check-fine {
+  margin-top: 20px;
+  max-width: 60ch;
+}
+
+/* Chris's list of links */
+.check-index ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  border-top: 2px solid var(--ink);
+}
+
+.check-index li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px 64px;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.check-index a {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+.check-index .ok {
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+@media (max-width: 480px) {
+  .check h1 {
+    font-size: 26px;
+  }
+
+  .check-times {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .check-times label:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .check-pair {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

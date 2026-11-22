@@ -1,6 +1,8 @@
 // npm test — the call-sheet → bars.json path. A wrong parse here would put a
 // wrong time on a card marked "✓ Verified", so each reading rule is pinned.
 import { test } from 'node:test';
+import { readFile } from 'node:fs/promises';
+import { specialsToSheet } from '../src/schedule.js';
 import assert from 'node:assert/strict';
 import { applyCalls, parseCallDate, parseCsv, parseDays, parseSpecials, parseTime } from './apply-calls.mjs';
 
@@ -121,4 +123,17 @@ test('applyCalls: bad rows fail loudly, naming the bar', () => {
   assert.throws(() => applyCalls(doc(), [row({ 'Tier sold': 'Gold' })], '2026-09-30'), /Partner or Featured/);
   assert.throws(() => applyCalls(doc(), [row({ 'Call date': '10/5/2026' })], '2026-09-30'), /in the future/);
   assert.throws(() => applyCalls(doc(), [row({ 'Verified specials (final)': '' })], '2026-09-30'), /empty/);
+});
+
+test('specialsToSheet → parseSpecials: every special in bars.json survives the trip', async () => {
+  const { bars } = JSON.parse(await readFile(new URL('../src/data/bars.json', import.meta.url), 'utf8'));
+  // the import splits a cell on ";" and " | ", which the sheet format swaps out of an item,
+  // and reads days back in week order, whatever order the data lists them in
+  const plain = (s) => ({ ...s, days: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].filter((d) => s.days.includes(d)), items: s.items.map((i) => i.replaceAll(';', ',').replaceAll('|', '/').trim()) });
+  let n = 0;
+  for (const bar of bars) {
+    assert.deepEqual(parseSpecials(specialsToSheet(bar.specials)), bar.specials.map(plain), bar.id);
+    n += bar.specials.length;
+  }
+  assert.ok(n > 100);
 });

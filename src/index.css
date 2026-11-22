@@ -514,6 +514,47 @@ a:focus-visible {
   }
 }
 
+/* Search: a bar's name or a special's wording. A row of its own under the filters. */
+.search {
+  flex: 1 1 100%;
+  min-width: 0;
+  font: 400 13px 'Public Sans', sans-serif;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  transition: border-color 150ms ease;
+}
+
+.search::placeholder {
+  color: var(--ink-soft);
+}
+
+.search:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .search:hover {
+    border-color: var(--teal);
+  }
+}
+
+@media (pointer: coarse) {
+  .search {
+    min-height: 44px;
+    font-size: 16px; /* under 16px iOS zooms the page on focus */
+  }
+}
+
+/* The A-to-Z list: rows like a time group's, with no time beside them */
+.az {
+  margin-top: 8px;
+  border-top: 2px solid var(--ink);
+}
+
 /* "My bars": the reader's saved listings only. Appears once one is saved. */
 .mine-btn {
   display: inline-flex;
@@ -1148,7 +1189,7 @@ a:focus-visible {
   }
 
   .mine-btn {
-    flex: 1 1 100%; /* its own row: the selects keep their words */
+    flex: 1 1 calc(50% - 4px); /* their own row, shared when both show: the selects keep their words */
     justify-content: center;
   }
 
