@@ -4,7 +4,7 @@ Time-aware happy hour finder for Wausau Pilot & Review (nonprofit local newsroom
 Embeds in WordPress via iframe from GitHub Pages.
 
 ## Stack & pipeline
-Hand-curated JSON → React 18/Vite 5 → GitHub Pages (Actions workflow in
+Hand-curated JSON → React 18/Vite 8 → GitHub Pages (Actions workflow in
 .github/workflows/deploy.yml) → WordPress iframe. Deliberately NO Python, no
 cron, no backend, no Supabase — content has no upstream source. Do not add any.
 
@@ -100,6 +100,9 @@ cron, no backend, no Supabase — content has no upstream source. Do not add any
 - No fallbacks: one correct path. Fail fast and loud.
 - Surgical changes only — minimal diffs, fix root causes not symptoms.
 - No overengineering: no state libraries, no routing, no CSS frameworks.
+- React stays on 18 on purpose (2026-11-22): React 19 adds about 23 kB gzipped to
+  what every reader downloads and the finder uses none of it. Build tools (Vite,
+  Playwright) move freely; `npm run smoke` is the check after any upgrade.
 - Design system is fixed: teal #3A867C, cream #F6F2E9, Fraunces display,
   Public Sans body, JetBrains Mono for times/prices/data. Tokens in index.css; the
   evening tokens (night, gold) carry featured cards. The spotlight ad is the bar's
