@@ -128,6 +128,26 @@ try {
     assert.match(await page.locator('.check-go').getAttribute('href'), /^mailto:weber\.chris@wausaupilotandreview\.com\?subject=/);
   });
 
+  // A bar we hold only guesses for is asked, not told: an empty special, no warnings
+  const unknown = bars.find((b) => b.verifiedOn === null && sourcedOf(b.specials).length === 0);
+  await check('Listing check: a bar we only have guesses for fills in its own', FRIDAY_5PM, `confirm.html?bar=${unknown.id}`, async (page) => {
+    assert.equal(await page.locator('h1').innerText(), `Tell us your happy hour, ${unknown.name}`);
+    assert.equal(await page.locator('.check-row').count(), 1);
+    assert.equal(await page.locator('.check-problem').count(), 0);
+    assert.equal(await page.locator('.check-go').count(), 0);
+    assert.equal(await page.locator('.check-heard li').count(), unknown.specials.length);
+    await page.locator('.check-days label', { hasText: 'Thu' }).click();
+    await page.getByLabel('From').fill('15:00');
+    await page.getByLabel('Until').fill('18:00');
+    await page.getByLabel(/What’s the special/).fill('$1 off taps');
+    assert.ok((await page.locator('#check-text').inputValue()).includes('Thu 3pm-6pm drinks: $1 off taps'));
+    assert.ok(!(await page.locator('#check-text').inputValue()).includes('still our guess'));
+    // taking up one of our guesses adds it as a row, flagged until the owner edits it
+    await page.getByRole('button', { name: 'Start from this' }).first().click();
+    assert.equal(await page.locator('.check-row').count(), 2);
+    assert.equal(await page.locator('.check-guess').count(), 1);
+  });
+
   await check('Listing check: Chris’s list, and a link that names no bar', FRIDAY_5PM, 'confirm.html', async (page) => {
     assert.equal(await page.locator('.check-index li').count(), bars.length);
     assert.equal(await page.getByRole('button', { name: /^Copy text message for / }).count(), bars.length);

@@ -136,7 +136,9 @@ sheet is safe.
 bar's link, for Chris to send out). It shows what the finder has for that bar — a
 research guess is put as the plain claim, flagged "our best guess" — and the owner
 corrects the days, times and wording, ticks the tags, and presses **Email this to
-Chris**. The page sends and stores nothing itself: it opens the owner's own mail app
+Chris**. A bar we hold only guesses for (no sourced special, not verified) is asked
+instead of told: "Tell us your happy hour", one empty special to fill in, and our guesses
+as a side note with "Start from this" (a guess taken up stays flagged until edited). The page sends and stores nothing itself: it opens the owner's own mail app
 (or offers the text to copy). The email's "Specials" lines are already in the
 **Verified specials (final)** format above (`specialsToSheet` in schedule.js; a test
 round-trips every special in bars.json through the import), so after his call Chris

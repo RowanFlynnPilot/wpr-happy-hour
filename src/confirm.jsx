@@ -1,7 +1,10 @@
 // Listing check — the page a bar's owner opens to see what the finder says about
 // them and send back what's right.
 //   confirm.html?bar=<id>   the bar's specials, editable, and one button that opens
-//                           an email to Chris with the answers
+//                           an email to Chris with the answers. A bar we hold only
+//                           guesses for is asked instead ("Tell us your happy hour"):
+//                           one empty special to fill in, our guesses kept to a side
+//                           note the owner can start from
 //   confirm.html            the list of every bar's link, for Chris to send out:
 //                           each with a text message to copy and an email to open
 // It has no backend and sends nothing itself: the owner's own mail app sends the
@@ -16,7 +19,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { TAGS, validate } from './data/validate.js';
-import { CHRIS_EMAIL, DAY_LABELS, WEEK_ORDER, byBarName, claimOf, isPlaceholder, specialsToSheet } from './schedule.js';
+import { CHRIS_EMAIL, DAY_LABELS, WEEK_ORDER, byBarName, claimOf, fmtDays, fmtWindow, isPlaceholder, sourcedOf, specialsToSheet } from './schedule.js';
 import { outreachEmail, outreachStatus, outreachText } from './outreach.js';
 import './index.css';
 import './confirm.css';
@@ -25,8 +28,11 @@ const DATA = validate(data);
 const id = new URLSearchParams(window.location.search).get('bar');
 const bar = DATA.bars.find((b) => b.id === id);
 
-const blank = () => ({ days: [], start: '', end: '', type: 'drinks', text: '', guess: false });
+// touched: the owner has worked on the row — only then is it told what it lacks, so
+// an empty form doesn't open covered in warnings
+const blank = () => ({ days: [], start: '', end: '', type: 'drinks', text: '', guess: false, touched: false });
 const fromBar = (s) => ({
+  touched: false,
   days: s.days,
   start: s.start,
   end: s.end,
@@ -71,8 +77,14 @@ function emailBody(rows, tags, note, who, when, more) {
     .join('\n');
 }
 
+// Nothing sourced and nothing verified: all we hold is research guesses. Asking
+// "is this right?" about those puts our guess in the owner's mouth, so the page
+// asks for their happy hour instead and offers each guess as a place to start.
+const UNKNOWN = bar !== undefined && bar.verifiedOn === null && sourcedOf(bar.specials).length === 0;
+
 function Check() {
-  const [rows, setRows] = useState(() => bar.specials.map(fromBar));
+  const [rows, setRows] = useState(() => (UNKNOWN ? [blank()] : bar.specials.map(fromBar)));
+  const [heard, setHeard] = useState(() => (UNKNOWN ? bar.specials.map(fromBar) : [])); // our guesses, not yet taken up
   const [tags, setTags] = useState(bar.tags);
   const [note, setNote] = useState(bar.note ?? '');
   const [who, setWho] = useState('');
@@ -80,7 +92,13 @@ function Check() {
   const [more, setMore] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const edit = (i, patch) => setRows(rows.map((r, j) => (j === i ? { ...r, ...patch, guess: false } : r)));
+  const edit = (i, patch) => setRows(rows.map((r, j) => (j === i ? { ...r, ...patch, guess: false, touched: true } : r)));
+  // A guess the owner takes up becomes a row (replacing a first row still empty)
+  const startFrom = (g) => {
+    const untouchedBlank = rows.length === 1 && !rows[0].touched && !rows[0].guess && rows[0].text === '';
+    setRows(untouchedBlank ? [g] : [...rows, g]);
+    setHeard(heard.filter((h) => h !== g));
+  };
   const toggleDay = (i, d) => edit(i, { days: rows[i].days.includes(d) ? rows[i].days.filter((x) => x !== d) : [...rows[i].days, d] });
   const problems = rows.map(problem);
   const ready = problems.every((p) => p === null);
@@ -98,11 +116,23 @@ function Check() {
       <p className="check-kicker">
         <img src="./favicon.svg" alt="" width="22" height="22" /> Happy Hour Finder · Wausau Pilot &amp; Review
       </p>
-      <h1>Is this right, {bar.name}?</h1>
-      <p className="check-lead">
-        This is what our Happy Hour Finder has for you at {bar.address}. Fix anything that’s wrong or out of date, add what’s
-        missing, then send it to Chris Weber. He’ll call to confirm before anything changes on the finder.
-      </p>
+      {UNKNOWN ? (
+        <>
+          <h1>Tell us your happy hour, {bar.name}</h1>
+          <p className="check-lead">
+            Our Happy Hour Finder lists you at {bar.address}, but we don’t have your specials from you yet. Add them here and
+            send them to Chris Weber. He’ll call to confirm before anything changes on the finder.
+          </p>
+        </>
+      ) : (
+        <>
+          <h1>Is this right, {bar.name}?</h1>
+          <p className="check-lead">
+            This is what our Happy Hour Finder has for you at {bar.address}. Fix anything that’s wrong or out of date, add
+            what’s missing, then send it to Chris Weber. He’ll call to confirm before anything changes on the finder.
+          </p>
+        </>
+      )}
 
       <h2>Your specials</h2>
       {rows.length === 0 && <p className="check-none">No specials listed. Add one below, or tell us in “Anything else” if you don’t run any.</p>}
@@ -140,7 +170,7 @@ function Check() {
             What’s the special? One per line, with prices.
             <textarea rows={3} value={row.text} onChange={(e) => edit(i, { text: e.target.value })} placeholder={'$1 off taps\n$5 old fashioneds'} />
           </label>
-          {problems[i] && <p className="check-problem">{problems[i]}</p>}
+          {problems[i] && (row.touched || row.guess) && <p className="check-problem">{problems[i]}</p>}
           <button type="button" className="link-btn" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
             Remove this special
           </button>
@@ -149,6 +179,26 @@ function Check() {
       <button type="button" className="check-add" onClick={() => setRows([...rows, blank()])}>
         Add a special
       </button>
+      {heard.length > 0 && (
+        <aside className="check-heard">
+          <p>What we’d heard, not confirmed. Use one as a start if it’s close:</p>
+          <ul>
+            {heard.map((g, i) => (
+              <li key={i}>
+                <span>
+                  <span className="mono">
+                    {fmtDays(g.days)} {fmtWindow(g)}
+                  </span>
+                  {g.text && ` · ${g.text.split('\n').join(' · ')}`}
+                </span>
+                <button type="button" className="link-btn" onClick={() => startFrom(g)}>
+                  Start from this
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
 
       <h2>About your place</h2>
       <div className="check-tags">
@@ -195,7 +245,11 @@ function Check() {
             </button>
           </>
         ) : (
-          <p className="check-problem">Finish the special{problems.filter(Boolean).length === 1 ? '' : 's'} marked above, then you can send this.</p>
+          <p className={rows.some((r) => r.touched || r.guess) ? 'check-problem' : 'check-wait'}>
+            {rows.some((r, i) => problems[i] && (r.touched || r.guess))
+              ? `Finish the special${problems.filter(Boolean).length === 1 ? '' : 's'} marked above, then you can send this.`
+              : 'Add your special above, then you can send this. No happy hour? Remove the empty special and send that.'}
+          </p>
         )}
         <p className="check-fine">
           This page sends nothing by itself: your own email does. Every listing on the finder is a paid partner placement; Chris

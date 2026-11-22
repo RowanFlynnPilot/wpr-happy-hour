@@ -171,6 +171,40 @@
   color: var(--amber);
 }
 
+/* Our unconfirmed guesses for a bar we know nothing firm about: a side note */
+.check-heard {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.check-heard ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.check-heard li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 16px;
+  padding: 6px 0;
+}
+
+.check-heard .link-btn {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.check-wait {
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
 .check-add {
   margin-top: 16px;
   min-height: 44px;
