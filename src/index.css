@@ -506,6 +506,7 @@ a:focus-visible {
    Thumbs get 44px-tall targets. */
 @media (pointer: coarse) {
   .filters select {
+    min-height: 44px;
     font-size: 16px;
   }
 
@@ -644,6 +645,7 @@ a:focus-visible {
 
 /* Sections */
 .section-label {
+  overflow-wrap: anywhere; /* "Nothing matches “…”" quotes the reader's search */
   font-family: 'Fraunces', serif;
   font-weight: 600;
   font-size: 26px;
@@ -1245,6 +1247,7 @@ a:focus-visible {
 
 /* Empty + footer */
 .empty {
+  overflow-wrap: anywhere; /* a long search with no spaces in it is quoted back here */
   text-align: center;
   color: var(--ink-soft);
   padding: 48px 0;

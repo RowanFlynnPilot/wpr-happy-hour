@@ -446,6 +446,10 @@ test('searchSpecials: a bar by name, a special by its wording, a guess only by i
   assert.deepEqual(found('brokaw wings'), [guess, buffet]);
   assert.deepEqual(found('$1'), [taps]);
   assert.deepEqual(found('karaoke'), []);
+  assert.deepEqual(found('1'), [wings, taps]); // "1 Main St": an address number is a word too
+  assert.deepEqual(found('5 old'), [fashioned]); // a price without its "$"
+  assert.deepEqual(found('!!!'), []); // nothing searchable is still a search: it matches nothing
+  assert.deepEqual(found('🍺'), []);
   // words match from their start: "wing" is not inside "Brewing"
   const brewery = [{ name: 'Red Eye Brewing', address: '1 Main St, Wausau', specials: [taps] }];
   assert.equal(searchSpecials(brewery, 'wings').size, 0);

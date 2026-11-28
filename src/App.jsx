@@ -399,7 +399,7 @@ function BarCard({ bar, specials, now, showDays, trackNow, linked, level, week }
 // timetable: one big time per group, the bars beside it — the newsletter card's
 // "also today" schedule, in the finder. In each group the rows still being
 // confirmed fold into one line, so a busy evening reads as what's certain.
-function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
+function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar, searching }) {
   const { saved } = useContext(Finder);
   const mine = (e) => (saved?.has(e.bar.id) ? 1 : 0);
   // a stable sort: the reader's saved bars lead their group, the rest keep their order
@@ -437,7 +437,8 @@ function Timetable({ entries, by, label, now, showDays, trackNow, linkedBar }) {
           <div className="slot-rows">
             {savedFirst(confirmed).map(card(4))}
             {guessed.length > 0 && (
-              <details className="slot-more" open={guessed.some((e) => e.bar.id === linkedBar || mine(e))}>
+              // open for what the reader came for: a search, a linked bar, a saved one
+              <details className="slot-more" open={searching || guessed.some((e) => e.bar.id === linkedBar || mine(e))}>
                 <summary>
                   {confirmed.length > 0 ? `${guessed.length} more` : `${guessed.length} listing${guessed.length === 1 ? '' : 's'}`},
                   specials being confirmed
@@ -586,7 +587,7 @@ export default function App() {
   // keystroke of a search to that page's analytics, and nothing typed here is sent
   // or counted. The phone's share sheet where there is one, else the clipboard
   // (inside the iframe that needs allow="clipboard-write"), else the link to select.
-  const viewLink = viewUrl({ view, city, type, tag: activeTag, q: asked });
+  const viewLink = viewUrl({ view, city, type, tag: activeTag, q: hits !== null ? asked : '' });
   const worthLinking = view !== 'now' || city !== 'all' || type !== 'all' || activeTag !== 'all' || hits !== null;
   const shareView = () => {
     if (CAN_SHARE) {
@@ -638,13 +639,13 @@ export default function App() {
       guessed: pouring.length - confirmedNow + laterToday.length - confirmedLater,
       next: nextDay(cityBars, now, typeMatch), // the closing line, or the quiet state's way forward
     };
-  }, [cityBars, now, type]);
+  }, [cityBars, now, type, hits]);
   const quiet = confirmedNow === 0 && confirmedLater === 0;
 
   // Day view: every bar with a qualifying special on the chosen day
   const dayList = useMemo(
     () => (view === 'now' || view === 'all' ? [] : dayListings(cityBars, view, typeMatch)),
-    [cityBars, view, type]
+    [cityBars, view, type, hits]
   );
 
   // A-to-Z view: every bar, with all of its qualifying specials
@@ -653,12 +654,12 @@ export default function App() {
       view === 'all'
         ? cityBars.map((bar) => ({ bar, specials: bar.specials.filter(typeMatch) })).filter((e) => e.specials.length > 0).sort((a, b) => byBarName(a.bar, b.bar))
         : [],
-    [cityBars, view, type]
+    [cityBars, view, type, hits]
   );
 
   // The hero's picture of the day it's showing (the A-to-Z view has no one day)
   const shapeDay = view === 'now' || view === 'all' ? today : view;
-  const shape = useMemo(() => dayShape(cityBars, shapeDay, typeMatch), [cityBars, shapeDay, type]);
+  const shape = useMemo(() => dayShape(cityBars, shapeDay, typeMatch), [cityBars, shapeDay, type, hits]);
 
   // The hero: one number, set big, and the sentence it starts — in the reader's
   // filters ("3 food specials are on in Athens right now")
@@ -878,9 +879,12 @@ export default function App() {
                 <h2 className="section-label">
                   {next
                     ? `First up ${next.offset === 1 ? 'tomorrow' : `on ${weekdayLabel(next.dayKey)}`}`
-                    : hits !== null
-                      ? `Nothing matches “${asked}”${place}`
-                      : `Nothing listed${place} this week yet`}
+                    : hits === null
+                      ? `Nothing listed${place} this week yet`
+                      : cityBars.length > 0
+                        ? // the search did match — only listings still being confirmed (below, or on another day)
+                          `Nothing confirmed for “${asked}”${place} yet`
+                        : `Nothing matches “${asked}”${place}`}
                 </h2>
                 {next && (
                   <ul className="openers">
@@ -901,6 +905,11 @@ export default function App() {
                       See all {next.openers.length} on {weekdayLabel(next.dayKey)}
                     </button>
                   )}
+                  {hits !== null && cityBars.length > 0 && (
+                    <button type="button" className="link-btn" onClick={() => setView('all')}>
+                      Search every day
+                    </button>
+                  )}
                   {filtered && (
                     <button type="button" className="link-btn" onClick={clearFilters}>
                       Clear filters
@@ -912,13 +921,13 @@ export default function App() {
             {pouring.length > 0 && (
               <section>
                 <h2 className="section-label">{holiday ? 'Usually pouring now' : 'Pouring now'}</h2>
-                <Timetable entries={pouring} by={endsAt} label={(t) => `Until ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} />
+                <Timetable entries={pouring} by={endsAt} label={(t) => `Until ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} searching={hits !== null} />
               </section>
             )}
             {laterToday.length > 0 && (
               <section>
                 <h2 className="section-label">{holiday ? 'Usually later today' : 'Later today'}</h2>
-                <Timetable entries={laterToday} by={startsAt} label={(t) => `From ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} />
+                <Timetable entries={laterToday} by={startsAt} label={(t) => `From ${t}`} now={now} trackNow={now} showDays={false} linkedBar={linkedBar} searching={hits !== null} />
               </section>
             )}
             {/* End on what's next, not a disclaimer: tomorrow's evening, one tap away */}
@@ -963,6 +972,7 @@ export default function App() {
                 trackNow={view === today ? now : null}
                 showDays={true}
                 linkedBar={linkedBar}
+                searching={hits !== null}
               />
             ) : (
               <p className="empty">

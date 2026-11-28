@@ -15,7 +15,7 @@
 // to call go in the email only — contact details never go in bars.json.
 // Not linked from the finder; a link that names no known bar says so plainly (it
 // arrives from outside, like the finder's own deep links).
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import data from './data/bars.json';
 import { TAGS, validate } from './data/validate.js';
@@ -42,13 +42,20 @@ const fromBar = (s) => ({
   text: s.items.map(claimOf).filter(Boolean).join('\n'),
   guess: s.items.some(isPlaceholder),
 });
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+// Some mail apps cut a mailto: link off near 2,000 characters; past this the page
+// says to copy the text instead. The boxes are capped so one paste can't run away.
+const MAILTO_SAFE = 1900;
 const itemsOf = (row) => row.text.split('\n').map((t) => t.trim()).filter(Boolean);
 
 // What stops a row from being sent, in the owner's words; null when it's fine
 function problem(row) {
   if (row.days.length === 0) return 'Pick at least one day.';
   if (!row.start || !row.end) return 'Add a start and an end time.';
-  if (row.end <= row.start) return 'The end has to be after the start. For a special that runs to close, end it at 11:59 PM.';
+  // a browser with no time picker hands back whatever was typed
+  if (!HHMM.test(row.start) || !HHMM.test(row.end)) return 'Enter the times as hours and minutes, like 15:00 or 3:00 PM.';
+  // "Until close" is not a time (the call sheet's rule too): the finder states the hour
+  if (row.end <= row.start) return 'The end has to be after the start. If it runs until you close, enter your closing time. If that is after midnight, enter 11:59 PM.';
   if (itemsOf(row).length === 0) return 'Say what the special is.';
   return null;
 }
@@ -90,7 +97,17 @@ function Check() {
   const [who, setWho] = useState('');
   const [when, setWhen] = useState('');
   const [more, setMore] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [copiedBody, setCopiedBody] = useState(null); // what the clipboard holds: "Copied" is true only while it still matches
+  const [notice, setNotice] = useState(''); // for screen readers
+  // Where focus goes after a row is added, taken up or removed — a removed button
+  // would otherwise drop it to the top of the page
+  const [focusOn, setFocusOn] = useState(null); // { row: index } | { add: true }
+  const addRef = useRef(null);
+  useEffect(() => {
+    if (focusOn === null) return;
+    if (focusOn.add) addRef.current?.focus();
+    else document.querySelectorAll('.check-row')[focusOn.row]?.querySelector('input')?.focus();
+  }, [focusOn]);
 
   const edit = (i, patch) => setRows(rows.map((r, j) => (j === i ? { ...r, ...patch, guess: false, touched: true } : r)));
   // A guess the owner takes up becomes a row (replacing a first row still empty)
@@ -98,6 +115,12 @@ function Check() {
     const untouchedBlank = rows.length === 1 && !rows[0].touched && !rows[0].guess && rows[0].text === '';
     setRows(untouchedBlank ? [g] : [...rows, g]);
     setHeard(heard.filter((h) => h !== g));
+    setFocusOn({ row: untouchedBlank ? 0 : rows.length });
+  };
+  const remove = (i) => {
+    setRows(rows.filter((_, j) => j !== i));
+    setNotice(`Special ${i + 1} removed`);
+    setFocusOn({ add: true });
   };
   const toggleDay = (i, d) => edit(i, { days: rows[i].days.includes(d) ? rows[i].days.filter((x) => x !== d) : [...rows[i].days, d] });
   const problems = rows.map(problem);
@@ -107,7 +130,10 @@ function Check() {
   const mailto = `mailto:${CHRIS_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const copy = () =>
     navigator.clipboard.writeText(body).then(
-      () => setCopied(true),
+      () => {
+        setCopiedBody(body);
+        setNotice('Text copied');
+      },
       () => document.getElementById('check-text').select() // no clipboard here: the text is selected to copy by hand
     );
 
@@ -137,7 +163,7 @@ function Check() {
       <h2>Your specials</h2>
       {rows.length === 0 && <p className="check-none">No specials listed. Add one below, or tell us in “Anything else” if you don’t run any.</p>}
       {rows.map((row, i) => (
-        <fieldset className="check-row" key={i}>
+        <fieldset className="check-row" key={i} aria-describedby={problems[i] && (row.touched || row.guess) ? `check-problem-${i}` : undefined}>
           <legend>Special {i + 1}</legend>
           {row.guess && <p className="check-guess">This one is our best guess. Please correct it.</p>}
           <div className="check-days" role="group" aria-label="Days">
@@ -168,15 +194,27 @@ function Check() {
           </div>
           <label className="check-items">
             What’s the special? One per line, with prices.
-            <textarea rows={3} value={row.text} onChange={(e) => edit(i, { text: e.target.value })} placeholder={'$1 off taps\n$5 old fashioneds'} />
+            <textarea rows={3} maxLength={400} value={row.text} onChange={(e) => edit(i, { text: e.target.value })} placeholder={'$1 off taps\n$5 old fashioneds'} />
           </label>
-          {problems[i] && (row.touched || row.guess) && <p className="check-problem">{problems[i]}</p>}
-          <button type="button" className="link-btn" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
+          {problems[i] && (row.touched || row.guess) && (
+            <p className="check-problem" id={`check-problem-${i}`} role="status">
+              {problems[i]}
+            </p>
+          )}
+          <button type="button" className="link-btn" onClick={() => remove(i)}>
             Remove this special
           </button>
         </fieldset>
       ))}
-      <button type="button" className="check-add" onClick={() => setRows([...rows, blank()])}>
+      <button
+        type="button"
+        className="check-add"
+        ref={addRef}
+        onClick={() => {
+          setRows([...rows, blank()]);
+          setFocusOn({ row: rows.length });
+        }}
+      >
         Add a special
       </button>
       {heard.length > 0 && (
@@ -200,8 +238,8 @@ function Check() {
         </aside>
       )}
 
-      <h2>About your place</h2>
-      <div className="check-tags">
+      <h2 id="check-place">About your place</h2>
+      <div className="check-tags" role="group" aria-labelledby="check-place">
         {Object.entries(TAGS).map(([t, label]) => (
           <label key={t}>
             <input type="checkbox" checked={tags.includes(t)} onChange={() => setTags(tags.includes(t) ? tags.filter((x) => x !== t) : [...tags, t])} />
@@ -211,23 +249,23 @@ function Check() {
       </div>
       <label className="check-field">
         Anything readers should know? For example “Dine-in only” or “Not during Packers games”.
-        <input type="text" value={note} onChange={(e) => setNote(e.target.value)} />
+        <input type="text" maxLength={120} value={note} onChange={(e) => setNote(e.target.value)} />
       </label>
 
       <h2>So Chris can reach you</h2>
       <div className="check-pair">
         <label className="check-field">
           Your name
-          <input type="text" value={who} onChange={(e) => setWho(e.target.value)} autoComplete="name" />
+          <input type="text" maxLength={80} value={who} onChange={(e) => setWho(e.target.value)} autoComplete="name" />
         </label>
         <label className="check-field">
           Best time to call
-          <input type="text" value={when} onChange={(e) => setWhen(e.target.value)} placeholder="Weekdays before 3" />
+          <input type="text" maxLength={80} value={when} onChange={(e) => setWhen(e.target.value)} placeholder="Weekdays before 3" />
         </label>
       </div>
       <label className="check-field">
         Anything else
-        <textarea rows={2} value={more} onChange={(e) => setMore(e.target.value)} />
+        <textarea rows={2} maxLength={400} value={more} onChange={(e) => setMore(e.target.value)} />
       </label>
 
       <div className="check-send">
@@ -237,20 +275,26 @@ function Check() {
               Email this to Chris
             </a>
             <p>
-              No mail app on this device? Copy the text and send it to <strong>{CHRIS_EMAIL}</strong>.
+              {mailto.length > MAILTO_SAFE
+                ? 'This is long for some mail apps. If the email opens cut short or empty, copy the text and send it to '
+                : 'No mail app on this device? Copy the text and send it to '}
+              <strong>{CHRIS_EMAIL}</strong>.
             </p>
-            <textarea id="check-text" className="check-text" readOnly rows={Math.min(14, body.split('\n').length + 1)} value={body} />
+            <textarea id="check-text" className="check-text" readOnly aria-label="The message to send" rows={Math.min(14, body.split('\n').length + 1)} value={body} />
             <button type="button" className="check-add" onClick={copy}>
-              {copied ? 'Copied' : 'Copy the text'}
+              {copiedBody === body ? 'Copied' : 'Copy the text'}
             </button>
           </>
         ) : (
-          <p className={rows.some((r) => r.touched || r.guess) ? 'check-problem' : 'check-wait'}>
+          <p className={rows.some((r) => r.touched || r.guess) ? 'check-problem' : 'check-wait'} role="status">
             {rows.some((r, i) => problems[i] && (r.touched || r.guess))
               ? `Finish the special${problems.filter(Boolean).length === 1 ? '' : 's'} marked above, then you can send this.`
               : 'Add your special above, then you can send this. No happy hour? Remove the empty special and send that.'}
           </p>
         )}
+        <p className="sr-only" role="status">
+          {notice}
+        </p>
         <p className="check-fine">
           This page sends nothing by itself: your own email does. Every listing on the finder is a paid partner placement; Chris
           can walk you through it when he calls, or reach him at 715-301-5539.
@@ -298,7 +342,7 @@ function Index() {
         ))}
       </ul>
       <p className="sr-only" role="status">
-        {copied ? 'Text message copied' : ''}
+        {copied ? `Text message for ${DATA.bars.find((b) => b.id === copied).name} copied` : ''}
       </p>
     </main>
   );

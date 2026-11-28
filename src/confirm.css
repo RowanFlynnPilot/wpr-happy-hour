@@ -45,6 +45,7 @@
 }
 
 .check-row {
+  min-width: 0; /* a fieldset is as wide as its contents by default: on a 320px phone that ran off the screen */
   margin-top: 16px;
   padding: 16px;
   border: 1px solid var(--line);
@@ -304,6 +305,8 @@
 }
 
 .check-index .check-bar {
+  min-width: 0;
+  overflow-wrap: anywhere; /* a long unbroken name wraps instead of widening the page */
   font-size: 15px;
   font-weight: 600;
   color: var(--teal-dark);
@@ -357,9 +360,24 @@
   }
 
   .check-out .link-btn,
-  .check-out a {
+  .check-out a,
+  .check-index .check-bar {
     display: inline-flex;
     align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Thumbs get 44px-tall targets, as on the finder */
+@media (pointer: coarse) {
+  .check-row .link-btn,
+  .check-heard .link-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .check-tags label {
     min-height: 44px;
   }
 }

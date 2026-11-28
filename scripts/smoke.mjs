@@ -29,13 +29,19 @@ const failures = [];
 let checks = 0;
 
 // One fresh page per check, at a phone's size, on Wausau time, with the clock held
-async function check(name, at, path, body) {
+// share: what the browser's share sheet does — absent by default, so every run takes
+// the same path whatever the machine's Chromium offers
+async function check(name, at, path, body, { share = 'absent' } = {}) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     timezoneId: 'America/Chicago',
     locale: 'en-US',
     permissions: ['clipboard-read', 'clipboard-write'],
   });
+  await context.addInitScript((mode) => {
+    if (mode === 'absent') delete Navigator.prototype.share;
+    else Navigator.prototype.share = () => Promise.reject(new DOMException('no share target', 'NotAllowedError'));
+  }, share);
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -89,7 +95,12 @@ try {
     assert.deepEqual(await page.locator('.az > article .card-name').allInnerTexts(), expected);
   });
 
+  // The fixtures come from the data. A bar with a sourced special always exists
+  // once anything is listed; the other two kinds can run out (every bar confirmed is
+  // the goal), and their checks are skipped then rather than crashing the deploy.
   const known = bars.find((b) => sourcedOf(b.specials).length > 0);
+  assert.ok(known, 'bars.json has no bar with a sourced special: the smoke test has nothing to open');
+  const skip = (name, why) => console.log(`skip  ${name} (${why})`);
   await check('Search: a bar by name, and a query that matches nothing', FRIDAY_5PM, '?view=all', async (page) => {
     await page.getByLabel('Search bars and specials').fill(known.name);
     assert.ok((await page.locator('.card-name').allInnerTexts()).includes(known.name), `${known.name} not found by its own name`);
@@ -100,6 +111,21 @@ try {
     await page.getByRole('button', { name: 'Clear filters' }).click();
     assert.equal(await cards(page), bars.length);
   });
+
+  // A search that matches only a listing still being confirmed must not say "nothing matches"
+  const guessOnly = bars.find((b) => sourcedOf(b.specials).length === 0);
+  if (guessOnly) {
+    await check('Search: a match that is only “being confirmed” is not called no match', FRIDAY_5PM, '', async (page) => {
+      await page.getByLabel('Search bars and specials').fill(guessOnly.name);
+      const main = await page.locator('main').innerText();
+      assert.ok(!main.includes('Nothing matches'), 'the Now view says nothing matches a bar that is listed');
+      if ((await cards(page)) === 0) {
+        // its guessed specials are on another day: the way there is offered
+        await page.getByRole('button', { name: 'Search every day' }).click();
+      }
+      assert.ok((await page.locator('.card-name').allInnerTexts()).includes(guessOnly.name));
+    });
+  } else skip('Search: a match that is only “being confirmed”', 'no guess-only bar left');
 
   await check('Copy a link to this view: the link reopens the same search', FRIDAY_5PM, '', async (page) => {
     assert.equal(await page.locator('.view-link').count(), 0); // nothing set, nothing to link
@@ -116,10 +142,17 @@ try {
     assert.deepEqual(await page.locator('.card-name').allInnerTexts(), shown);
   });
 
+  await check('Share this view: when the share sheet refuses, the link is shown to copy', FRIDAY_5PM, '?view=sat', async (page) => {
+    await page.getByRole('button', { name: 'Share this view' }).click();
+    assert.match(await page.getByLabel('Link to this view').inputValue(), /\?view=sat$/);
+  }, { share: 'refuses' });
+
   await check('A bar’s own link lands on its card, with its whole week', FRIDAY_5PM, `?bar=${known.id}`, async (page) => {
     const card = page.locator(`#bar-${known.id}`);
     await page.waitForFunction((id) => document.activeElement?.closest('article')?.id === `bar-${id}`, known.id);
-    assert.ok(Math.abs((await card.boundingBox()).y - 16) <= 2, 'the card is not at the top of the screen');
+    // near the top of the screen (exactly 16px down when the page below is long enough to scroll that far)
+    const { y } = await card.boundingBox();
+    assert.ok(y >= 0 && y < 300, `the card is not near the top of the screen (y=${Math.round(y)})`);
     assert.equal(await card.locator('.special-days').count(), await card.locator('.special').count()); // every row names its days
   });
 
@@ -140,7 +173,8 @@ try {
   // A bar with nothing guessed: its form is ready to send as it opens (a guess that
   // claims nothing leaves a box the owner has to fill in first)
   const settled = bars.find((b) => sourcedOf(b.specials).length === b.specials.length);
-  await check('Listing check: the owner’s email is in the call sheet’s format', FRIDAY_5PM, `confirm.html?bar=${settled.id}`, async (page) => {
+  if (!settled) skip('Listing check: the owner’s email', 'no bar without a guess');
+  else await check('Listing check: the owner’s email is in the call sheet’s format', FRIDAY_5PM, `confirm.html?bar=${settled.id}`, async (page) => {
     assert.equal(await page.locator('h1').innerText(), `Is this right, ${settled.name}?`);
     const body = await page.locator('#check-text').inputValue();
     // the specials go out exactly as the import reads them
@@ -150,7 +184,8 @@ try {
 
   // A bar we hold only guesses for is asked, not told: an empty special, no warnings
   const unknown = bars.find((b) => b.verifiedOn === null && sourcedOf(b.specials).length === 0);
-  await check('Listing check: a bar we only have guesses for fills in its own', FRIDAY_5PM, `confirm.html?bar=${unknown.id}`, async (page) => {
+  if (!unknown) skip('Listing check: a bar we only have guesses for', 'no guess-only bar left');
+  else await check('Listing check: a bar we only have guesses for fills in its own', FRIDAY_5PM, `confirm.html?bar=${unknown.id}`, async (page) => {
     assert.equal(await page.locator('h1').innerText(), `Tell us your happy hour, ${unknown.name}`);
     assert.equal(await page.locator('.check-row').count(), 1);
     assert.equal(await page.locator('.check-problem').count(), 0);
@@ -166,6 +201,17 @@ try {
     await page.getByRole('button', { name: 'Start from this' }).first().click();
     assert.equal(await page.locator('.check-row').count(), 2);
     assert.equal(await page.locator('.check-guess').count(), 1);
+    // "Copied" holds only while the clipboard still has this text, and focus survives a removal
+    await page.locator('.check-row').nth(1).getByRole('button', { name: 'Remove this special' }).click();
+    assert.equal(await page.evaluate(() => document.activeElement?.textContent), 'Add a special');
+    await page.getByRole('button', { name: 'Copy the text' }).click();
+    await page.getByRole('button', { name: 'Copied' }).waitFor(); // the clipboard answers a moment later
+    await page.getByLabel('Until').fill('19:00');
+    await page.getByRole('button', { name: 'Copy the text' }).waitFor();
+    assert.ok((await page.evaluate(() => navigator.clipboard.readText())).includes('3pm-6pm')); // the clipboard still holds the old text: the button no longer claims otherwise
+    // "until close" is asked for as an hour, never turned into midnight
+    await page.getByLabel('Until').fill('14:00');
+    assert.match(await page.locator('.check-problem').first().innerText(), /enter your closing time/);
   });
 
   await check('Listing check: Chris’s list, and a link that names no bar', FRIDAY_5PM, 'confirm.html', async (page) => {

@@ -514,16 +514,20 @@ export function claimOf(item) {
 // its own items: "wings" keeps the wing nights, "wausau wings" the ones in Wausau,
 // and a bar's name keeps its whole listing. Words match from their start, so
 // "wing" is not found inside "Brewing", and a plural finds its singular ("wings"
-// finds "wing & rib buffet").
+// finds "wing & rib buffet"). A price is found with or without its "$" ("5" finds
+// "$5 old fashioneds"). A query with nothing searchable in it ("!!!") is still a
+// search: it matches nothing, and the reader is told so.
 export function searchSpecials(bars, query) {
+  if (query.trim() === '') return null;
   const words = foldText(query).split(' ').filter(Boolean).map((w) => (w.length > 3 ? w.replace(/s$/, '') : w));
-  if (words.length === 0) return null;
   const hits = new Set();
+  if (words.length === 0) return hits;
+  const starts = (w) => (t) => t.startsWith(w) || (t[0] === '$' && t.startsWith(w, 1));
   for (const bar of bars) {
     const where = foldText(`${bar.name} ${bar.address}`).split(' ');
     for (const s of bar.specials) {
       const what = foldText(s.items.map(claimOf).join(' ')).split(' ');
-      if (words.every((w) => where.some((t) => t.startsWith(w)) || what.some((t) => t.startsWith(w)))) hits.add(s);
+      if (words.every((w) => where.some(starts(w)) || what.some(starts(w)))) hits.add(s);
     }
   }
   return hits;
